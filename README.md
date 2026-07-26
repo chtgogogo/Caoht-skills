@@ -1,24 +1,42 @@
-# multi-agent-team-governance-skills
+# Caoht Skills
 
-这是一个用于帮助多 agent 能够协作完成任务，相互之间确定分工，相互沟通的 skills，避免同一个项目下，不同的 agent 对同一个问题反复询问。
+> 曹HT 个人维护的 AI Agent Skill 集合，适用于 WorkBuddy 及任何读取 `SKILL.md` 的 agent 框架。
+
+这里收录我日常使用、打磨过的 skill。每个 skill 以**独立英文子文件夹**存放：`SKILL.md` 是该 skill 的核心指令（AI 读取），子文件夹内自带 `README.md` 作为给人看的使用门面。
+
+## 收录的 Skills
+
+| Skill | 一句话简介 | 文档 |
+|---|---|---|
+| [multi-agent-team-governance](multi-agent-team-governance/README.md) | 多角色（多个 AI agent + 你本人）协作的**纯文档化**治理方法论——防撞车、防被重复追问 | [查看](multi-agent-team-governance/README.md) |
+
+> 仓库持续扩展中：新增 skill 时请遵循下方仓库结构。
 
 ## 仓库结构
 
 ```
-multi-agent-team-governance-skills/
+Caoht-skills/
 ├── LICENSE              # MIT（Copyright 2026 CaoHT）
-├── README.md            # 本文件（仓库索引）
+├── README.md            # 本文件（仓库总索引）
 ├── .gitignore
-└── multi-agent-team-governance/   # 技能本体
-    ├── SKILL.md         # AI 执行的核心指令与触发规则
-    ├── README.md        # 技能门面（痛点 / 方案 / 安装 / 示例 / 能力 / FAQ）
-    └── references/      # 模板：契约 / 决策看板 / 信箱说明
+└── <skill-name>/        # 每个 skill 一个英文子文件夹，名字须与 SKILL.md 的 name 一致
+    ├── SKILL.md         # 必需：AI 执行的核心指令与触发规则
+    ├── README.md        # 推荐：给人类看的使用门面
+    └── references/      # 可选：模板 / 参考文档
 ```
 
-## 技能列表
+## 如何安装某个 Skill
 
-- **multi-agent-team-governance** —— 多 Agent 团队协作文档治理。详见 [`multi-agent-team-governance/README.md`](multi-agent-team-governance/README.md)。
+将对应 skill 子文件夹**整体复制**到 agent 的 skills 目录，重启即可：
 
-## 安装
+```bash
+# 以 WorkBuddy 为例
+cp -r multi-agent-team-governance ~/.workbuddy/skills/
+# 重启 WorkBuddy 后该 skill 即生效
+```
 
-将 `multi-agent-team-governance/` 文件夹复制到你的 agent skills 目录（如 `~/.workbuddy/skills/`），重启即可。
+或参考各 skill 子文件夹内的 `README.md` 获取专属安装 / 使用说明。
+
+## 协议
+
+[MIT License](LICENSE) —— Copyright 2026 CaoHT。
