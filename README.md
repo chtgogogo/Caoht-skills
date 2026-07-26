@@ -1,6 +1,6 @@
 # Caoht Skills
 
-> 曹HT 个人维护的 AI Agent Skill 集合，适用于 WorkBuddy 及任何读取 `SKILL.md` 的 agent 框架。
+> 我 个人维护的 AI Agent Skill 集合，适用于任何读取 `SKILL.md` 的 agent 框架。
 
 这里收录我日常使用、打磨过的 skill。每个 skill 以**独立英文子文件夹**存放：`SKILL.md` 是该 skill 的核心指令（AI 读取），子文件夹内自带 `README.md` 作为给人看的使用门面。
 
