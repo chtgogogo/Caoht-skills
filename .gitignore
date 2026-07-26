@@ -1,0 +1,12 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+# Logs
+*.log
+# Local env
+.env
+# Node (if scripts added later)
+node_modules/
