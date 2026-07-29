@@ -8,7 +8,10 @@
 
 | Skill | 一句话简介 | 文档 |
 |---|---|---|
-| [multi-agent-team-governance](multi-agent-team-governance/README.md) | 多角色（多个 AI agent + 你本人）协作的**纯文档化**治理方法论——防撞车、防被重复追问 | [查看](multi-agent-team-governance/README.md) |
+| [multi-agent-team-governance](multi-agent-team-governance/README.md) | 多角色（多个 AI agent + 你本人）协作的**纯文档化**治理方法论——防撞车、防被重复追问，含编辑锁/统一决策/信箱/交接四条纪律与治理体检脚本 | [查看](multi-agent-team-governance/README.md) |
+| [use-skill](use-skill/README.md) | Skill **统一调度入口**：按名快查、按分类索引检索、本地无匹配转市场检索并经安全审计安装；含调用异常降级与透明性报告 | [查看](use-skill/README.md) |
+| [github-repo-extract](github-repo-extract/README.md) | 检索并提炼 GitHub 仓库有用内容的标准工作流：gh CLI 鉴权拉取、5 维度价值判断、License 红线安全下载、沉淀分析文档 | [查看](github-repo-extract/README.md) |
+| [personal-mentor](personal-mentor/README.md) | 统一的贴身导师：深度摸底 → 专属学习框架与路线 → 极细教学 + 主动练习 + 5 级掌握度跟踪，跨会话延续 | [查看](personal-mentor/README.md) |
 
 > 仓库持续扩展中：新增 skill 时请遵循下方仓库结构。
 
