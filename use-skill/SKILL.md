@@ -1,5 +1,6 @@
 ---
 name: use-skill
+version: v1.2
 description: Skill 调度入口（常驻）。当用户说"调用/使用 skill"、agent 判断本次任务需借助已装 skill、或任务推进超时仍无进展时，由本 skill 统一决定检索/调用哪些 skill 并向用户汇报；本地索引/已装库无匹配时，转 find-skills 检索市场并经安全审计后安装。合并了原 skill-index 分层读取约定、skill 透明性约定与 find-skills 兜底。
 metadata:
   agent_created: true
