@@ -18,6 +18,7 @@
 | [multi-agent-team-governance](multi-agent-team-governance/) | 多角色（多个 AI agent + 你）协作的**纯文档化**治理：防撞车、防重复追问 | v1.1 | [README](multi-agent-team-governance/README.md) |
 | [github-repo-extract](github-repo-extract/) | 检索提炼 GitHub 仓库的标准工作流：gh 拉取、5 维价值判断、License 红线安全下载 | v1.1 | [README](github-repo-extract/README.md) |
 | [personal-mentor](personal-mentor/) | 统一贴身导师：深度摸底 → 定制路线 → 极细教学 + 掌握度跟踪，跨会话延续 | v1.0 | [README](personal-mentor/README.md) |
+| [engramory-discipline](engramory-discipline/) | 文件化长期记忆的"存—整—召"全周期纪律：指针索引省 token、排序召回保质、定期整理归档、多 agent 共享 | v1.0 | [README](engramory-discipline/README.md) |
 
 > 仓库持续扩展中。新增 skill 时请遵循下方「仓库结构」约定。
 
