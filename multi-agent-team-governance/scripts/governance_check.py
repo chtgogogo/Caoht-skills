@@ -6,8 +6,8 @@
 用途：扫描项目根目录下的治理文件，自动找出"悄悄腐化"的协作问题：
   1. 过期锁：EDIT_LOCK 状态为 wip 且心跳超过 24 小时未更新（死锁风险）
   2. 重复决策：DECISIONS.md 待拍板区里高度相似的条目（应去重）
-  3. 角色名漂移：信箱子文件夹 / 契约§2 角色表 / DECISIONS§2 分工矩阵 三处角色名不一致
-  4. 信箱积压：信箱信件中没有「状态:done」标记的未处理项
+  3. 角色名漂移：信箱子文件夹 与 契约§1『成员与角色』表 不一致（普适升级 v2）
+  4. 信箱积压：信箱信件中没有「状态:done」/「已处理」标记的未处理项
   5. 看板漂移：L4 看板存在时，提醒与 DECISIONS §4 人工核对（列出 blocked 任务）
 
 用法：
@@ -74,7 +74,6 @@ def _tokens(s):
 
 def check_dup_decisions(decisions_text):
     problems = []
-    # 抓待拍板区：从「待拍板」到下一个二级标题或文件尾
     m = re.search(r"待拍板[\s\S]*?(?=\n## |\Z)", decisions_text)
     if not m:
         return problems
@@ -85,7 +84,6 @@ def check_dup_decisions(decisions_text):
         cells = [c.strip() for c in r.split("|")]
         if len(cells) >= 2 and not cells[0].startswith("ID"):
             titles.append(cells[1])
-    # 两两比较 jaccard
     for i in range(len(titles)):
         for j in range(i + 1, len(titles)):
             a, b = _tokens(titles[i]), _tokens(titles[j])
@@ -98,35 +96,109 @@ def check_dup_decisions(decisions_text):
     return problems
 
 
-# ---------- 3. 角色名漂移 ----------
-def _table_first_col(text):
+# ---------- 3. 角色名漂移（普适升级 v2） ----------
+# 设计目标：以「信箱文件夹名」为权威角色名，契约§1『成员与角色』表为定义来源；
+# 通过（a）仅扫描指定 section 的表格、（b）噪声过滤、（c）归一化比对，
+# 彻底消除旧版把分隔线/D编号/文件路径/分类名误判为角色的 67 处误报。
+HUMAN_KEYWORDS = ("用户", "主脑", "人", "user", "human", "team", "团队")
+_SEP_CHARS = set("-: ")
+
+
+def _norm_role(name):
+    """归一化：去已知前缀(godot) + 去尾随数字，用于判定『同一角色的不同写法』。"""
+    n = name.strip()
+    low = n.lower()
+    for pfx in ("godot",):
+        if low.startswith(pfx):
+            n = n[len(pfx):].strip()
+    n = re.sub(r"\d+$", "", n).strip()
+    return n
+
+
+def _is_role_cell(first):
+    """判断表格首列是否像『角色名』（普适噪声过滤）。"""
+    if not first:
+        return False
+    if set(first) <= _SEP_CHARS:                          # 分隔线 --- / :---:
+        return False
+    if first in ("成员", "角色", "ID", "文件 / 模块", "区块", "任务",
+                 "决策", "分类", "路径", "主责", "协作", "来源"):
+        return False
+    if re.match(r"^[DT]-\d+", first):                     # 决策/任务编号 D-08 / T-03
+        return False
+    if "/" in first or "\\" in first or ".md" in first:   # 路径/文件名
+        return False
+    if re.fullmatch(r"[\d]+", first):                     # 纯数字
+        return False
+    if len(first) > 16:                                   # 过长，不可能是角色名
+        return False
+    return True
+
+
+def _section_table_first_col(text, section_header=None):
+    """提取表格首列候选角色名。
+    - 给定 section_header：仅扫描该二级标题下首个表格（权威来源，避免全表噪声）；
+    - 否则扫描全文所有表格，但经 _is_role_cell 噪声过滤。"""
+    lines = text.splitlines()
+    start = 0
+    found = False
+    if section_header:
+        for i, ln in enumerate(lines):
+            if ln.strip().startswith("#") and section_header in ln:
+                start = i + 1   # 跳过标题行本身，否则会把标题行当成"下一个#"提前 break
+                found = True
+                break
     names = set()
-    for line in text.splitlines():
-        if line.strip().startswith("|"):
-            cells = [c.strip() for c in line.strip().strip("|").split("|")]
-            if cells and cells[0] and cells[0] not in ("成员", "区块", "文件 / 模块"):
+    for ln in lines[start:]:
+        s = ln.strip()
+        if s.startswith("|"):
+            cells = [c.strip() for c in s.strip("|").split("|")]
+            if cells and _is_role_cell(cells[0]):
                 names.add(cells[0])
+        elif section_header and found and s.startswith("#"):
+            break  # 离开该 section（仅当确实找到了目标 section 才拦截下一个#）
     return names
 
 
-def check_role_drift(root, contract_text, decisions_text):
+def check_role_drift(root, contract_text, decisions_text, check_decisions=False):
     problems = []
     mailbox_roles = set()
     comm = os.path.join(root, "沟通")
     if os.path.isdir(comm):
-        for d in os.listdir(comm):
+        for d in sorted(os.listdir(comm)):
             dp = os.path.join(comm, d)
-            if os.path.isdir(dp) and d != "投递.md":
+            if os.path.isdir(dp) and not d.endswith(".md"):
                 mailbox_roles.add(d)
-    contract_roles = _table_first_col(contract_text)
-    decision_roles = _table_first_col(decisions_text)
-    all_sets = {"信箱": mailbox_roles, "契约§2": contract_roles, "DECISIONS§2": decision_roles}
-    union = set().union(*all_sets.values())
-    for name in sorted(union):
-        seen_in = [k for k, v in all_sets.items() if name in v]
-        if len(seen_in) < 3:
-            problems.append("角色名「%s」仅出现在 %s，三处不一致（信箱/契约§2/DECISIONS§2）" %
-                            (name, "、".join(seen_in)))
+
+    # 契约§1『成员与角色』表为权威角色来源（仅该 section，杜绝全表噪声）
+    contract_agent = {r for r in _section_table_first_col(contract_text, "成员与角色")
+                      if not r.lower().startswith(HUMAN_KEYWORDS)}
+
+    # 决策文件默认不参与角色定义（多为散文引用，易误报）；显式 --decisions-roles 才参与
+    decision_agent = set()
+    if check_decisions and decisions_text:
+        decision_agent = {r for r in _section_table_first_col(decisions_text)
+                          if not r.lower().startswith(HUMAN_KEYWORDS)}
+
+    # 以归一化形态比对，揪出『同一角色的不同写法』（如 技术美术 vs 技术美术1）
+    canon = mailbox_roles | contract_agent | decision_agent
+    norm_map = {}
+    for r in canon:
+        norm_map.setdefault(_norm_role(r), set()).add(r)
+    for norm, forms in sorted(norm_map.items()):
+        if len(forms) > 1:
+            problems.append("角色名写法不一致：归一化『%s』出现多种写法 %s（建议统一为信箱文件夹名）"
+                            % (norm, "、".join(sorted(forms))))
+
+    # 信箱 ↔ 契约 双向缺失提示（仅在无写法冲突时补充，避免重复噪声）
+    cset = {_norm_role(r) for r in contract_agent}
+    mset = {_norm_role(r) for r in mailbox_roles}
+    for r in sorted(mailbox_roles):
+        if _norm_role(r) not in cset:
+            problems.append("信箱文件夹「%s」未在契约§1 角色表列出（建议补登或核对命名）" % r)
+    for r in sorted(contract_agent):
+        if _norm_role(r) not in mset:
+            problems.append("契约§1 角色「%s」无对应信箱文件夹（建议建 沟通/%s/ 或核对）" % (r, r))
     return problems
 
 
@@ -136,7 +208,6 @@ def check_mailbox_backlog(root):
     comm = os.path.join(root, "沟通")
     if not os.path.isdir(comm):
         return problems
-    # 轻量模式单文件
     single = os.path.join(comm, "投递.md")
     if os.path.isfile(single):
         txt = open(single, encoding="utf-8").read()
@@ -172,6 +243,8 @@ def check_board_drift(root, decisions_text):
 def main():
     ap = argparse.ArgumentParser(description="多Agent团队协作治理体检")
     ap.add_argument("--root", default=".", help="项目根目录（默认当前目录）")
+    ap.add_argument("--decisions-roles", action="store_true",
+                    help="将 DECISIONS.md 也纳入角色名漂移比对（默认仅信箱+契约§1，避免散文引用误报）")
     args = ap.parse_args()
     root = os.path.abspath(args.root)
     if not os.path.isdir(root):
@@ -184,7 +257,6 @@ def main():
     decisions = find(root, "DECISIONS.md")
     contract = find(root, "团队分工与协作契约.md")
 
-    # 锁：扫描全部 md（含代码注释风格的 # // 也含 EDIT_LOCK 字样）
     print("=== 治理体检报告 ===")
     print("扫描根目录: %s\n" % root)
 
@@ -222,14 +294,14 @@ def main():
 
     if contract and decisions:
         ctxt = open(contract, encoding="utf-8").read()
-        drift = check_role_drift(root, ctxt, dtxt)
+        drift = check_role_drift(root, ctxt, dtxt, check_decisions=args.decisions_roles)
         if drift:
             all_problems += drift
             print("\n[3] 角色名漂移检查：发现 %d 处" % len(drift))
             for p in drift:
                 print("    - " + p)
         else:
-            print("\n[3] 角色名漂移检查：OK（信箱/契约/DECISIONS 三处一致）")
+            print("\n[3] 角色名漂移检查：OK（信箱/契约§1 一致）")
     else:
         print("\n[3] 角色名漂移检查：跳过（缺少契约或 DECISIONS）")
 
