@@ -1,10 +1,15 @@
 ---
 name: engramory-discipline
 version: v1.0
-description: 文件化长期记忆（Engramory 式）的"存—整—召"全周期纪律。当助手需要：跨会话长期记忆的读写、每轮只读取轻量 MEMORY.md 指针索引（不撑爆 token）、按相关度排序精准召回少量详情文件、把记忆整理/合并/归档以保持召回质量、维护分层全局/项目记忆、或在多 agent 间共享同一份记忆时触发。强调：索引只存指针、详情懒加载、召回排序、定期整理。
+description: 文件化长期记忆（Engramory 式）的"存—整—召"全周期纪律。当助手需要：跨会话长期记忆的读写、每轮只读取轻量
+  MEMORY.md 指针索引（不撑爆 token）、按相关度排序精准召回少量详情文件、把记忆整理/合并/归档以保持召回质量、维护分层全局/项目记忆、或在多
+  agent 间共享同一份记忆时触发。强调：索引只存指针、详情懒加载、召回排序、定期整理。
 metadata:
   agent_created: true
 ---
+
+
+> ⚠️ 本 skill 已被 **记忆纪律 v3.1** 取代（存储层已并入 v3.1）。请改用 memory-scoring-lifecycle v3.1，或直接看 D:\Deepseek-ALL\记忆规则\00_记忆系统总纲.md。本文件保留作历史参考。
 
 # Engramory 记忆纪律（存 · 整 · 召）
 
