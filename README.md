@@ -1,65 +1,85 @@
-# Caoht Skills
+# Caoht Skills · AI Agent Skill 工具箱
 
-> 一份由个人长期打磨、可跨任意 agent 框架复用的 **AI Skill 工具箱**。
-
-这里收录的每一个 skill，都是我在真实项目里反复使用、迭代过的「能干活的指令包」——不是 demo，而是能直接落地的生产级工具。每个 skill 以**独立英文子文件夹**存放：
-
-- `SKILL.md` —— 给 AI 看的核心指令（触发条件、流程、红线），agent 自动读取；
-- `README.md` —— 给人看的使用门面（能解决什么、怎么装、注意事项）；
-- 需要时附带 `references/`、`scripts/` 等辅助文件。
+> 一个由曹灏天（CaoHT）长期在真实项目中打磨、可跨多种 Agent 框架复用的 **AI Skill 集合**。
+> 这里不是“收藏夹”，而是每一份都能真正落地工作的指令包、流程与工程方法。
 
 ---
 
-## 收录的 Skills
+## 仓库定位
 
-| Skill | 一句话定位 | 当前版本 | 文档 |
+这套 Skill 主要用于：
+
+- 让 AI 在写代码、做架构、管记忆、调度技能、团队协作时拥有稳定可复用的行为准则；
+- 让 AI 不只“回答得好”，而是“能长期干活、少犯错、可验证、可持续迭代”；
+- 在多个 Agent 之间共享同一套方法，避免每个工具各搞一套、规则漂移。
+
+---
+
+## 收录 Skills
+
+| Skill | 一句话定位 | 版本 | 适用场景 |
 |---|---|---|---|
-| [use-skill](use-skill/) | **Skill 统一调度入口**：按名快查、分类检索、本地无匹配转市场并经安全审计安装 | v1.2 | [README](use-skill/README.md) |
-| [multi-agent-team-governance](multi-agent-team-governance/) | 多角色（多个 AI agent + 你）协作的**纯文档化**治理：防撞车、防重复追问 | v1.1 | [README](multi-agent-team-governance/README.md) |
-| [github-repo-extract](github-repo-extract/) | 检索提炼 GitHub 仓库的标准工作流：gh 拉取、5 维价值判断、License 红线安全下载 | v1.1 | [README](github-repo-extract/README.md) |
-| [personal-mentor](personal-mentor/) | 统一贴身导师：深度摸底 → 定制路线 → 极细教学 + 掌握度跟踪，跨会话延续 | v1.0 | [README](personal-mentor/README.md) |
-| [engramory-discipline](engramory-discipline/) | 文件化长期记忆的"存—整—召"全周期纪律：指针索引省 token、排序召回保质、定期整理归档、多 agent 共享 | v1.0 | [README](engramory-discipline/README.md) |
-
-> 仓库持续扩展中。新增 skill 时请遵循下方「仓库结构」约定。
+| [A-Cao-编码行为准则](A-Cao-编码行为准则-写码改bug审查重构/) | 写代码、改 Bug、代码审查、重构前必须先遵守的 5 条铁律 | v1.1 | 所有涉及代码/技术实现/系统设计的任务 |
+| [A-Cao-记忆纪律](A-Cao-记忆纪律-跨会话存整召评分衰减升华/) | Agent 跨会话记忆的写入、打分、排序、召回、升华全周期规则 | v3.2 | 需要长期记忆、跨会话延续、记忆质量管理的 Agent |
+| [A-Cao-技能调度](A-Cao-技能调度-常驻路由何时调谁/) | Skill 统一调度唯一入口：本地检索、市场兜底、异常降级、透明汇报 | v2.1 | Agent 需要按任务自动选择/调用 skill 的场景 |
+| [Cao-踩坑日志](Cao-踩坑日志-经验教训沉淀/) | 极轻索引 + 独立文件沉淀踩坑经验，省 token 又保留完整细节 | 1.0.1 | 反复报错、疑难问题、经验教训记录与复用 |
+| [Cao-多Agent团队协作](Cao-多Agent团队协作文档治理-防撞车/) | 多 Agent + 多人协作的纯文档化治理：防撞车、防重复追问、统一决策 | v1.2 | 多个 AI Agent 一起做项目、分工、交接、治理 |
+| [Cao-贴身导师](Cao-贴身导师-长期陪跑逐点教学/) | 长期带教型导师：先深度诊断，再定制路线，细颗粒教学，动态掌握度 | 1.2.0 | 需要系统学习、长期陪跑、掌握度跟踪的场景 |
+| [Cao-Engramory记忆纪律](Cao-Engramory记忆纪律-跨会话存整召/) | 文件化长期记忆的“存—整—召”纪律，索引瘦身、详情懒加载 | v1.0 | 历史参考版，已被 A-Cao-记忆纪律 v3.2 取代 |
+| [Cao-GitHub仓库检索提取](Cao-GitHub仓库检索提取-通用提炼有用内容/) | 检索、评估、安全下载、提炼 GitHub 开源仓库的标准工作流 | v1.1 | 分析开源项目、借鉴仓库、筛选可复用代码 |
 
 ---
 
-## 怎么装一个 Skill
+## 快速使用
 
-把对应 skill 的**整个子文件夹**复制到你的 agent skills 目录，重启 agent 即可：
+### 1. 安装
+
+把需要使用的 skill 整个文件夹复制到你的 Agent skills 目录即可。
+
+例如 WorkBuddy：
 
 ```bash
-# 以 WorkBuddy 为例（其它框架换成对应的 skills 目录）
-cp -r use-skill ~/.workbuddy/skills/
-# 重启 WorkBuddy 后该 skill 即生效
+# 把某个 skill 复制到 WorkBuddy skills 目录
+cp -r "A-Cao-技能调度-常驻路由何时调谁" ~/.workbuddy/skills/
 ```
 
-更详细的安装 / 使用说明，见每个 skill 子目录内的 `README.md`。
+如果是 Claude Code / Codex / DeepSeek Harness 等，把目标 skill 放到对应框架的 skills 目录即可。
 
----
+### 2. 核心调度
 
-## 版本与发布
+如果你使用多个 skill，建议优先安装：
 
-每个 skill **独立版本、独立 Release**，互不捆绑——你可以只升级其中一个，而不必动其余。
+- `A-Cao-技能调度`
+- `A-Cao-编码行为准则`
+- `A-Cao-记忆纪律`
 
-- 所有 Release 与 tag 都在仓库的 [Releases 页面](https://github.com/chtgogogo/Caoht-skills/releases)。
-- tag 命名规则：`<skill-name>-v<version>`（例如 `use-skill-v1.2`）。
-- skill 的版本号同时写在各自 `SKILL.md` 的 `version:` 字段，方便离线核对。
+这三个是“基础设施型 skill”，用来保证 Agent 知道：什么时候该调用哪个 skill、写代码时守什么规矩、记忆怎么留存。
 
 ---
 
 ## 仓库结构
 
-```
+```text
 Caoht-skills/
-├── LICENSE              # MIT（Copyright 2026 CaoHT）
-├── README.md            # 本文件（仓库总索引）
+├── LICENSE
+├── README.md
 ├── .gitignore
-└── <skill-name>/        # 每个 skill 一个英文子文件夹，名字须与 SKILL.md 的 name 一致
-    ├── SKILL.md         # 必需：AI 执行的核心指令与触发规则（含 version 字段）
-    ├── README.md        # 推荐：给人类看的使用门面
-    └── references/      # 可选：模板 / 参考文档 / 脚本
+└── <skill-name>/
+    ├── SKILL.md          # Agent 读取的核心指令
+    ├── README.md         # 给人类看的使用说明
+    ├── references/       # 可选：模板、原理、扩展资料
+    └── scripts/          # 可选：可执行脚本
 ```
+
+---
+
+## 设计原则
+
+1. **可跨 Agent 复用**：不绑定单一工具，只描述“规则 + 流程 + 边界”。
+2. **渐进式披露**：索引/常驻卡只保留轻量信息，细节按需加载，省 token。
+3. **证据优先**：没有验证前不宣称完成；重要结论可追溯、可推翻。
+4. **边界清晰**：每个 skill 都写明“什么时候触发、什么时候不触发、失败怎么降级”。
+5. **可维护**：每次升级保留版本号，避免多份副本漂移。
 
 ---
 
@@ -67,4 +87,4 @@ Caoht-skills/
 
 [MIT License](LICENSE) —— Copyright 2026 CaoHT。
 
-可以商用、修改、再分发，只需保留版权声明与 LICENSE 文件。
+可以商用、修改、再分发，但请保留版权声明与 LICENSE 文件。

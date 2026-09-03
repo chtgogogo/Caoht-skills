@@ -8,5 +8,17 @@ Thumbs.db
 *.log
 # Local env
 .env
-# Node (if scripts added later)
+# Node
 node_modules/
+
+# Broken git metadata
+.git-broken/
+
+# Private / sensitive skill folders (never upload)
+提取抖音记录/
+提取微信记录/
+Cao-提取微信记录/
+
+# Python caches
+__pycache__/
+*.pyc

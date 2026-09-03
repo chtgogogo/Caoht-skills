@@ -241,6 +241,11 @@ def check_board_drift(root, decisions_text):
 
 
 def main():
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")
+    except (AttributeError, ValueError, OSError):
+        pass
     ap = argparse.ArgumentParser(description="多Agent团队协作治理体检")
     ap.add_argument("--root", default=".", help="项目根目录（默认当前目录）")
     ap.add_argument("--decisions-roles", action="store_true",
