@@ -1,0 +1,4 @@
+# 导出脚本（dy_to_md.py / dy_export.py）本身只用标准库。
+# 采集与语音转写用上游 douyin-chat-export，依赖装在其 app/.venv：
+#   playwright、aiosqlite、httpx、cryptography、pillow-heif、fastapi、uvicorn、sqlalchemy、apscheduler
+# 浏览器内核下载到 D 盘（PLAYWRIGHT_BROWSERS_PATH）。
