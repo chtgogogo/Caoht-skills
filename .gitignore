@@ -22,3 +22,5 @@ Cao-提取微信记录/
 # Python caches
 __pycache__/
 *.pyc
+# 本地隐私配置（含个人路径/联系人信息），禁止入库
+Cao-提取抖音记录/scripts/config.json
