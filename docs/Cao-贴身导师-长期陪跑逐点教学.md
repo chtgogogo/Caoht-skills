@@ -70,6 +70,17 @@
 - ✅ 任何学科的系统学习：编程、游戏开发、写作、备考……尤其是"AI 味学习"容易翻车的技术学科
 - ❌ 一次性问答、单点资料查询（普通对话就够）
 
+## 深入阅读
+
+六个配套文件在 skill 目录内（阶段 0 建画像、阶段 3 讲解与布置作业时查阅）：
+
+- [teaching-playbook.md](../Cao-贴身导师-长期陪跑逐点教学/references/teaching-playbook.md) —— 教学手册：诊断提问序列、讲解与练习的具体操作
+- [mastery-rubric.md](../Cao-贴身导师-长期陪跑逐点教学/references/mastery-rubric.md) —— 5 级掌握度量表，判定"真会了"还是"看着像会了"
+- [learning-principles.md](../Cao-贴身导师-长期陪跑逐点教学/references/learning-principles.md) —— 学习科学原理：为什么主动练习有效、为什么 AI 代劳反而危险
+- [profile-template.md](../Cao-贴身导师-长期陪跑逐点教学/references/profile-template.md) —— 学习者画像与评估模板，每次教学后更新
+- [project-patterns.md](../Cao-贴身导师-长期陪跑逐点教学/references/project-patterns.md) —— 项目式学习模板，确保作业可完成、有反馈、能迁移
+- [source-strategy.md](../Cao-贴身导师-长期陪跑逐点教学/references/source-strategy.md) —— 信源分级，保证讲授内容可靠
+
 ## 版本
 
 v1.2.0（2026-08-23）：新增画像蒸馏原则、跨 AI 老师延续、副本同步规则；来源署名明确（study-cao + Sensei/MIT）。
