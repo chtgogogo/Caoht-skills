@@ -69,6 +69,16 @@
 - ✅ 想理解文件化记忆的设计原型；需要参考"索引与正文分离"的具体做法
 - ❌ **新项目直接装 v3.2**，不要从这里开始
 
+## 深入阅读
+
+设计说明与初代源码在 skill 目录内——四个脚本是真实跑过的源码，不是伪代码：
+
+- [architecture.md](../Cao-Engramory记忆纪律-跨会话存整召/references/architecture.md) —— 分层架构、指针寻址，以及「索引为什么只存指针」的推导
+- [discipline.md](../Cao-Engramory记忆纪律-跨会话存整召/references/discipline.md) —— 存·整·召·指四支柱的完整操作规范
+- [scripts/](../Cao-Engramory记忆纪律-跨会话存整召/scripts/) —— `recall` / `organize` / `check` / `doctor` 四个脚本
+
+> 这份 skill 已被记忆纪律取代，但架构说明与脚本保留作设计参考——它们记录的是**当初为什么这么设计**。
+
 ## 版本
 
 v1.0：四个脚本（recall / organize / check / doctor）+ 存整召指四支柱的初版实现。已被记忆纪律 v3.2 取代，本文件保留作历史参考与设计说明。
