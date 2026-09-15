@@ -1,12 +1,14 @@
 ---
 name: github-repo-extract
-version: v1.1
 description: 检索并提炼 GitHub 仓库有用内容的标准工作流。当用户提供 GitHub
   仓库链接或列表，或要求分析、参考、借鉴、转译、评估某个开源仓库（游戏/Web/AI/工具均可）时触发。覆盖：查询元数据/目录树/README → 5
   维度价值判断（可用/可转译/设计/架构/视觉）→ 按 License 安全下载（MIT/CC0/Apache 可下，GPL/无
-  License/Private 受限）→ 沉淀分析文档。内置版权红线：禁止商用素材绝不纳入。优先用 gh CLI 鉴权拉取，规避匿名 API 限流。
+  License/Private 受限）→ 沉淀分析文档。内置版权红线：禁止商用素材绝不纳入。优先用 gh CLI 鉴权拉取，规避匿名 API 限流。不适用：非 GitHub 仓库的普通网页抓取（转 web-tools-guide）。
 metadata:
   agent_created: true
+metadata:
+  agent_created: true
+  version: 1.1.0
 ---
 
 # GitHub 仓库检索提取（通用）

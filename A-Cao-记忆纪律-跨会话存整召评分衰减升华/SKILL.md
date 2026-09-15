@@ -1,15 +1,14 @@
 ---
 name: memory-scoring-lifecycle
-version: v3.2
-description: Agent 记忆纪律 v3.1（通用版入口）。适用于任何 agent、任何记忆存储位置。当需要给记忆打分/分类/衰减/升华、设计触发词、检索寻址、做体检、或用整套文件化长期记忆规则时触发。规则共享一份，记忆 store 每个 agent 各自建立、互不共享。启发词：【记忆纪律 v3.1】。
+description: Agent 记忆纪律 v3.1（通用版入口）。适用于任何 agent、任何记忆存储位置。当需要给记忆打分/分类/衰减/升华、设计触发词、检索寻址、做体检、或用整套文件化长期记忆规则时触发。规则共享一份，记忆 store 每个 agent 各自建立、互不共享。启发词：【记忆纪律 v3.1】。与记忆存取/评分/体检无关的纯执行任务不触发。
 metadata:
   agent_created: true
+  version: v3.2
 ---
 
 # 记忆纪律 v3.1（通用入口）
 
 > 启发词：`【记忆纪律 v3.1】`。本 skill 是通用记忆纪律的入口，**与具体 agent 的存储位置解耦**。
-> 版本口径（三层各指一层，不冲突）：**纪律代号 v3.1**（启发词用，保持不变）｜ **skill 入口版本**：frontmatter `version` ｜ **完整规则版本**：`D:\Deepseek-ALL\记忆规则\` 00 总纲。
 
 ## 通用性约定（必读）
 
@@ -23,7 +22,7 @@ metadata:
 ## 权威规则位置（通用）
 
 - 完整规则（00–12）：`D:\Deepseek-ALL\记忆规则\`（`00_记忆系统总纲.md` 含常驻引导卡模板）
-- 确定性脚本：`D:\Deepseek-ALL\记忆规则\tools\memory_maintain.py`（复制到自己 store 用）
+- 确定性脚本：`D:\Deepseek-ALL\记忆规则\tools\memory_maintain.py`（复制到自己 store 用；规则文档已迭代至 v3.5，新增 12 号「行为准则常驻加载」，入口机制名与启发词【记忆纪律 v3.1】保持不变，避免破坏既有触发链）
 
 ## 7 条最小核心（每次必做）
 
