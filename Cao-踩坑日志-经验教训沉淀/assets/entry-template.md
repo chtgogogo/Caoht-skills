@@ -1,27 +1,24 @@
 ---
 name: 踩坑记录模板
-description: 每条踩坑单独一个文件时的标准结构。复制到 pitfalls/YYYY-MM-DD-<slug>.md 后，把本文件顶部的 name/description/type 三行换成 hits/last_hit/escalated 三行
+description: 每条踩坑单独一个文件时的标准结构。复制到 pitfalls/YYYY-MM-DD-<slug>.md 后，把本文件顶部的 name/description/type 三行换成 root/hits/last_hit/escalated 四行
 type: pitfall-template
 ---
 
-# <一句话标题>
+# 坑：<一句话标题>
 
-> 复制后请把上面这段模板元信息（name / description / type）替换为三行计数 frontmatter：
-> `hits: 0` ｜ `last_hit: —` ｜ `escalated: false`
-
-## 坑是什么
-（用一两句说清遇到了什么错 / 难 / 坑）
+> 复制后请把上面这段模板元信息（name / description / type）替换为四行 frontmatter：
+> `root: RT-00X`（挂在哪个根因下，必填）｜ `hits: 0` ｜ `last_hit: —` ｜ `escalated: false`
 
 ## 上下文
 （当时在做什么、什么项目、什么前提）
 
 ## 为什么（根因）
-（为什么会踩这个坑，表面现象下的真实原因）
+（为什么会踩这个坑，表面现象下的真实原因。注意：这一节写**本案例**的具体根因；`root:` 字段写的是它归属的**根因族**）
 
 ## 解法
 （最终怎么解决的，关键步骤 / 命令 / 文件）
 
-## 能否借鉴
+## 能否借鉴（通用规律）
 （这类问题在别的任务 / 项目是否也会遇到，通用规律是什么——记录可迁移的经验，而非仅本地修复）
 
 ## 来源
