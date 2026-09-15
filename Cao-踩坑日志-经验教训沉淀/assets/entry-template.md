@@ -1,10 +1,13 @@
 ---
 name: 踩坑记录模板
-description: 每条踩坑单独一个文件时的标准结构；复制本模板改名 <slug>.md 即可
+description: 每条踩坑单独一个文件时的标准结构。复制到 pitfalls/YYYY-MM-DD-<slug>.md 后，把本文件顶部的 name/description/type 三行换成 hits/last_hit/escalated 三行
 type: pitfall-template
 ---
 
 # <一句话标题>
+
+> 复制后请把上面这段模板元信息（name / description / type）替换为三行计数 frontmatter：
+> `hits: 0` ｜ `last_hit: —` ｜ `escalated: false`
 
 ## 坑是什么
 （用一两句说清遇到了什么错 / 难 / 坑）
@@ -23,3 +26,10 @@ type: pitfall-template
 
 ## 来源
 （日期 / 哪个记录者 / 关联任务或对话）
+
+## 命中记录
+（每次被检索命中并**真正解决了问题**才追加一行；hits 累计 ≥3 时在文末记升华日期）
+
+| 日期 | 场景 | 解决了什么 |
+|---|---|---|
+| — | — | — |
