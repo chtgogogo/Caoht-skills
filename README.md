@@ -70,7 +70,7 @@ skill 本体就是"规则 + 流程 + 边界"的纯文档（核心是每个文件
 
 ## 新增或修改 skill
 
-任何 Agent 或人向本仓库提交新 skill 之前，必须先读 [CONTRIBUTING.md](CONTRIBUTING.md)。里面规定了文件夹命名、frontmatter 字段、README 收录行格式、docs 详解页模板（含返回目录的双向跳转链接）和提交前自检项。
+任何 Agent 或人向本仓库提交新 skill 之前，必须先读 [CONTRIBUTING.md](CONTRIBUTING.md)。里面规定了文件夹命名、frontmatter 字段、README 收录行格式、docs 详解页模板（含返回目录的双向跳转链接、以及指向 `references/` `assets/` `scripts/` 的「深入阅读」资料入口）和提交前自检项。
 
 仓库根目录的 `AGENTS.md` 会让 Agent 进入本仓库时自动加载这条要求。
 
