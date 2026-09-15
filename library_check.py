@@ -24,9 +24,12 @@ def read_fm(path: Path):
         return {}
     fm = {}
     for line in m.group(1).splitlines():
-        if ":" in line and not line.startswith((" ", "-", "  ")):
-            k, v = line.split(":", 1)
-            fm[k.strip()] = v.strip()
+        stripped = line.strip()
+        # 顶格键与一层缩进键（metadata 下）都收进来；同名时顶格优先。
+        # 兼容部分 Agent 框架要求 version 放在 metadata 下的写法。
+        if ":" in stripped and not stripped.startswith("-"):
+            k, v = stripped.split(":", 1)
+            fm.setdefault(k.strip(), v.strip())
     return fm
 
 
