@@ -18,9 +18,8 @@ node_modules/
 提取抖音记录/
 提取微信记录/
 Cao-提取微信记录/
+Cao-提取抖音记录/     # 2026-09-15 已从公开仓库撤下（含登录态与密钥抓取脚本）
 
 # Python caches
 __pycache__/
 *.pyc
-# 本地隐私配置（含个人路径/联系人信息），禁止入库
-Cao-提取抖音记录/scripts/config.json
