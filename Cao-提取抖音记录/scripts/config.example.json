@@ -1,8 +1,0 @@
-{
-  "db_path": "<你的工具根目录>\\抖音聊天记录导出\\data\\chat.db",
-  "output_dir": "<你的记录根目录>\\记录\\outputs\\抖音聊天记录",
-  "owner_uid": "",
-  "filter": "<对方昵称或备注，按需填写>",
-  "self_name": "B",
-  "peer_name": "A"
-}
