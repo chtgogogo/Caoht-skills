@@ -3,7 +3,7 @@ name: useskill
 description: Skill 调度唯一入口（常驻）。负责本地唯一库检索、市场兜底、调用执行、异常降级与透明性报告。当用户说"调用/使用/找 skill"、任务超出自身基础能力需借助已装 skill、或连续 2 次工具调用失败/某子任务 3 轮无进展时触发；本地无匹配转 find-skills 市场兜底。用户说「全面调用/尽可能用 useskill」时进入穷举模式（State 2-EX 全库扫描）；纯打招呼/单行知识问答短路直连。
 metadata:
   agent_created: true
-  version: v2.4
+  version: v2.5
   priority: high
 ---
 
@@ -98,17 +98,22 @@ metadata:
 
 ## 六、调用统计（每次调度后更新）
 
-每次成功调度一个 skill 后，更新 `D:\Deepseek-ALL\skills\__usage_stats.md`：
+每次成功调度一个 skill 后，更新 `D:\Deepseek-ALL\skills\__usage_stats.md`。
 
-- 找到该 skill（按 `name` 字段）那一行 → **次数 +1**、**最近调用**改为今天；
-- 没有该行 → 新建一行；
-- 保持按「次数」**降序**排列（最常用的排最上面）。
+**首选：跑脚本一条龙**（+1、改日期、降序重排、缺行自动建）：
+
+```text
+py D:\Deepseek-ALL\skills\__tools\usage_update.py <被调度的name>
+```
+
+> 脚本不可用（换机器等）才手动改：找到该 skill（按 `name` 字段）那一行 → **次数 +1**、**最近调用**改为今天；没有该行 → 新建一行；保持按「次数」**降序**排列。
 
 > 这是「宁多勿少」的统计，做对即可；统计文件很小，多读一次不费 token。用户问「哪些 skill 最常用 / 调用次数」时，直接读这个文件回答。
 
 ## 七、维护
 
 - 新增 / 删除 / 改名 skill → 同步更新 `D:\Deepseek-ALL\skills\__SKILL详细名映射表.md`（调用键 `name` 字段保持稳定）
+- **创建 / 修改 skill 后必跑体检器**：`py D:\Deepseek-ALL\skills\__tools\lint_skill.py <skill目录>`（全库+双份对账加 `--all --host C:\Users\ASUS\.zcode\skills`）；PASS 才算完工（规范=detail-003 五步法）
 - 分类索引过时 → 改 `D:\AI提炼\skill-index\` 下文件
 - 调度逻辑升级 → 只改本 SKILL.md
 
@@ -118,6 +123,7 @@ metadata:
 
 ## 版本史
 
+- **v2.5**（2026-09-17）：第六节调用统计脚本化（`__tools/usage_update.py` 一条命令，手动改降级为兜底）；第七节维护新增「创建/修改 skill 后必跑 `__tools/lint_skill.py` 体检器」（detail-003 五步法第五步）。
 - **v2.3**（2026-09-11）：新增 **State 0 引用清点**——一条消息可含多个 skill 指称（显式路径/点名 name/泛指能力词），逐一清点归宿，State 1 命中只消费一个显式引用（快路径惯性防御）；State 2 明确泛指词按映射表**中文文件夹名前缀**优先匹配；调度报告新增「引用清点」行。起因：前端风格任务点名直连后漏掉『按前端设计skill的理念』泛指引用，库内三个前端 skill 漏触发。
 - **v2.4**（2026-09-11）：新增 **State 2-EX 穷举模式**——用户说「全面调用/全面使用/尽可能用 useskill」等穷举授权语时，读映射表全表做全库相关性筛选（映射表失效才真扫目录），相关的全挑出来、分阶段使用、候选清单进调度报告；触发清单同步增加穷举授权语。
 - **v2.2**：调度器副本同步机制（各宿主逐字一致副本，权威唯一本体在本库）。

@@ -182,7 +182,7 @@ escalated: false   # 是否已升华成铁律
 
 1. 索引对应行标 `⭐`；
 2. 文件置 `escalated: true`（根因文件则标注已升华），记升华日期；
-3. **同步写入记忆 CORE 铁律区**（`D:/WorkBuddy记忆系统/CORE.md`，编号接 R-00X，来源注 `RT-xxx` / `pit-<slug>`）——此后每次会话强制加载。
+3. **同步写入记忆 CORE 铁律区**（`E:\Zcode-memory\CORE.md`，编号接 R-00X，来源注 `RT-xxx` / `pit-<slug>`）——此后每次会话强制加载。
 
 **全处同步铁律。** 本 skill 的**规则、模板、索引格式、条目结构**任一处升级，所有副本必须同时改——本机 `SKILL.md`、`assets/` 下模板、log-root 下的 `_template.md`、现有索引与条目、以及对外发布的详解页。改一半等于埋雷：下次照旧模板写出的条目会和新格式对不上。
 
