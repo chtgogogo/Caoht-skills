@@ -9,6 +9,8 @@
   3. 角色名漂移：信箱子文件夹 与 契约§1『成员与角色』表 不一致（普适升级 v2）
   4. 信箱积压：信箱信件中没有「状态:done」/「已处理」标记的未处理项
   5. 看板漂移：L4 看板存在时，提醒与 DECISIONS §4 人工核对（列出 blocked 任务）
+  6. 轻量信箱规模：投递.md 信件数/行数超阈值，提示升级标准模式（v1.3）
+  7. 决策规模：DECISIONS.md 活跃 approved 条目超 30，提示压缩历史区（v1.3）
 
 用法：
   python scripts/governance_check.py --root <项目根目录>
@@ -227,6 +229,40 @@ def check_mailbox_backlog(root):
     return problems
 
 
+# ---------- 6. 轻量信箱规模（v1.3） ----------
+LIGHT_MAILBOX_ITEMS = 20   # 信件数阈值（启发式：按 markdown 标题计数）
+LIGHT_MAILBOX_LINES = 150  # 总行数兜底阈值
+
+
+def check_light_mailbox_size(root):
+    """轻量模式单文件信箱 沟通/投递.md 超过阈值 → 建议升级标准模式。"""
+    problems = []
+    single = os.path.join(root, "沟通", "投递.md")
+    if not os.path.isfile(single):
+        return problems
+    txt = open(single, encoding="utf-8").read()
+    lines = txt.splitlines()
+    items = sum(1 for ln in lines if re.match(r"^#{2,3}\s", ln))  # 标题计数（启发式）
+    if items > LIGHT_MAILBOX_ITEMS or len(lines) > LIGHT_MAILBOX_LINES:
+        problems.append("轻量信箱 沟通/投递.md 已膨胀（约 %d 封信 / %d 行），超过阈值 %d 封——单文件信箱本质是中央派工单，请升级为标准模式（拆 沟通/<角色>/ 信箱文件夹）"
+                        % (items, len(lines), LIGHT_MAILBOX_ITEMS))
+    return problems
+
+
+# ---------- 7. 决策活跃区规模（v1.3） ----------
+DECISIONS_ACTIVE_LIMIT = 30
+
+
+def check_decisions_size(decisions_text):
+    """活跃 approved 条目超 30 → 提示压缩历史区（v1.3 生命周期）。"""
+    problems = []
+    n = len(re.findall(r"状态[:：]\s*approved", decisions_text))
+    if n > DECISIONS_ACTIVE_LIMIT:
+        problems.append("DECISIONS.md 活跃 approved 条目已达 %d（阈值 %d）——请执行决策压缩：历史区并入 DECISIONS_归档.md，替代型失效条目改一行式指针，抛弃型直接删除"
+                        % (n, DECISIONS_ACTIVE_LIMIT))
+    return problems
+
+
 # ---------- 5. 看板漂移 ----------
 def check_board_drift(root, decisions_text):
     problems = []
@@ -330,6 +366,27 @@ def main():
             print("\n[5] 看板漂移检查：OK（L4 看板无 blocked 任务）")
     else:
         print("\n[5] 看板漂移检查：跳过（无 L4 看板）")
+
+    light = check_light_mailbox_size(root)
+    if light:
+        all_problems += light
+        print("\n[6] 轻量信箱规模检查：发现 %d 处" % len(light))
+        for p in light:
+            print("    - " + p)
+    else:
+        print("\n[6] 轻量信箱规模检查：OK（未超阈值或未使用单文件信箱）")
+
+    if decisions:
+        size_p = check_decisions_size(dtxt)
+        if size_p:
+            all_problems += size_p
+            print("\n[7] 决策规模检查：发现 %d 处" % len(size_p))
+            for p in size_p:
+                print("    - " + p)
+        else:
+            print("\n[7] 决策规模检查：OK（活跃条目未超阈值）")
+    else:
+        print("\n[7] 决策规模检查：跳过（未找到 DECISIONS.md）")
 
     print("\n================")
     if all_problems:
