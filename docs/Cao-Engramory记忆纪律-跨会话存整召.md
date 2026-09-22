@@ -73,8 +73,10 @@
 
 设计说明与初代源码在 skill 目录内——四个脚本是真实跑过的源码，不是伪代码：
 
-- [architecture.md](../Cao-Engramory记忆纪律-跨会话存整召/references/architecture.md) —— 分层架构、指针寻址，以及「索引为什么只存指针」的推导
-- [discipline.md](../Cao-Engramory记忆纪律-跨会话存整召/references/discipline.md) —— 存·整·召·指四支柱的完整操作规范
+- ~~architecture.md~~（分层架构、指针寻址，以及「索引为什么只存指针」的推导）
+- ~~discipline.md~~（存·整·召·指四支柱的完整操作规范）
+
+> 上述两份 references 已随本 skill 目录撤下（本页保留作设计沿革参考）；现行方案见 [A-Cao-记忆纪律](A-Cao-记忆纪律-跨会话存整召评分衰减升华.md)，其完整详解在 [详解手册](../A-Cao-记忆纪律-跨会话存整召评分衰减升华/references/详解手册.md)。
 - [scripts/](../Cao-Engramory记忆纪律-跨会话存整召/scripts/) —— `recall` / `organize` / `check` / `doctor` 四个脚本
 
 > 这份 skill 已被记忆纪律取代，但架构说明与脚本保留作设计参考——它们记录的是**当初为什么这么设计**。
