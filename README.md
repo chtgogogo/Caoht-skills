@@ -79,19 +79,28 @@ skill 本体就是"规则 + 流程 + 边界"的纯文档（核心是每个文件
 
 ## 仓库结构
 
+> **2026-09-24 重要变更**：skill 本体已统一收归本机权威库 `D:\Deepseek-ALL\skills\`（单一事实源，避免多副本漂移）。**本仓库保留 README 与 `docs/` 详解页作为索引与说明，不再存放 skill 副本**——上方索引表的跳转全部指向 `docs/`，不受影响。
+> 私有工具 `抖音聊天记录导出/` 保留在本仓库（**仅供本人使用，`.gitignore` 已排除，不入公开库**）。
+
 ```text
 Caoht-skills/
-├── README.md             # 你正在看的总目录（含索引表与跳转锚点）
+├── README.md             # 总目录（索引表 → docs/ 详解页）
 ├── CONTRIBUTING.md       # 新增 / 修改 skill 必读规范
 ├── AGENTS.md             # Agent 进入本仓库自动加载的工作规范
 ├── library_check.py      # 仓库级体检脚本（提交前必跑）
-├── docs/                 # 每个 skill 一篇详解页
+├── docs/                 # 每个 skill 一篇详解页（本仓库的实体内容）
 ├── LICENSE
 ├── .gitignore
-└── <skill-name>/
-    ├── SKILL.md          # Agent 读取的核心指令
-    ├── references/       # 可选：模板、原理、扩展资料
-    └── scripts/          # 可选：可执行脚本
+└── 抖音聊天记录导出/        # 私有工具（已 gitignore，不入库）
+```
+
+**skill 本体在哪**：`D:\Deepseek-ALL\skills\<skill-name>\`，结构：
+
+```text
+<skill-name>/
+├── SKILL.md          # Agent 读取的核心指令
+├── references/       # 可选：模板、原理、扩展资料
+└── scripts/          # 可选：可执行脚本
 ```
 
 ## 设计原则
