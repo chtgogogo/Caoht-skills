@@ -79,6 +79,7 @@
 
 ## 深入阅读
 
+- [ACCEPTANCE 总装模板](../Cao-项目验收官-四层漏斗固定清单加动态启发/references/ACCEPTANCE总装模板.md) —— 项目根 ACCEPTANCE.md 的底稿：三个源验收模板的总装视图（最小核心内联+完整版指针），D 节填项目专属红线
 - [动态启发式排查手册](../Cao-项目验收官-四层漏斗固定清单加动态启发/references/heuristics-playbook.md) —— 六步法全文：类型 playbook、九维扫描、攻击者视角、pre-mortem、实证门槛与回流 S7
 - [报告模板](../Cao-项目验收官-四层漏斗固定清单加动态启发/references/report-template.md) —— 验收报告九节的落盘格式
 - [判定与分级规则](../Cao-项目验收官-四层漏斗固定清单加动态启发/references/scoring-and-verdicts.md) —— 五态判定、P0/P1/P2 定义、结论映射与数据不足封顶的完整规则
