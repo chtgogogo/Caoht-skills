@@ -104,4 +104,4 @@ skill 装多了之后，有五个具体故障。
 
 ---
 
-[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-编码行为准则](A-Cao-编码行为准则-写码改bug审查重构.md)
+[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-记忆纪律](A-Cao-记忆纪律-跨会话存整召评分衰减升华.md)

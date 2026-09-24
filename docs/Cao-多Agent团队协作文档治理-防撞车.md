@@ -100,4 +100,4 @@ v1.3 的简化（上面讲过）是一个例子，另一个例子是新人 onboa
 
 ---
 
-[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [Cao-贴身导师](Cao-贴身导师-长期陪跑逐点教学.md)
+[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-磁盘缓存纪律](A-Cao-磁盘缓存纪律-禁止落C盘与缓存重定向.md)

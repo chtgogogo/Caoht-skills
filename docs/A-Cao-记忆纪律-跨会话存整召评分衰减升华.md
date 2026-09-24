@@ -1,7 +1,7 @@
 > [← 返回总目录](../README.md#skills-index)
 
 > 本页即「记忆纪律」的完整详解手册，由 skill 本体库整体复制而来（v1.2）。
-> 权威源在 `D:\Deepseek-ALL\skills\A-Cao-记忆纪律-跨会话存整召评分衰减升华\references\详解手册.md`。规则更新时先改权威源，再把整份复制过来，两处保持逐字一致。
+> 权威源在 `D:\Deepseek-ALL\skills\A-Cao-记忆纪律-跨会话存整召评分衰减升华\references\详解手册.md`（skill 本体入库后，[本仓库也有该手册副本](../A-Cao-记忆纪律-跨会话存整召评分衰减升华/references/详解手册.md)）。规则更新时先改权威源，再把整份复制过来，三处保持逐字一致。
 
 # Agent 记忆系统 · 完整详解手册
 
@@ -1144,4 +1144,4 @@ links 之前是「装饰品」——写了但没人读。加展开规则：
 
 ---
 
-[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [Cao-踩坑日志](Cao-踩坑日志-经验教训沉淀.md)
+[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-编码行为准则](A-Cao-编码行为准则-写码改bug审查重构.md)

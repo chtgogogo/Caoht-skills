@@ -1,0 +1,18 @@
+[
+  {"id": 1,  "query": "帮我设计一个能自动整理数据的 Agent，担心它一直循环停不下来", "should_trigger": true},
+  {"id": 2,  "query": "我的 Agent 一直重复调同一个搜索工具，token 烧个不停，怎么办", "should_trigger": true},
+  {"id": 3,  "query": "给这个 Agent 的工具执行循环加个限制器，怕它失控", "should_trigger": true},
+  {"id": 4,  "query": "Agent 上线前要做哪些检查？怕它半夜出事没人知道", "should_trigger": true},
+  {"id": 5,  "query": "什么是熔断器？我做的 Agent 需要吗", "should_trigger": true},
+  {"id": 6,  "query": "怎么防止 AI Agent 删了不该删的东西", "should_trigger": true},
+  {"id": 7,  "query": "我这个 Agent 上下文总是爆掉，跑到后面就忘了任务", "should_trigger": true},
+  {"id": 8,  "query": "Agent 要接第三方 MCP 工具，有什么安全风险要注意", "should_trigger": true},
+  {"id": 9,  "query": "帮我写一个 Python 循环，打印 1 到 100 的偶数", "should_trigger": false},
+  {"id": 10, "query": "React 组件无限重渲染，帮我排查一下", "should_trigger": false},
+  {"id": 11, "query": "解释一下熔断器在家用电路里的作用", "should_trigger": false},
+  {"id": 12, "query": "帮我优化这段 SQL，查询太慢了", "should_trigger": false},
+  {"id": 13, "query": "分析一下这个项目代码的架构有什么问题", "should_trigger": false},
+  {"id": 14, "query": "这个 bug 修了一下午都修不好，帮我找根因", "should_trigger": false},
+  {"id": 15, "query": "帮我设计一个登录系统的数据库表结构", "should_trigger": false},
+  {"id": 16, "query": "做一个个人博客网站的前端页面", "should_trigger": false}
+]
