@@ -14,7 +14,6 @@
 
 ## 第 0 章 五分钟速览
 
-如果你只有五分钟，记住这七句：
 
 1. **记忆分 9 层**（CORE / PROFILE / WORK / DETAIL / PITFALL / REJECTED / DECISION / FORGOTTEN / TRASH），每层有不同的**衰减速度**。
 2. **每条记忆有两个分数**：`V` 固有分（长期价值，会衰减）+ `R` 情境分（此刻相关性，临时算）。排序用 `V×0.6 + R×0.4`。
