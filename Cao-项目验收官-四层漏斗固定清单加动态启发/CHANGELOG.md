@@ -46,3 +46,7 @@
 
 ### 权威依据（检索于 2026-09-25）
 Google SRE 生产就绪评审（sre.google）、OWASP Top 10 for LLM Applications 2025（genai.owasp.org）、τ-bench pass^k 一致性评测（sierra-research/tau-bench, arXiv:2406.12045）、RAGAS 指标体系（docs.ragas.io）、LLM-as-judge 校准实践（LangChain/Monte Carlo/Arize 等）。
+
+## v1.1.1（2026-09-25）· ACCEPTANCE 总装模板落地
+
+**增加**：`references/ACCEPTANCE总装模板.md`——三个源模板（测试证据/上线门禁口径/Agent上线）的总装视图，最小核心内联 + 完整版指针双层设计，D 节为项目专属红线区。**修改**：SKILL.md §7.1 收尾生成草稿改为以总装模板为底稿。**解决**：项目根 ACCEPTANCE.md 无现成底稿、每次动态编的问题；三模板分散需手工拼装的问题。
