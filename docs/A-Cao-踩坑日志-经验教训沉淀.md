@@ -1,4 +1,4 @@
-# Cao-踩坑日志（pitfall-log v1.3.1）
+# A-Cao-踩坑日志（pitfall-log v1.3.1）
 
 > [← 返回总目录](../README.md#skills-index)
 
@@ -88,4 +88,4 @@ v1.3.1 定了「存哪边」的判据。通用、跨工具的坑（编码、git�
 
 ---
 
-[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [Cao-多Agent团队协作](Cao-多Agent团队协作文档治理-防撞车.md)
+[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-抗幻觉纪律](A-Cao-抗幻觉纪律-结论必须可证伪.md)

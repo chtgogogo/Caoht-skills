@@ -83,4 +83,4 @@
 
 ---
 
-[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-记忆纪律](A-Cao-记忆纪律-跨会话存整召评分衰减升华.md)
+[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-踩坑日志](A-Cao-踩坑日志-经验教训沉淀.md)
