@@ -55,6 +55,11 @@
 
 与 Agent 无关的纯前端页面、纯脚本、纯数据分析任务不触发。给一个只会问答的简单机器人加两条提示词，也犯不上过八项门禁——门槛跟着风险走。
 
+## 深入阅读
+
+- [上线验收记录表](../Cao-失败模式与对策库（Agent Failure Mode & Playbook）/references/05-checklists/上线验收记录表.md) —— Agent 项目上线验收模板：十问+八门禁逐项留痕格式，复制到项目根 ACCEPTANCE.md 即用
+- [上线前检查.md](../Cao-失败模式与对策库（Agent Failure Mode & Playbook）/references/05-checklists/上线前检查.md) —— 凌晨三点十问+八项硬门禁+企业级四门禁的判定标准本体
+
 ## 版本
 
 - v1.1.1，当前版。六目录库结构由用户拍板。
