@@ -1,4 +1,4 @@
-# Cao-资深工程师五模板（senior-engineer-playbook v1.0）
+# A-Cao-资深工程师五模板（senior-engineer-playbook v1.0）
 
 > [← 返回总目录](../README.md#skills-index)
 
@@ -68,4 +68,4 @@
 
 ---
 
-[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [Cao-交付流水线](Cao-交付流水线-需求到交付分身编排.md)
+[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [Cao-失败模式与对策库](Cao-失败模式与对策库（Agent Failure Mode & Playbook）.md)
