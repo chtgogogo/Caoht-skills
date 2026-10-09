@@ -8,23 +8,32 @@ memory_recall.py — 排序召回器（省 token 的核心工具）
 AI 据此精准懒加载，避免每轮全读所有记忆。
 
 设计要点：
-  · 支持两种 store 结构：
-      单索引型  <store>/MEMORY.md           （Engramory / WorkBuddy / DSH 实际在用）
+  · 支持两种 store 结构，**按结构判型**（子库里有 index.md 即七库型），不看引导卡文件名：
+      单索引型  <store>/MEMORY.md           （Engramory / 某宿主 / DSH 实际在用）
       七库型    <store>/CORE.md + */index.md （记忆纪律 v3.5 规范结构）
+    → `--root` 直接传 store 根目录即可，无需绕到 CORE.md（旧版按文件名判型，
+      七库型会被误判成单索引型而恒 0 命中）。
   · 语料回退：正文 frontmatter 有 `triggers` 字段就用它（最准）；没有就用
       `name + description` + 索引 hook 行（真实 store 多为此形态）。
   · 排序 = 类型权重 ×1.0 + 关键词命中率 ×2.0 + 新近度 ×0.5
       （与记忆纪律 skill 的 V/R 打分同源，但不依赖 V 分——V 分常未填）
 
 用法:
-  python memory_recall.py "<本次任务上下文>" [--root <store|索引文件>] [--top 5] [--print] [--type feedback]
+  python memory_recall.py "<本次任务上下文>" [--root <store 根|索引文件>] [--top 5] [--print] [--type feedback]
 
-退出码: 0=有命中  1=未找到索引  2=参数错误
+退出码: 0=有命中  1=未找到索引或零命中  2=参数错误
 """
 import os
 import re
 import sys
 from datetime import datetime, timezone
+
+# GBK 控制台防护：中文/emoji 输出在 Windows GBK 终端下乱码或崩溃（同型坑第2次，Codex/DSH 实测 2026-09-27，规则源统一修复）
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 TYPE_WEIGHT = {
     "feedback": 1.0, "user": 0.8, "project": 0.7, "reference": 0.5,
@@ -40,9 +49,14 @@ LINE_RE = re.compile(
     r"(?:\s*[·|]\s*(?P<date>\d{4}-\d{2}-\d{2}))?"
     r"\s*(?:[—–-]{1,2}\s*(?P<hook>.*))?$"
 )
-MIN_RE = re.compile(r"^- \[(?P<title>[^\]]+)\]\((?P<path>[^)]+)\)")
+MIN_RE = re.compile(r"^[\s|*\-]*\[(?P<title>[^\]]+)\]\((?P<path>[^)]+)\)")
+# ID 表体索引行： | pitfall-3 | 触发词… | 一句话结论… | 45 | active |
+# 真实 store（某宿主 125 条）多用此体：首格是记忆 ID 而非 markdown 链接，
+# 不认则整库召不回来（→pit-001）。ID 必须"字母前缀+数字结尾"，据此自动跳过表头与分隔行。
+IDROW_RE = re.compile(r"^\s*\|+\s*(?P<id>[A-Za-z][A-Za-z0-9]*[-_]?\d{1,4})\s*\|(?P<cells>.*)$")
 
-INDEX_CANDIDATES = ["MEMORY.md", "CORE.md"]
+# 引导卡候选：CORE.md 优先（七库型规范把路由表放 CORE），MEMORY.md 兼容单索引型与旧 store
+INDEX_CANDIDATES = ["CORE.md", "MEMORY.md"]
 FM_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.S)
 
 
@@ -64,47 +78,98 @@ def tok(s):
     return set(words + grams)
 
 
+def find_store(start):
+    """从给定路径向上找 store 根（含 CORE.md / MEMORY.md 的最近目录）。"""
+    d = start if os.path.isdir(start) else os.path.dirname(os.path.abspath(start))
+    for _ in range(8):
+        if any(os.path.isfile(os.path.join(d, n)) for n in INDEX_CANDIDATES):
+            return d
+        parent = os.path.dirname(d)
+        if parent == d:
+            break
+        d = parent
+    return None
+
+
+def sub_index_files(store):
+    """store 各子库的 index.md（跳过 store 根本身、隐藏目录与 tools）。"""
+    out = []
+    for dirpath, dirnames, filenames in os.walk(store):
+        dirnames[:] = [d for d in dirnames if not d.startswith(".") and d != "tools"]
+        if os.path.abspath(dirpath) == os.path.abspath(store):
+            continue
+        if "index.md" in filenames:
+            out.append(os.path.join(dirpath, "index.md"))
+    return out
+
+
 def resolve_index(root):
-    """返回 (索引文件路径, 是否单索引型)。"""
+    """返回 (store 根, 主索引路径, 是否单索引型)。
+
+    判型看**结构**（子库里有没有 index.md），不看引导卡的文件名：规范 §0.3 要求
+    引导卡就叫 MEMORY.md，按文件名判型会把七库型 store 误判成单索引型 → 只读引导卡
+    → 恒 0 命中（Qoder 2026-09-30 实测，pit-001）。
+    """
+    store = find_store(root)
+    if not store:
+        return None, None, True
     if os.path.isfile(root):
-        return root, os.path.basename(root).upper() == "MEMORY.MD"
-    for name in INDEX_CANDIDATES:
-        cand = os.path.join(root, name)
-        if os.path.isfile(cand):
-            return cand, name.upper() == "MEMORY.MD"
-    return None, False
+        index_path = root
+        store = os.path.dirname(os.path.abspath(root))
+    else:
+        index_path = None
+        for name in INDEX_CANDIDATES:
+            cand = os.path.join(store, name)
+            if os.path.isfile(cand):
+                index_path = cand
+                break
+    return store, index_path, not sub_index_files(store)
 
 
 def collect_index_files(store, single, index_path):
     """单索引型 → [主索引]；七库型 → [主索引] + 各子库 index.md"""
     files = [index_path]
     if not single:
-        for dirpath, dirnames, filenames in os.walk(store):
-            dirnames[:] = [d for d in dirnames if not d.startswith(".") and d != "tools"]
-            for fn in filenames:
-                if fn == "index.md":
-                    p = os.path.join(dirpath, fn)
-                    if p != index_path:
-                        files.append(p)
+        for p in sub_index_files(store):
+            if p != index_path:
+                files.append(p)
     return files
 
 
 def parse_index(text, index_file, store):
     rows = []
+    idx_dir = os.path.dirname(os.path.abspath(index_file))
     for raw in text.splitlines():
         line = raw.strip()
         m = LINE_RE.match(line) or MIN_RE.match(line)
-        if not m:
-            continue
-        d = m.groupdict()
-        d.setdefault("type", "")
-        d.setdefault("date", "")
-        d.setdefault("hook", "")
-        # 类型没写 → 从路径推导（memory/<type>/xx.md 或 <库名>/xx.md）
-        if not (d.get("type") or "").strip():
-            parts = (d.get("path") or "").replace("\\", "/").split("/")
-            if len(parts) >= 2:
-                d["type"] = parts[-2] if parts[0] == "memory" else parts[0]
+        if m:
+            d = m.groupdict()
+            d.setdefault("type", "")
+            d.setdefault("date", "")
+            d.setdefault("hook", "")
+            # 类型没写 → 从路径推导（memory/<type>/xx.md 或 <库名>/xx.md）
+            if not (d.get("type") or "").strip():
+                parts = (d.get("path") or "").replace("\\", "/").split("/")
+                if len(parts) >= 2:
+                    d["type"] = parts[-2] if parts[0] == "memory" else parts[0]
+        else:
+            m2 = IDROW_RE.match(line)
+            if not m2:
+                continue
+            path = m2.group("id") + ".md"
+            cells = [c.strip() for c in m2.group("cells").split("|") if c.strip()]
+            # 该 ID 在同目录没有对应正文 → 不是索引行（表头/正文里的散落表格），跳过
+            if not cells or not os.path.isfile(os.path.join(idx_dir, path)):
+                continue
+            date = ""
+            for c in cells:
+                dm = re.search(r"\d{4}-\d{2}-\d{2}", c)
+                if dm:
+                    date = dm.group(0)
+                    break
+            d = {"title": m2.group("id"), "path": path,
+                 "type": os.path.basename(idx_dir), "date": date,
+                 "hook": " ".join(cells)}
         d["_index"] = index_file
         d["_store"] = store
         rows.append(d)
@@ -112,21 +177,31 @@ def parse_index(text, index_file, store):
 
 
 def load_extra_corpus(row, base):
-    """读正文 frontmatter，补 triggers / description 作为检索语料。缺文件则返回空。"""
+    """读正文 frontmatter，补 triggers / description 作为检索语料，并取 created 作日期回填。
+
+    返回 (语料附加串, 正文是否存在, created 日期)。
+    ID 表体索引行没有日期列，新鲜度只能从正文 frontmatter 拿。
+    """
     p = os.path.join(base, row.get("path", ""))
     if not os.path.isfile(p):
-        return "", False
+        return "", False, ""
     try:
         head = open(p, encoding="utf-8", errors="ignore").read(4000)
     except OSError:
-        return "", False
+        return "", False, ""
     m = FM_RE.match(head)
     fm = m.group(1) if m else head[:1200]
     extra = []
     for key in ("triggers", "description", "name", "title"):
         for mm in re.finditer(r"^%s\s*:\s*(.+)$" % key, fm, re.M):
             extra.append(mm.group(1))
-    return " ".join(extra), True
+    created = ""
+    for mm in re.finditer(r"^created\s*:\s*(.+)$", fm, re.M):
+        dm = re.search(r"\d{4}-\d{2}-\d{2}", mm.group(1))
+        if dm:
+            created = dm.group(0)
+        break
+    return " ".join(extra), True, created
 
 
 def score(row, q_tokens, extra, today):
@@ -174,11 +249,10 @@ def main():
         else:
             i += 1
 
-    index_path, single = resolve_index(root)
+    store, index_path, single = resolve_index(root)
     if not index_path:
-        print(f"[recall] 未找到索引（试过 MEMORY.md / CORE.md）：{root}", file=sys.stderr)
+        print(f"[recall] 未找到索引（试过 CORE.md / MEMORY.md，并向上回溯 store 根）：{root}", file=sys.stderr)
         return 1
-    store = os.path.dirname(index_path)
     today = datetime.now(timezone.utc)
     q_tokens = tok(query)
 
@@ -202,7 +276,9 @@ def main():
 
     scored = []
     for r in rows:
-        extra, exists = load_extra_corpus(r, os.path.dirname(r["_index"]))
+        extra, exists, created = load_extra_corpus(r, os.path.dirname(r["_index"]))
+        if not (r.get("date") or "").strip():
+            r["date"] = created          # 索引行无日期 → 用正文 created 参与新鲜度计算
         sc, kw = score(r, q_tokens, extra, today)
         if not exists:
             sc -= 0.5          # 详情文件缺失：降权但不丢弃（organize 会报断链）
@@ -210,8 +286,12 @@ def main():
     scored.sort(key=lambda x: x[0], reverse=True)
     hits = scored[:top]
 
-    print(f"# 召回 top-{top}（索引 {len(rows)} 条 / 库 {store}）")
+    print(f"# 召回 top-{top}（索引 {len(rows)} 条 / 库 {store} / {'单索引型' if single else '七库型'}）")
     print(f"# query = {query!r}")
+    if not rows:
+        print("[recall] 索引 0 条：确认 index.md 行格式为 "
+              "`- [标题](文件.md) · 类型 — 钩子 (YYYY-MM-DD)`（表格体 organize 会误报孤儿，见 pit-001）",
+              file=sys.stderr)
     for sc, kw, exists, r in hits:
         flag = "" if exists else "  [详情缺失]"
         print(f"{sc:5.2f} kw={kw:.2f} | {r.get('type') or '?':10} | {r.get('path')}{flag}")

@@ -66,7 +66,7 @@ metadata:
 
 1. 环境变量 `WORKBUDDY_SKILLS_PATH`（非标目录时用它覆盖）
 2. **唯一权威库：`<你的技能库>\`**（默认，全部 skill 本体在此）
-3. 兜底标准路径：`~/.workbuddy/skills/`、`./skills/`、`~/.codex/skills/`（仅用于找本调度器自身，不用于找 skill 本体）
+3. 兜底标准路径：`~/.某宿主/skills/`、`./skills/`、`~/.codex/skills/`（仅用于找本调度器自身，不用于找 skill 本体）
 
 **定位 skill 本体按 `name` 字段（调用键），不是文件夹名**（文件夹是详细中文说明书名）：
 
@@ -113,11 +113,11 @@ py <你的技能库>\__tools\usage_update.py <被调度的name>
 ## 七、维护
 
 - 新增 / 删除 / 改名 skill → 同步更新 `<你的技能库>\__SKILL详细名映射表.md`（调用键 `name` 字段保持稳定）
-- **创建 / 修改 skill 后必跑体检器**：`py <你的技能库>\__tools\lint_skill.py <skill目录>`（全库+双份对账加 `--all --host C:\Users\<你的用户名>\.zcode\skills`）；PASS 才算完工（规范=detail-003 五步法）
-- 分类索引过时 → 改 `<你的工具根目录>\skill-index\` 下文件
+- **创建 / 修改 skill 后必跑体检器**：`py <你的技能库>\__tools\lint_skill.py <skill目录>`（全库+双份对账加 `--all --host C:\Users\<你的用户名>\某宿主配置目录\skills`）；PASS 才算完工（规范=detail-003 五步法）
+- 分类索引过时 → 改 `<你的数据目录>\skill-index\` 下文件
 - 调度逻辑升级 → 只改本 SKILL.md
 
-> **版本与副本同步（v2.2）**：本调度器 SKILL.md 在各宿主各放一份逐字一致副本（`useskill` 文件夹）；真正的 skill 本体只在 `<你的技能库>\`，不要在 `<某宿主的配置目录>\skills` 或 `<你的工具根目录>\skills` 里再维护第二套。
+> **版本与副本同步（v2.2）**：本调度器 SKILL.md 在各宿主各放一份逐字一致副本（`useskill` 文件夹）；真正的 skill 本体只在 `<你的技能库>\`，不要在 `<某宿主的配置目录>\skills` 或 `<你的数据目录>\skills` 里再维护第二套。
 
 ---
 

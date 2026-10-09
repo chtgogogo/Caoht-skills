@@ -206,7 +206,7 @@ python scripts/governance_check.py --root <项目根目录>
 
 ## 副本落点与维护须知
 
-本 skill 以「通用版」发布。若你在本地有多个 agent 宿主（例如 WorkBuddy 与 Codex 各加载一份，或有一份冷存档），请在这些宿主的 skills 目录里各放一份**逐字一致**的副本，并：
+本 skill 以「通用版」发布。若你在本地有多个 agent 宿主（例如 某宿主 与 Codex 各加载一份，或有一份冷存档），请在这些宿主的 skills 目录里各放一份**逐字一致**的副本，并：
 
 - 保持 frontmatter 的 `name` 为 `multi-agent-team-governance` 不变；
 - 任一副本改动后，整体同步其余副本（覆盖 + sha256 逐字校验），并各跑一次 `quick_validate.py`，避免多宿主规则漂移。

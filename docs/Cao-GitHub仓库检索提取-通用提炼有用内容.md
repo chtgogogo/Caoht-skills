@@ -926,6 +926,8 @@ gh api repos/jlevy/the-art-of-command-line/contents --jq '[.[]|.name|test("(?i)l
 
 ## 第 15 章 工程规范与安全规范
 
+> 本章的「库 ↔ 仓库」差额是 2026-10-09 上午快照的实测记录；同日下午 17 支本体已按 [CONTRIBUTING.md](../CONTRIBUTING.md) 第一节追平并在仓库侧脱敏。下面的数字原样保留，作为那次追平的历史凭据，不代表当前状态。
+
 ### 15.1 本体文件的工程细节
 
 | 项 | 现状（`[实测]`，读 frontmatter 与当日实测得到） | 评价与建议 |

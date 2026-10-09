@@ -112,7 +112,38 @@ python "...\disk_check.py" --scan-user
 
 ---
 
+## 八、C盘体检瘦身标准流程（2026-10-06 实战沉淀）
+
+> 触发：用户说「C盘满了 / 瘦身 / 体检 / 清理」。心法八字：**先量后删、钻层定性**。落点会随软件更新漂移，判据不变——吸纳思路，不背路径。
+
+**1. 体检漏斗（三层钻取，禁止只扫一层就下结论）**
+- L1 广度：四大主战场各扫一轮 `du -sh <根>/* | sort -rh | head -20`（用户根、AppData/Local、AppData/Roaming、ProgramData）
+- L2 定位：对可疑大目录钻一层
+- L3 定性：钻到「能判断是缓存还是数据」那层为止（实例：飞书 1.5G → aha/users → profile_explorer → Service Worker 1.1G 才实锤是缓存）
+
+**2. 定性判据（看构成，不看名字）**
+
+| 构成特征 | 定性 | 处置 |
+|---|---|---|
+| Cache / Code Cache / GPUCache / Service Worker / Dawn* / GrShaderCache | 再生缓存 | 删 |
+| installer.exe / patch / pending（更新器目录**内**） | 旧更新包 | 删，留目录 |
+| Temp / CrashDumps / node-gyp / 陈旧 MessageBus 日志 | 垃圾 | 删 |
+| logs/ | 流水账 | 删或建道 |
+| IndexedDB / Local Storage / Screenshot / *.sqlite 聊天库 / 下载历史 / AI 索引(projects) / tools/ / NGX 模型 / Package Cache | 用户数据或本体 | **禁删** |
+
+⚠️ 反例实录（2026-10-06）：`Roaming/uv` 名字像 uv 缓存，钻层实为**已装工具本体**——名字像≠是，先定性再动手。
+
+**3. 占用核查前置**：清理前 tasklist 确认程序已关；浏览器分清 `msedge.exe`（本体，可清缓存）与 `msedgewebview2.exe`（被其他软件复用的内核，不代表 Edge 在跑）。
+
+**4. 处置三分类**：A=直接清（上表可删类）；B=建道（持续再生的大缓存/日志→junction 搬非系统盘：幂等检测→关进程→删→mklink /J→跨盘写测试）；C=拍板（用户数据/系统件/拿不准的→列清单+建议交用户，禁擅自删）。
+
+**5. 验证收尾**：df 前后对比；联接写测试；报告落盘**必含勿动清单**（防下次误伤）；记忆/账本留痕。
+
+**6. 常见落点族（举一反三）**：Electron 系=Roaming/<app-id>（logs/Cache）+ Local/<app>-updater（installer.exe 堆积）；Chromium 内核应用=User Data/Default/{Cache 族}；国内聊天/办公软件 patch 目录=补丁包堆积；国内版软件路径常不等于国际版（目录名带 CN 等后缀，用 `find -iname` 实测定位）。
+
 ## 版本
 
-- **v1.0（2026-09-24）**：由 `<你的旧体系根目录>\记忆规则\行为准则\磁盘与缓存管理铁律.md`（模块 C，2026-09-02）封装为独立 skill，**并补上原文件承诺但不存在的 `disk_check.py` 体检脚本**。
+- **v1.1（2026-10-06）**：增补 §八「C盘体检瘦身标准流程」——三层钻取漏斗/构成定性判据表（含 uv 误判反例）/占用核查/处置三分类/验证收尾/常见落点族。起因=当日 C 盘体检实战回收 9.6G，方法论沉淀防复发。
+
+- **v1.0（2026-09-24）**：由 `<你的共享层>\记忆规则\行为准则\磁盘与缓存管理铁律.md`（模块 C，2026-09-02）封装为独立 skill，**并补上原文件承诺但不存在的 `disk_check.py` 体检脚本**。
   **起因**：该铁律此前只存在于记忆规则目录 → AI 不会自动触发；且无任何可执行工具，"幂等检测"全靠人记。
