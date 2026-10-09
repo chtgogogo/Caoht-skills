@@ -1025,6 +1025,20 @@ roots/RT-00X-....md        escalated: false → true，并记升华日期
 
 ---
 
+## 深入阅读（附属文件直链）
+
+下面是这一支本体目录里除 `SKILL.md` 之外的构件，全部**链接过去看原文**，本页不复制正文。
+
+**assets**（`assets/`，模板件（照着填就能落地的空表））：
+
+- [entry-template.md](../A-Cao-踩坑日志-经验教训沉淀/assets/entry-template.md)
+- [index-template.md](../A-Cao-踩坑日志-经验教训沉淀/assets/index-template.md)
+- [root-template.md](../A-Cao-踩坑日志-经验教训沉淀/assets/root-template.md)
+
+**随包散件**：
+
+- [CHANGELOG.md](../A-Cao-踩坑日志-经验教训沉淀/CHANGELOG.md)
+
 ## 附：设计来源索引
 
 | 机制 | 来自哪个版本 | 背后的方法论（大白话） |

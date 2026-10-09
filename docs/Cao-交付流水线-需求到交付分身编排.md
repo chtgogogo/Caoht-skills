@@ -1116,6 +1116,32 @@ B 档走「★层 + 核心层」。本例用户初始想的是 `Scrapy + Kafka +
 10. **未采纳** 51 份附件正文的逐篇通读 → 本页对细则的引用只到"文件名 + 章节名"，凡需通读才能断言的细节一律写未检索到。原因：本轮禁令禁止读那批正文，也禁止编造。[实测]
 11. **未采纳**"官方措辞即强制"的升格写法 → 本页在 G 类事实（500 行、5,000 token、目录布局、脚本清单）上严格区分"强制"与"建议"；把社区路线的调度/派遣层单独标为"官方无对应条款，不得以官方名义裁决"。原因：官方原文写的是 recommendations，把建议写成强制就是取证过头。[实测]
 
+## 深入阅读（附属文件直链）
+
+下面是这一支本体目录里除 `SKILL.md` 之外的构件，全部**链接过去看原文**，本页不复制正文。
+
+**references**（`references/`，参考资料分包（正文之外另写的分册））：
+
+- 本目录 11 份，逐份清单请点目录：[`references/`](../Cao-交付流水线-需求到交付分身编排/references/)
+- 本目录 20 份，逐份清单请点目录：[`references/depends/`](../Cao-交付流水线-需求到交付分身编排/references/depends/)
+- [README.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/README.md)
+- [visual-companion.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/brainstorming/visual-companion.md)
+- [task-done](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/executing-plans/scripts/task-done)
+- [task-start](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/executing-plans/scripts/task-start)
+- [code-reviewer.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/requesting-code-review/code-reviewer.md)
+- [implementer-prompt.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/implementer-prompt.md)
+- [re-review-prompt.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/re-review-prompt.md)
+- [task-reviewer-prompt.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/task-reviewer-prompt.md)
+- [review-package](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/scripts/review-package)
+- [sdd-workspace](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/scripts/sdd-workspace)
+- [task-brief](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/scripts/task-brief)
+- [condition-based-waiting-example.ts](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/condition-based-waiting-example.ts)
+- [condition-based-waiting.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/condition-based-waiting.md)
+- [defense-in-depth.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/defense-in-depth.md)
+- [find-polluter.sh](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/find-polluter.sh)
+- [root-cause-tracing.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/root-cause-tracing.md)
+- [writing-good-tests.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/test-driven-development/writing-good-tests.md)
+
 ## 附：设计来源索引
 
 三列：**机制 ← 来自哪个版本 ← 背后的方法论来源**。第二列的可信度分三档，因为两套版本史互不认识（15.3）：标 ✅ 的是两份文件都记了同一件事；标 ⚠️ 的是只有 `SKILL.md` 的版本史有记载；标【未核】的是两份都没记。[实测]

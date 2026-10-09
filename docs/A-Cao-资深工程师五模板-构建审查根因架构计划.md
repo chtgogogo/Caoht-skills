@@ -444,6 +444,22 @@
 
 ---
 
+## 深入阅读（附属文件直链）
+
+下面是这一支本体目录里除 `SKILL.md` 之外的构件，全部**链接过去看原文**，本页不复制正文。
+
+**references**（`references/`，参考资料分包（正文之外另写的分册））：
+
+- [build-app.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/build-app.md)
+- [debug-root-cause.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/debug-root-cause.md)
+- [design-architecture.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/design-architecture.md)
+- [idea-to-plan.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/idea-to-plan.md)
+- [review-code.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/review-code.md)
+
+**随包散件**：
+
+- [CHANGELOG.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/CHANGELOG.md)
+
 ## 附：设计来源索引
 
 | 机制 | 来自哪里（版本／出处） | 背后的方法论 |
@@ -469,6 +485,6 @@
 
 **落款**：本页属 docs 系列「完整详解手册」**小档**（400–650 行这一档；行数主尺，字节只当失控上界——不为压篇幅删证据行），描述对象为库内 v1.0 正本（42 行／3,729 字节／md5 `eb30a818d958`）。论断均标 [实测] 或 [推演]；引用只用文件名＋章节名／规则名／字段名，无行号；对象库文件全程只读未改动。
 
-[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [Cao-失败模式与对策库](Cao-失败模式与对策库（Agent Failure Mode & Playbook）.md)
+[← 返回总目录](../README.md#skills-index) ｜ 下一个 → [Cao-失败模式与对策库](Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）.md)
 
 > **未检索到与当日可达性（交稿自查项）**：本页外部依据只取自本工程的两份底研文件（《官方规范与宿主机制》《GitHub 高星同类对照》），未新增联网检索。2026-10-09 当日实测：`platform.anthropic.com` 的 skill 文档路径跟随重定向后落在区域不可用提示页（跟随后 HTTP 200、301,805 字节的提示页，正文一个字取不到）＝**不可作证据**；`code.claude.com/docs/en/skills` 当日可达（HTTP 200、1,203,415 字节）；规范社区站当日可达，但**要写裸域**，加 `www.` 前缀当日解析失败（HTTP 000）。本页凡标「未检索到」的条目，指的就是当天在这些可达来源里查不到对应表述，一律不补说法。
