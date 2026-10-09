@@ -15,10 +15,14 @@ node_modules/
 .git-broken/
 
 # Private / sensitive skill folders (never upload)
+# 2026-09-15 已撤下：含登录态与密钥抓取脚本；整目录不上库
 提取抖音记录/
 提取微信记录/
 Cao-提取微信记录/
-Cao-提取抖音记录/     # 2026-09-15 已从公开仓库撤下（含登录态与密钥抓取脚本）
+Cao-提取抖音记录/
+
+# 本机真实配置（含路径/昵称/账号）永不上库；模板走 config.example.json
+config.json
 
 # Python caches
 __pycache__/
