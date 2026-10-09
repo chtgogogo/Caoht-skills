@@ -1,6 +1,10 @@
 ---
 name: llmwiki-knowledge-base-intake
 description: <你的知识库>（Obsidian 综合知识库，五个 AI 共用）入库完整流水线。当用户说「记进 obs / 记进知识库 / 入库 / 建资产卡 / 登记这个软件或仓库 / 库里有没有 XX / 这东西该放哪」，或任何要改 <你的知识库> 的资产卡、本机资产地图、AI导读、CHANGELOG 的任务时使用。覆盖活跃库与封存冷备区分、进库必读三件套、五不收与地图/卡/项目档案三分流、资产卡六字段与面包屑与双链死链规则、AI导读组行与组清单同步登记、CHANGELOG 顶部倒序纯插入、收尾留痕 kb_track 加体检 kb_check 加只提交自有路径。
+metadata:
+  agent_created: true
+  version: 1.0.0
+  source: 2026-10-09 补齐版本字段；本支此前无版本史，1.0.0＝首次声明，非追认旧版本
 ---
 
 # LLMwiki 知识库入库流水线
