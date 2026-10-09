@@ -1027,6 +1027,25 @@ grep -n "^| D-" DECISIONS.md          # 判据4：编号序列没有重复
 
 ---
 
+## 深入阅读（附属文件直链）
+
+下面是这一支本体目录里除 `SKILL.md` 之外的构件，全部**链接过去看原文**，本页不复制正文。
+
+**references**（`references/`，参考资料分包（正文之外另写的分册））：
+
+- [信箱说明.md](../Cao-多Agent团队协作文档治理-防撞车/references/信箱说明.md)
+- [决策看板模板.md](../Cao-多Agent团队协作文档治理-防撞车/references/决策看板模板.md)
+- [契约模板.md](../Cao-多Agent团队协作文档治理-防撞车/references/契约模板.md)
+
+**scripts**（`scripts/`，可执行脚本）：
+
+- [governance_check.py](../Cao-多Agent团队协作文档治理-防撞车/scripts/governance_check.py)
+
+**随包散件**：
+
+- [CHANGELOG.md](../Cao-多Agent团队协作文档治理-防撞车/CHANGELOG.md)
+- [README.md](../Cao-多Agent团队协作文档治理-防撞车/README.md)
+
 ## 附：设计来源索引
 
 | 机制 | 进入版本 | 来源与方法论 |
