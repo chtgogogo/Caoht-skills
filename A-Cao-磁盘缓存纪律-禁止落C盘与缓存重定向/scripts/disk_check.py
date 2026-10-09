@@ -50,8 +50,8 @@ USER_SUSPECTS = [
 
 # 已知需要检查是否为 junction 的路径（按需补充；scan_junctions 会另外自动扫描）
 JUNCTION_TARGETS = [
-    r"C:\Users\ASUS\.cache",
-    r"C:\Users\ASUS\AppData\Local\pip",
+    r"C:\Users\<你的用户名>\.cache",
+    r"C:\Users\<你的用户名>\AppData\Local\pip",
 ]
 
 fails, warns, oks = [], [], []

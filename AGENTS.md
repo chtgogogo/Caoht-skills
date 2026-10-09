@@ -6,6 +6,7 @@
    - SKILL.md frontmatter 四件套（`name` / 顶层 `version` / `description`）；
    - README 收录行必须用"卖点句式"（解决什么 + 凭什么），禁止空话；
    - 必须创建 `docs/<skill文件夹名>.md` 详解页（六要素模板 + 顶部/底部返回总目录的双向跳转链接，锚点 `README.md#skills-index`）；skill 目录内若有 `references/` / `assets/` / `scripts/`，详解页还要加「深入阅读」节，用相对链接把它们挂出来（链接而非复制）；
-2. **交付前必须运行** `py library_check.py` 且全部通过；
-3. 修改 `A-Cao-` 基础设施类 skill 后，同步其他宿主副本并做 sha256 校验；
-4. 不创建无前缀的 skill 目录；不复制产生重复副本。
+2. **权威库改完必须把仓库版追平再 push**：同步的是内容与版本——版本号只认权威库 `SKILL.md` frontmatter 的 `version`，库内新增/删除的文件（`references/`、`tools/`、`scripts/`）同步增删，不许只改主文件；追平后**在仓库侧脱敏**（四类红线见 CONTRIBUTING 第一节），未脱敏的副本禁止 push；权威库保留真实路径，不在那边脱敏。
+3. **交付前必须运行** `py library_check.py` 且全部通过；
+4. 修改 `A-Cao-` 基础设施类 skill 后，同步其他宿主副本并做 sha256 校验；
+5. 不创建无前缀的 skill 目录；不复制产生重复副本。

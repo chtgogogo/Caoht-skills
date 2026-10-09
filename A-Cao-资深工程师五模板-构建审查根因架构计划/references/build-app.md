@@ -40,8 +40,8 @@
 
 ### 既有项目上开发（大工程自动补索引）
 - 项目根有 `aoci.txt`：改动验证通过后，同步更新受影响的索引条目再收工（AOCI 流程：代码稳定 → 更新认知 → 置回 aligned）——别让索引和代码漂移，索引过时比没有索引更害人。
-- 项目根没有 `aoci.txt` 但像是个大工程 → 跑 `py E:\Zcode-memory\tools\aoci_fit.py <项目路径>`：AUTO 直接建 / ASK 弹窗问用户 / SKIP 忽略。
+- 项目根没有 `aoci.txt` 但像是个大工程 → 跑 `py <某宿主的记忆库>\tools\aoci_fit.py <项目路径>`：AUTO 直接建 / ASK 弹窗问用户 / SKIP 忽略。
 
 ## 本机红线（Windows 环境）
-- 项目目录建在 `E:\Zcode-work\<项目名>\`，严禁 C 盘默认路径
+- 项目目录建在 `<某宿主的工作区>\<项目名>\`，严禁 C 盘默认路径
 - Node 生态坑：Steam++（瓦特）开着会证书错 → `NODE_OPTIONS=--use-system-ca` + npmmirror 镜像；puppeteer 加 `PUPPETEER_SKIP_DOWNLOAD=true`
