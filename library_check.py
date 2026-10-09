@@ -13,6 +13,7 @@
 import re
 import sys
 import difflib
+import urllib.parse
 import subprocess
 from pathlib import Path
 
@@ -71,7 +72,9 @@ def main():
             if "README.md#skills-index" not in dtext:
                 problems.append(f"[缺回链] docs/{d.name}.md 无返回总目录链接")
         for m in re.finditer(r"\]\((docs/[^)#]+\.md)\)", rtext):
-            if not (root / m.group(1)).exists():
+            # 链接目标里的空格按 CommonMark 要求写成 %20（含裸空格的链接 GitHub 根本不渲染），
+            # 所以判存在性前要先解码，否则真链接会被判成死链。
+            if not (root / urllib.parse.unquote(m.group(1))).exists():
                 problems.append(f"[docs死链] {m.group(1)}")
 
     # 3. 已知重复对（同 name 的目录已在上面查过；这里查不同目录同内容 SKILL.md）
