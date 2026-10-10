@@ -31,6 +31,17 @@
    ---
    ```
 
+### 发布同步与个人适配层（2026-10-11 立）
+
+本仓库正文里的 `<你的技能库>`、`C:\Users\<你的用户名>` 这类占位符不是随手写的示例，而是**机械同步的产物**。这层分工对想在自己机器上维护衍生仓库的人有用，所以写进公开规范：
+
+1. **两棵树**：作者本机有一份权威库（写真实绝对路径，因为它要在那台机器上真跑），本仓库是发布源（占位符版）。同步器 `publish_sync.py` 与替换表 `publish_map.local.md` 放在**权威库的 `__tools/` 里，不在本仓库**——本仓库只收技能本体。
+2. **个人适配层 `personal.local.md`**：技能目录下允许一个同名后缀的文件存本机事实（盘符策略、本机路径、用户画像、个人倾向），同步时**整类排除、永不进本仓库**；`SKILL.md` 的引用口径固定为「若存在 `personal.local.md` 则读取并覆盖默认值，不存在则走通用流程」——**缺这个文件不是错误**，从 GitHub clone 的读者拿到的是完整可用的通用分支。命名与业界惯例同构：Vite 对 `.env.local` 的说明是「You should add `*.local` to your `.gitignore` to avoid them being checked into git」，Claude Code 用 `settings.local.json` 表示「只属于这一台机器、自动留在提交之外」。
+3. **同步器语义**（照此实现时注意四条，都是踩过坑定的）：默认**干跑**、加 `--apply` 才写盘（rsync 手册原话「It is a very good idea to first try a run using the `--dry-run` option」）；排除规则用裸 glob `*.local.md`，按 gitignore / rsync 口径**匹配任意层级**（模式里没有分隔符时才成立，写成 `/personal.local.md` 反而被锚死在一层）；**不删除**目标端多余文件（等价于 rsync 不加 `--delete`）；文本全程**二进制读写**，避开 Windows 文本模式把 LF 换成 CRLF 后「三行改动放大成整支重写」。
+4. **落盘前拦截**：同步器扫待写文本里的盘符绝对路径与替换表残留，命中即**拒绝写入**并以非 0 退出；正确反应是给替换表补一行、或把那条本机事实迁进该支的 `personal.local.md`，**而不是去发布仓手工删**——那会让两棵树分叉，正是本节要根除的头号事故。
+5. **对账判据**：一支 skill 同步完成后，权威库与本仓库该目录的差异**应当只剩「个人适配层 + 公开化改造」**；出现别的内容差异说明某一侧被就地改过（违反第一节第 5 条）。
+6. **相对路径优先**：Agent Skills 开放标准的口径是「When referencing other files in your skill, use relative paths from the skill root」（agentskills.io/specification）——正文指向同目录资料一律相对路径，绝对路径只活在 `personal.local.md` 与替换表里。
+
 ## 二、README 收录行（卖点句式，强制）
 
 在 README 的收录表新增一行，**说明列必须让外行看懂"解决什么问题 + 机制凭什么比别的方案好"**，末尾接 `[详读 →]` 跳转链接。不许写"XX 的规则/工具"这种空话：
