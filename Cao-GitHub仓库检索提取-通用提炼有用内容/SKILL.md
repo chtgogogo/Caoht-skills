@@ -6,9 +6,7 @@ description: 检索并提炼 GitHub 仓库有用内容的标准工作流。当�
   License/Private 受限）→ 沉淀分析文档。内置版权红线：禁止商用素材绝不纳入。优先用 gh CLI 鉴权拉取，规避匿名 API 限流。不适用：非 GitHub 仓库的普通网页抓取（转 web-tools-guide）。
 metadata:
   agent_created: true
-metadata:
-  agent_created: true
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 > **联动纪律（2026-10-02 全库链式审计补挂）**：本 skill 产出即外部智慧——铁律 9 外部智慧入库——检索到的权威资料/设计智慧/行业数字当次沉淀 <你的知识库>\8-检索智慧\（一卡一智慧：来源 URL+检索日期+复核条件）；事实与数据遵循 A-Cao-抗幻觉纪律（一手来源核实/结论可证伪/不确定标未知）。

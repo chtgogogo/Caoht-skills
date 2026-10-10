@@ -1,5 +1,14 @@
 # CHANGELOG · 企业级交付差距审判官
 
+## v1.1.1 · 2026-10-11
+
+**只修 frontmatter 的可解析性，正文与描述文字一字未动**。
+
+- **解决了什么**：`description` 原先写成双引号标量（`description: "…"`），而这段文字里含**未转义的英文双引号**（`…想判断"能不能交给企业真实业务使用"时触发`）。标准 YAML 解析器在这里报 `while parsing a block mapping … expected <block end>, but found '<scalar>'`——整块 frontmatter 解析失败，`name` / `version` / `description` 一并读不到，宿主按 description 决定调不调本 skill 的机制随之失效。仓库体检脚本旧版只查"字段齐不齐"，对这一支报绿，所以这个硬伤携带了很久。
+- **怎么解决的**：改成折叠块标量 `description: >-`（多行文本读成一行、结尾不吃空格），去掉首尾那对 `"`，描述内容逐字保留（现 500 字符，在开放标准 1,024 上限内）。
+- **怎么验证的**：PyYAML（标准解析器 + 拒绝重复键）与内置严格子集解析器两种模式都能解析，且读到的 `description` 完全一致；重写后的 `library_check.py` 对本支不再有红项（本轮施工证据落在任务包的 `evidence/卡01/_fix-frontmatter-output.txt`）。
+- **版本号**：v1.1.0 → v1.1.1（补丁级：只动元数据写法，判据、门槛模型、探针规则均无变化）。
+
 ## v1.1.0 · 2026-10-08
 
 **新增「联网取证」与「业务场景差距判别法」两大能力**。
