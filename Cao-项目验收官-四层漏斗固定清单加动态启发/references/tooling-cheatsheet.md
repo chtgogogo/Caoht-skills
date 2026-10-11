@@ -3,6 +3,48 @@
 > 原则：项目里已有配置的工具优先用项目自己的命令；没有的按本表补。工具不可用时该项记 ⬜ 并附安装命令，不许跳过不提。所有输出重定向落盘到 `acceptance/evidence/`（按测试纪律）。
 > Windows 注意：以下命令在 Git Bash 下运行；pip 系工具优先 `python -m xxx` 调用避免 PATH 坑。
 
+## 凭据 / 密钥扫描（初筛 + 成熟组件补扫，两层都要做）
+
+**定位**：验收官自带正则（`scripts/profile_project.py` 的 `suspected_secrets`）是**初筛**，不是终判——它按格式特征与赋值形态命中，报 0 命中不等于没有凭据。任何「密钥零硬编码」的 ✅ 结论必须有下面至少一个成熟组件的补跑结果作支撑。
+
+```bash
+# ① 初筛（纯标准库，不需要联网装东西；语言分析与凭据扫描是两条独立通道）
+py "<本skill目录>/scripts/profile_project.py" "<项目根>" > acceptance/evidence/profile.json
+# 大项目放宽上限用下面这几个参数（触顶会自动在 coverage.limits_triggered 里登记并置 coverage.insufficient）
+#   --max-depth N            目录深度上限（默认 8）
+#   --max-files N            遍历文件数上限（默认 20000）
+#   --max-language-files N   语言分析通道文件数上限
+#   --max-credential-files N 凭据扫描通道文件数上限
+#   --max-read-bytes N       单文件读取上限（字节，默认 262144），超过计入未检查清单
+#   --max-findings N         疑似凭据上报条数上限（默认 40），超出登记为 truncated
+#   --strict-coverage        coverage.insufficient 为真时退出码 3（给 CI/门禁接住，别让人读 JSON 才发现）
+py "<本skill目录>/scripts/profile_project.py" "<项目根>" --strict-coverage > acceptance/evidence/profile.json
+echo "exit=$?   # 3 = 覆盖范围不足，必须写进报告 §6b，不许当扫过了"
+# 读结果时只看三样：hits（命中，值已掩码）／coverage.declaration（覆盖声明）／
+# placeholder_filtered 与 shape_rejected（被过滤项计数——它们不是「没问题」，是「被规则挡在门外」）
+
+# ② 补扫（成熟组件，任选项目装得下的；命中值默认含明文，见下方红线）
+# gitleaks：Go 二进制，brew install gitleaks / docker / releases 页下载，**不是 pip 也不是 npm 包**
+gitleaks dir "<项目根>" -v --redact=100 --report-path acceptance/evidence/gitleaks-dir.json
+gitleaks git "<项目根>" -v --redact=100 --report-path acceptance/evidence/gitleaks-git.json  # 扫历史提交
+#   v9 的命令是 `git`（仓库/历史）与 `dir`（目录与文件）；v8 时代的 `detect --no-git` 写法已不在当前文档里，
+#   照抄会报 unknown command。--exit-code N 可让命中直接非零退出接门禁。
+# detect-secrets（Yelp）：pip 系，装完命令名是 detect-secrets（带连字符）
+pip install detect-secrets
+detect-secrets -C "<项目根>" scan --all-files > acceptance/evidence/secrets.baseline
+detect-secrets audit acceptance/evidence/secrets.baseline    # 逐条人工判定，结果写回 baseline
+#   --all-files 才会扫未被 git 跟踪的文件（.env 常常就没被跟踪）
+# TruffleHog：brew install trufflehog / go install / 官方 install.sh
+trufflehog filesystem "<项目根>" --results=verified,unknown --json > acceptance/evidence/trufflehog.json
+#   --results=verified 只看校验过的真凭据；unknown 表示没校验（本机常常连不上校验接口，别据此判「都是假的」）
+
+# ③ 红线：外部组件的报告默认**含明文密钥原文**，本身即敏感件
+#   - 落盘文件设成不可公开：不进 git（.gitignore 或 acceptance/evidence/ 整体排除），不外发、不贴进验收报告正文
+#   - 报告正文只写「组件名 + 命中条数 + 文件:行号 + 掩码值」，与 §6b 的覆盖声明同一套口径
+#   - 已确认泄露的历史凭据：作废并轮换才算处置完成；只删文件里那行不算修好
+```
+
+
 ## Python 项目
 
 ```bash
@@ -16,8 +58,7 @@ python -m ruff check . || python -m flake8 .
 python -m pip_audit || pip install pip-audit        # 备选：osv-scanner
 # 冗余依赖参考
 pipreqs . --print                                    # 对比声明与实际 import
-# 密钥扫描
-gitleaks detect --source . --no-git || pip install detect-secrets
+# 密钥扫描：用上面「凭据 / 密钥扫描」小节（profile_project.py 初筛 + 成熟组件补扫）
 # 覆盖率
 python -m pytest tests --cov=<包名> --cov-report=term
 ```
@@ -30,7 +71,7 @@ npx tsc --noEmit          # 类型
 npx eslint .              # Lint
 npm audit --audit-level=high
 npx depcheck              # 冗余依赖
-npx gitleaks detect --source . --no-git
+# 密钥扫描同上面「凭据 / 密钥扫描」小节：gitleaks 是 Go 二进制（brew / docker / releases），没有 npm 包，别写 `npx gitleaks`
 ```
 
 ## Go 项目
