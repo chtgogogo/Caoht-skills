@@ -1082,7 +1082,7 @@ gh api repos/jlevy/the-art-of-command-line/contents --jq '[.[]|.name|test("(?i)l
 
 **scripts**（`scripts/`，可执行脚本，零第三方依赖）：
 
-- [check_encoding.py](../Cao-GitHub仓库检索提取-通用提炼有用内容/scripts/check_encoding.py) — 落盘文本编码体检：六类结构性损坏判据（严格解码失败／U+FFFD／控制字符／隐形双向与零宽／乱码塌缩／base64 原文未解码），退出码 0 才算过；`--selftest` 自带 10 条合成样例（含正例哨兵），不读写任何文件。
+- [check_encoding.py](../Cao-GitHub仓库检索提取-通用提炼有用内容/scripts/check_encoding.py) — 落盘文本编码体检：六类结构性损坏判据（严格解码失败／U+FFFD／控制字符／隐形双向与零宽／乱码塌缩／base64 原文未解码），退出码 0 才算过；`--selftest` 自带 13 条合成样例（正例哨兵／六类判据各自能红／旧判据的两条误判对照／豁免通道的红绿一对／「同名乱码两处只豁免第一处」的回归样例），不读写任何文件。
 
 ---
 
