@@ -1,0 +1,36 @@
+{
+  "paths": {
+    "card_dir": "1-资产卡",
+    "guide": "0-入口/AI导读.md",
+    "card_template": "0-入口/模板/资产卡模板.md",
+    "asset_map": "3-本机资产/AI工具地图.md",
+    "project_archive": "3-本机资产/项目档案.md",
+    "changelog": "CHANGELOG.md",
+    "rules": "AGENTS.md",
+    "usage_log": "6-outputs/usage.log",
+    "version_ledger": "6-outputs/version_ledger.md"
+  },
+  "journal_dir": "6-outputs/_intake_journal",
+  "guide_group_section": "触发词组清单",
+  "functional_zones": ["学习区", "本机资产", "AI宿主地图", "决策", "采集"],
+  "card_required_lines": ["group", "source", "local", "license", "last_checked", "status"],
+  "card_required_values": ["group", "source", "license", "last_checked", "status"],
+  "breadcrumb_token": "🏠",
+  "date_field": "last_checked",
+  "version_allocator": {"source": "ledger", "bump": "minor", "prefix": "v"},
+  "project_type_default": "unknown",
+  "project_type_rules": [
+    {
+      "name": "示例资产",
+      "type": "tool",
+      "why": "空白示例库自带的演示对象：它是「装在本机、AI 干活时该想起它」的那一类，所以落资产卡而不是项目档案"
+    },
+    {
+      "prefix": "9-自有工程/",
+      "type": "user_project",
+      "why": "演示规则二：放在自有工程目录下的东西一律进 3-本机资产/项目档案.md，不当工具登记"
+    }
+  ],
+  "landing_by_type": {"tool": "card_dir", "reference": "card_dir", "user_project": "project_archive"},
+  "tool_paths": {"track": "", "check": ""}
+}
