@@ -1,0 +1,47 @@
+[
+  {
+    "id": "B-01",
+    "name": "循环真的停了（不是模型嘴上说停）",
+    "failure_modes": ["LOOP-1", "LOOP-2"],
+    "observable": "注入 200 轮无进展的工具返回后，主循环在达到迭代上限的那一轮退出；退出原因记录为熔断器触发，而不是人工打断或自然跑完",
+    "pass_condition": "guard_sim.py --case loop 输出 halt_round ≤ max_rounds 且 exit_reason=circuit_open；同时 naive 版（无上限）必须报 loop_not_halted——naive 也通过说明探针是恒真判据",
+    "probe": "py scripts/guard_sim.py --case loop",
+    "mutation_check": "把上限判据摘掉（naive 版）必须翻红，否则这条断言不承载任何信息"
+  },
+  {
+    "id": "B-02",
+    "name": "周期不为 1 的交替循环也抓得到（A→B→A→B）",
+    "failure_modes": ["LOOP-2", "LOOP-3"],
+    "observable": "状态序列按 A、B 交替产生，相邻两轮永不相等；检测器在第几轮判出循环",
+    "pass_condition": "guarded（与历史集合比对）判出循环且 detected_period=2；naive（只比上一轮）必须判不出（miss）——这就是 P-02 运行边界里那条定义级盲区",
+    "probe": "py scripts/guard_sim.py --case cycle",
+    "mutation_check": "只比最近一个指纹的实现必须漏检；若它也报出循环，说明探针把'相邻不等'写反了"
+  },
+  {
+    "id": "B-03",
+    "name": "预算拦在半路，不是事后算账",
+    "failure_modes": ["COST-1", "COST-3"],
+    "observable": "每笔调用的发起时刻、结算时刻、累计已用、在途（outstanding，已发出未返回）占用量；第一次被拒绝发生在第几笔调用**之前**",
+    "pass_condition": "guarded（调用前预留＋在途核算）总花费 ≤ 上限且 rejected_before_call 非空；naive（返回后才累计）在并发下必然出现 overshoot>0——超支金额与发生轮次要打印出来，不能只报'最终超了'",
+    "probe": "py scripts/guard_sim.py --case budget",
+    "mutation_check": "把预留改成事后累计必须超支；把在途从分母里拿掉也必须超支（两次变异分别盯这两处）"
+  },
+  {
+    "id": "B-04",
+    "name": "重复写入/重复扣款被幂等拦下（三种情形分开验）",
+    "failure_modes": ["COST-3", "CONC-1", "SEC-4"],
+    "observable": "服务端真实执行次数、每次到达的响应来源（执行／回放／拒绝）、键被清理后的行为",
+    "pass_condition": "同键同参三次到达（含崩溃后重试）→ 执行 1 次 + 回放 2 次，回放响应连失败状态码也原样返回；同键异参 → 拒绝并报错而不是静默执行；首次仍在执行时并发到达 → 这次不落键、允许稍后重试；guarded 四项全对，naive（按请求体哈希去重，带时间戳就绕开）必须重复执行",
+    "probe": "py scripts/guard_sim.py --case idem",
+    "mutation_check": "把键改成请求体哈希必须重复执行；把'同键异参'从报错改成静默忽略必须让调用方误判成功"
+  },
+  {
+    "id": "B-05",
+    "name": "跨租户读取被代码层拒绝（不是靠提示词自律）",
+    "failure_modes": ["GOV-3", "SEC-1"],
+    "observable": "A 租户会话检索与直查 B 租户记录 id 时，存储层返回的行数与抛出的错误",
+    "pass_condition": "guarded（检索强制带租户键 + 直查在代码层拒绝）返回 0 行并抛错；naive（只在提示词里写'不要看别人的数据'）必须返回到 B 的行——把租户键从查询里删掉即翻红",
+    "probe": "py scripts/guard_sim.py --case tenant",
+    "mutation_check": "把租户过滤从代码层挪进提示词必须泄漏；这条是 GOV-9 纸面防线的最小复现"
+  }
+]
