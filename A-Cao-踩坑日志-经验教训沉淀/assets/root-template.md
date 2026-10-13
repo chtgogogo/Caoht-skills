@@ -1,6 +1,6 @@
 ---
 name: 根因模板
-description: 每个根因一个文件时的标准结构；复制到 roots/RT-<三位编号>-<slug>.md 即可
+description: 每个根因一个文件时的标准结构；复制到 roots/RT-<三位编号>-<slug>.md 即可，也可由 scripts/pitfall_log.py add --make-root "<一句话根因>" 生成（不确认是新根因族就别建号）
 type: root-template
 ---
 
@@ -8,6 +8,7 @@ type: root-template
 
 > 复制后请把顶部这段模板元信息（name / description / type）替换为：
 > `root_id: RT-<三位编号>` ｜ `title: <一句话根因>` ｜ `cases: 0` ｜ `hits: 0` ｜ `escalated: false`
+> 🔴 `cases` 与 `hits` **不手填**：由 `py scripts/pitfall_log.py --root <log-root> counts --apply` 从事件记录现扫生成（cases＝该根因下按指纹去重的事件数，hits＝本文件命中记录行数＋下挂案例的命中数）。
 
 ## 一句话根因
 
@@ -30,3 +31,17 @@ type: root-template
 | 日期 | 案例 | 命中 |
 |---|---|---|
 | — | — | — |
+
+## 命中记录
+
+（**根因层与案例层各自独立计数**：只读了本文件、套通用对策就解决了 → 根因 +1；深读案例并获益 → 案例 +1；两层都帮上忙 → 各 +1。
+一条命中一行，日期写进 `last_hit`；同一次命中重复提交不重复计数——`hit --root-cause RT-0NN` 按「日期＋场景归一文本」判同）
+
+| 日期 | 场景 | 解决了什么 |
+|---|---|---|
+| — | — | — |
+
+## 升华状态
+
+（本根因下案例数 ≥7 才进**候选区**——不是数到次数就自动变铁律。候选须补齐四要素（适用范围／反例／边界／复核日期）才允许 `promote --apply`；提升后本段记 ⭐ 与提升日期，并同步写入记忆 CORE 铁律区。）
+

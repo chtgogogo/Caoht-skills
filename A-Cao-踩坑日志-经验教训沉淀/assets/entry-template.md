@@ -1,6 +1,6 @@
 ---
 name: 踩坑记录模板
-description: 每条踩坑单独一个文件时的标准结构（八段 + 单列「我自己引入的错」）。复制到 pitfalls/YYYY-MM-DD-<slug>.md 后，把本文件顶部的 name/description/type 三行换成 root/hits/last_hit/escalated 四行
+description: 每条踩坑单独一个文件时的标准结构（八段 + 单列「我自己引入的错」）。复制到 pitfalls/YYYY-MM-DD-<slug>.md 后，把本文件顶部的 name/description/type 三行换成 root/hits/last_hit/escalated 四行；小事用 assets/entry-lite-template.md（四段），🔴 不可再生损失必须用本模板
 type: pitfall-template
 ---
 
@@ -8,7 +8,14 @@ type: pitfall-template
 
 > 复制后请把上面这段模板元信息（name / description / type）替换为四行 frontmatter：
 > `root: RT-00X`（挂在哪个根因下，必填）｜ `hits: 0` ｜ `last_hit: —` ｜ `escalated: false`
+> 副挂第二个根因时另起一行 `also_root: RT-00Y`（挂载数会因此 ≠ 案例数，这是对的）；可选 `kind: full`（不写则工具按形状与日期推断）
 > 后果分级写在标题行、**不进 frontmatter**：🔴 不可再生损失 ／ 🟠 结果错但可回滚 ／ 🟡 只浪费时间
+
+<!-- pitfall-event: YYYY-MM-DD-slug | fp: <12位事件指纹> -->
+
+> 🔴 这行事件标记是**去重与计数的锚**：`fp` ＝ `sha1(标题|根因号|后果分级)` 前 12 位，同一事件重复提交时工具靠它认出「已在册」并做幂等 no-op（计数只 +1）。
+> 手抄条目时请整行复制，别只留标题——没有这行的老条目照样计数（现扫按文件数），但**重复提交会投重**（2026-10-13 现役库 46 条即如此）。用 `scripts/pitfall_log.py add` 生成则自动带上。
+
 
 ## 1. 现象
 
@@ -36,11 +43,12 @@ type: pitfall-template
 
 ## 7. 能否借鉴（通用规律）
 
-（换个任务 / 换个项目还会不会遇到，可迁移的规律是什么——全篇最值钱的一段，记录可迁移的经验而非仅本地修复）
+（换个任务 / 换个项目还会不会遇到，可迁移的规律是什么——全篇最值钱的一段，记录可迁移的经验而非仅本地修复。
+🔴 **必须写适用条件**：这条规律在什么前提下成立、什么情况下不成立。适用条件空缺 ⇒ 本条永远进不了升华候选，因为它没法被验证「适用范围」）
 
 ## 8. 教训（一句可迁移纪律）
 
-（一句下次能直接照做的命令句）
+（一句下次能直接照做的命令句；**范围要贴着本案例**，别把一次的经验写成「所有任务都要…」）
 
 ## 我自己引入的错
 
