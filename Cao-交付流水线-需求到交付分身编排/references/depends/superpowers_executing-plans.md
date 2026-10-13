@@ -1,4 +1,5 @@
 > 【自包含副本】来源：obra/superpowers · skills/executing-plans/SKILL.md（MIT，github.com/obra/superpowers）
+> 【内链修订】本副本从上游搬入本库后，原文里的相对链接会指空。此处只把链接目标按本库位置改写（上游 `skills/<类别>/<文件>` ＝ 本库 `references/depends/superpowers_assets/<类别>/<文件>`），**正文其余一字未改**；对账跑 `py scripts/depends_snapshot.py links`。
 > 快照版本：main @ 5bf4e7801107（2026-09-22 经 GitHub API 抓取）。原 skill 升级后本副本不自动跟随。
 ---
 
@@ -244,7 +245,7 @@ Run `../subagent-driven-development/scripts/review-package PLAN_FILE MERGE_BASE 
 **With a subagent tool:** dispatch the reviewer on the most capable
 available model — the whole-branch review is a judgment task — using
 superpowers:requesting-code-review's
-[code-reviewer.md](../requesting-code-review/code-reviewer.md), with the
+[code-reviewer.md](superpowers_assets/requesting-code-review/code-reviewer.md), with the
 package path, the plan and spec paths, the plan's Review Focus section
 verbatim if it has one (the input classes and failure modes the plan's
 tests do not exercise — the reviewer checks each deliberately), and a

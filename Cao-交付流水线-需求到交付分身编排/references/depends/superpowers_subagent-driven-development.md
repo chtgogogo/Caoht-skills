@@ -1,4 +1,5 @@
 > 【自包含副本】来源：obra/superpowers · skills/subagent-driven-development/SKILL.md（MIT，github.com/obra/superpowers）
+> 【内链修订】本副本从上游搬入本库后，原文里的相对链接会指空。此处只把链接目标按本库位置改写（上游 `skills/<类别>/<文件>` ＝ 本库 `references/depends/superpowers_assets/<类别>/<文件>`），**正文其余一字未改**；对账跑 `py scripts/depends_snapshot.py links`。
 > 快照版本：main @ 5bf4e7801107（2026-09-22 经 GitHub API 抓取）。原 skill 升级后本副本不自动跟随。
 ---
 
@@ -285,7 +286,7 @@ and fix-round diffs need it.
   fix-loop rounds 1-3 resume this agent.
 - Never dispatch multiple implementation subagents in parallel (conflicts).
 
-Template: [implementer-prompt.md](implementer-prompt.md)
+Template: [implementer-prompt.md](superpowers_assets/subagent-driven-development/implementer-prompt.md)
 
 ### 2. Handle the report
 
@@ -353,7 +354,7 @@ complete: you hold the plan and cross-task context the reviewer
 lacks. If you confirm an item is a real gap, treat it as a failed spec
 review — it enters the fix loop with the other findings.
 
-Template: [task-reviewer-prompt.md](task-reviewer-prompt.md)
+Template: [task-reviewer-prompt.md](superpowers_assets/subagent-driven-development/task-reviewer-prompt.md)
 
 ### 4. The fix loop
 
@@ -399,7 +400,7 @@ whole suite.
 
 **The re-review is scoped.** Run `bash scripts/review-package PLAN_FILE FIX_BASE HEAD`
 where FIX_BASE is the head the previous review saw, and dispatch
-[re-review-prompt.md](re-review-prompt.md) with the findings list, the
+[re-review-prompt.md](superpowers_assets/subagent-driven-development/re-review-prompt.md) with the findings list, the
 brief, the report file, and the printed diff path. The re-reviewer verdicts
 each finding ADDRESSED or NOT ADDRESSED and flags new breakage in the fix
 diff only. New Critical/Important breakage in the fix diff joins the open
@@ -455,7 +456,7 @@ printed path in the final review dispatch, so the final reviewer reads
 one file instead of re-deriving the branch diff with git commands. Dispatch
 on the most capable available model (see Model Selection), using
 superpowers:requesting-code-review's
-[code-reviewer.md](../requesting-code-review/code-reviewer.md). Point it at
+[code-reviewer.md](superpowers_assets/requesting-code-review/code-reviewer.md). Point it at
 the ledger's deferred-minor and parked lines so it can triage which must be
 fixed before merge.
 
@@ -465,7 +466,7 @@ Per-finding fixers each rebuild context and re-run suites; a real
 session's final-review fix wave cost more than all its tasks combined.
 Then run exactly one scoped re-review of the fix wave
 (`bash scripts/review-package PLAN_FILE FIX_BASE HEAD` over the fix range,
-[re-review-prompt.md](re-review-prompt.md)).
+[re-review-prompt.md](superpowers_assets/subagent-driven-development/re-review-prompt.md)).
 Adjudicate any residual findings as in the task loop's breaker: park with
 rulings, or rule on the load-bearing ones and ledger what you decided. Only
 the four classes above stop you here. There is no second fix wave —

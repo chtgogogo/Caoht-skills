@@ -1,4 +1,5 @@
 > 【自包含副本】来源：obra/superpowers · skills/requesting-code-review/SKILL.md（MIT，github.com/obra/superpowers）
+> 【内链修订】本副本从上游搬入本库后，原文里的相对链接会指空。此处只把链接目标按本库位置改写（上游 `skills/<类别>/<文件>` ＝ 本库 `references/depends/superpowers_assets/<类别>/<文件>`），**正文其余一字未改**；对账跑 `py scripts/depends_snapshot.py links`。
 > 快照版本：main @ 5bf4e7801107（2026-09-22 经 GitHub API 抓取）。原 skill 升级后本副本不自动跟随。
 ---
 
@@ -35,7 +36,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 **2. Dispatch code reviewer subagent:**
 
-Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](code-reviewer.md)
+Dispatch a `general-purpose` subagent, filling the template at [code-reviewer.md](superpowers_assets/requesting-code-review/code-reviewer.md)
 
 **Placeholders:**
 - `{DESCRIPTION}` - Brief summary of what you built
@@ -96,4 +97,4 @@ You: [Fix progress indicators]
 - Show code/tests that prove it works
 - Request clarification
 
-See template at: [code-reviewer.md](code-reviewer.md)
+See template at: [code-reviewer.md](superpowers_assets/requesting-code-review/code-reviewer.md)

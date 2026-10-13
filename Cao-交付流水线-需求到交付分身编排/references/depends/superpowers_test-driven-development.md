@@ -1,4 +1,5 @@
 > 【自包含副本】来源：obra/superpowers · skills/test-driven-development/SKILL.md（MIT，github.com/obra/superpowers）
+> 【内链修订】本副本从上游搬入本库后，原文里的相对链接会指空。此处只把链接目标按本库位置改写（上游 `skills/<类别>/<文件>` ＝ 本库 `references/depends/superpowers_assets/<类别>/<文件>`），**正文其余一字未改**；对账跑 `py scripts/depends_snapshot.py links`。
 > 快照版本：main @ 5bf4e7801107（2026-09-22 经 GitHub API 抓取）。原 skill 升级后本副本不自动跟随。
 ---
 
@@ -217,7 +218,7 @@ Next failing test for next feature.
 | **Clear** | Name describes behavior | `test('test1')` |
 | **Shows intent** | Demonstrates desired API | Obscures what code should do |
 
-When writing or changing any test, read [writing-good-tests.md](writing-good-tests.md) for the rules that keep tests honest:
+When writing or changing any test, read [writing-good-tests.md](superpowers_assets/test-driven-development/writing-good-tests.md) for the rules that keep tests honest:
 - Name the production change that would make the test fail — before writing it
 - Assert on real behavior, never on mock behavior
 - Keep test-only code in test utilities, out of production classes

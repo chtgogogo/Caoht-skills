@@ -1,4 +1,6 @@
 > 【自包含副本】来源：Cao-多Agent团队协作文档治理-防撞车 v1.3（用户本机 skill 库）。注意：其 scripts/governance_check.py 等附属文件未随副本复制，需要时从原库取。
+> 【外指声明】`references/决策看板模板.md`、`references/契约模板.md`、`references/信箱说明.md`、`scripts/governance_check.py` —— 这 4 件是**上游 skill 自己的附属件**，本库只复制其主 SKILL 正文、刻意未随件收录，所以下文出现的路径指向上游而非本库。要取原件请回上游那支 skill，别在本库里找。
+> 【外指对账】跑 `py scripts/depends_snapshot.py links`：声明过的记「外指命中」（条数在报告里明写，不是静默豁免），没声明的一律算断链。
 ---
 name: multi-agent-team-governance
 description: 为多角色（多个 AI agent + 用户本人）协作的项目建立纯文档化的协作治理机制。当用户说"多agent协作""团队分工""agent信箱""多个角色一起做项目""避免多人改同一处""别让我被重复追问""防止撞车""统一决策""建立协作机制""瓶颈交接""切换会话""接力告知""别在一个成员死磕""项目已经乱了""文档互相矛盾""谁改的忘了""治理体检""轻量协作"时触发。自动生成三层治理骨架（决策真相源 DECISIONS.md + 协作契约 + 异步信箱 沟通/ 文件夹），以及可选的进度看板与治理体检脚本；用编辑锁（带超时/抢占）、统一决策入口、信箱投递、交接原则四条纪律替代实时沟通，防止 agent 互相撞车、防止用户被重复追问、并避免某一成员在瓶颈处死磕导致进度失衡。支持轻量/标准/大型三档规模自适应，并覆盖决策撤销修订与项目收尾退役。单 agent 普通项目、无需协作治理时不触发。
@@ -206,7 +208,7 @@ python scripts/governance_check.py --root <项目根目录>
 
 ## 副本落点与维护须知
 
-本 skill 以「通用版」发布。若你在本地有多个 agent 宿主（例如 WorkBuddy 与 Codex 各加载一份，或有一份冷存档），请在这些宿主的 skills 目录里各放一份**逐字一致**的副本，并：
+本 skill 以「通用版」发布。若你在本地有多个 agent 宿主（例如 某宿主 与 Codex 各加载一份，或有一份冷存档），请在这些宿主的 skills 目录里各放一份**逐字一致**的副本，并：
 
 - 保持 frontmatter 的 `name` 为 `multi-agent-team-governance` 不变；
 - 任一副本改动后，整体同步其余副本（覆盖 + sha256 逐字校验），并各跑一次 `quick_validate.py`，避免多宿主规则漂移。
