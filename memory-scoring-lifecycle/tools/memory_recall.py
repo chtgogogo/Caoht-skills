@@ -404,7 +404,7 @@ def read_body_frontmatter(path, cache):
             with open(path, "rb") as f:
                 chunk = f.read(FM_READ_LIMIT)
             n = len(chunk)
-            text = chunk.decode("utf-8", errors="ignore").lstrip("﻿")
+            text = chunk.decode("utf-8", errors="ignore").lstrip("\ufeff")
             m = FM_RE.match(text)
             if m:
                 fields, closed = fm_fields(m.group(1)), True

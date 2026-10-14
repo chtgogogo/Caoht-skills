@@ -95,7 +95,7 @@ def slurp(path):
         return None, "\n", "读取失败：%s" % (e.strerror or e)
     eol = "\r\n" if b"\r\n" in raw else "\n"
     try:
-        return raw.decode("utf-8").lstrip("﻿"), eol, ""
+        return raw.decode("utf-8").lstrip("\ufeff"), eol, ""
     except UnicodeDecodeError:
         return raw.decode("utf-8", errors="replace"), eol, "含非 UTF-8 字节（替换读取，本次不回写本文件）"
 
