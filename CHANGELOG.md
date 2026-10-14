@@ -554,3 +554,18 @@
 - 抓出并公开两条**现件真缺陷**（本版不修，逐条点名移交下一轮）：① `profile_project.py` 在扫描范围 0 个文件时仍打印「✅ 覆盖范围完整」（实测三态全红）；② 同脚本的 git 探测**会向上走出被扫根**，把祖先仓库当项目仓库报——受控复核已做实（同一份夹具树内跑 ⇒ git 块指向外层仓；搬到树外 ⇒ `git: null`、退 0），并逐格审计确认本轮没有任何判定靠过 git 读数。附带结论：**评测夹具应建在非 git 工作树的根下**。
 - `disk_check.py` 的 FAIL 分支不回显达标盘读数（读的人看不到"看过了、那块没问题"）——同样记为已知披露缺口。
 - 同步与体检：`publish_sync.py` 三支 `--apply` 全部 sha256 对账一致、目标端 `*.local.md` ＝0、泄漏闸未拦；`py library_check.py` 退出码 **0**（仅 1 条既存 🟡：`tools/patrol_check.py` 未随包）。原始回显存 `evidence/卡21/_runs/_library_check_after_trackB.txt`。
+
+## 2026-10-14 · 行尾根治：仓根加 `.gitattributes`（收口批·天令）
+
+**增加了什么功能**
+
+- 仓根新增 `.gitattributes`，内容一行：`* text=auto eol=lf`。含义＝**任何文件入库前统一把换行符收成 LF，检出时也只给 LF**，从此不受"某人机器上 git 自己默认要不要改写行尾"这个设置的影响。
+
+**优化了哪些地方**
+
+- 本机 `core.autocrlf` 现查来自**系统级**配置（`Git/etc/gitconfig`＝`true`，这台机器上每个仓库都继承），本仓原先没有本地覆盖、也没有属性文件 ⇒ 唯一可移植的防线就是属性文件，本次补上。仓库配置一个字节没改（那是全队共用的设置，动它要另走拍板）。
+
+**解决了什么问题**
+
+- 实测这颗雷是真的：同一把尺、两臂都显式设 `core.autocrlf=true` 各克隆一次、删样本文件再 `git checkout` 复原——加档前那臂四个样本文件全部落盘成 CRLF（`AGENTS.md` 13 行、`LICENSE` 21 行、`docs/A-Cao-useskill.md` 859 行、`memory-scoring-lifecycle/tools/memory_organize.py` 726 行）；加档后同一环境**全部归零**。原始读数 `evidence/收口批-20261014/_checkout-eol-ab-proof.txt`，能红对照（把"加档后"那臂也换成没有属性文件的旧提交，四条判据必须全红）`_checkout-eol-ab-control-RED.txt` 退出码 1＝尺子有牙。
+- 当场复跑全仓普查证明这次提交**只加了一个文件、没有改写任何一个既有文件**：跟踪 215 个文件的行尾形态改前改后逐项相同（纯 CRLF 17／纯 LF 194／混合 4／裸 CR 0），`git status` 除一条既存未跟踪 bundle 外零改动。盘上已有的 17 个 CRLF 属历史检出留下的形态，`git diff` 看不见它们（索引里存的是 LF），**本次不做强行归一**——那会产生一笔横跨别人文件的巨型提交，要动得单独拍板。
