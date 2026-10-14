@@ -870,6 +870,12 @@ py <仓库内路径>\disk_check.py --scan-user
 
 - [disk_check.py](../disk-cache-discipline/scripts/disk_check.py)
 
+**evals**（`evals/`，v1.2.1 新增的效果评测基线包）：
+
+- [README.md](../disk-cache-discipline/evals/README.md)（三态取样、两条信道、判据三条硬要求；🔴 夹具必须是真实文件系统上的合成树＋树外哨兵，mock 出来的绿不作数）
+- [evals.json](../disk-cache-discipline/evals/evals.json)（八个轴的合成夹具形状／判据／独立真值／**能红证明**／基线典型失败／未证明面，另附回放格 RB1 的同目录陷阱）
+- [record-template.json](../disk-cache-discipline/evals/record-template.json)（一格一份的最小运行记录七字段＋七项指标＋已证明／未证明）
+
 ## 附：设计来源索引
 
 | 机制 | 来自哪个版本／日期 | 背后的方法论 |

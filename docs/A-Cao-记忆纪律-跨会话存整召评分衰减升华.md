@@ -1146,6 +1146,24 @@ links 之前是「装饰品」——写了但没人读。加展开规则：
 *本手册独立版本 v1.2 — 2026-09-15*
 *（本手册与 skill 的规则版本 v3.5 是两条独立版本线：手册是「讲解文档」，记录规则为什么这么设计；规则版本 v3.5 是「生效中的规则」本身。本手册 v1.2 起已整合 v3.2–v3.5 全部最终规则，真正自包含。）*
 
+## 深入阅读（附属文件直链）
+
+下面是这一支本体目录里除 `SKILL.md` 之外的构件，全部**链接过去看原文**，本页不复制正文。
+
+**references**（`references/`，讲解文档）：
+
+- [详解手册.md](../memory-scoring-lifecycle/references/详解手册.md)（现行规则口径的讲解本，与本页的 v1.2 快照分属两条线）
+
+**tools**（`tools/`，可执行脚本；没部署时按 `SKILL.md` §8.2 手工降级）：
+
+- [memory_recall.py](../memory-scoring-lifecycle/tools/memory_recall.py) ｜ [memory_organize.py](../memory-scoring-lifecycle/tools/memory_organize.py) ｜ [next_id.py](../memory-scoring-lifecycle/tools/next_id.py)
+
+**evals**（`evals/`，v3.5-sc1.7 新增的效果评测基线包）：
+
+- [README.md](../memory-scoring-lifecycle/evals/README.md)（三态取样、两条信道、判据三条硬要求、`N/A` 与同值格语义）
+- [evals.json](../memory-scoring-lifecycle/evals/evals.json)（八个轴的合成夹具形状／判据／独立真值／**能红证明**／未证明面）
+- [record-template.json](../memory-scoring-lifecycle/evals/record-template.json)（一格一份的最小运行记录七字段＋七项指标＋已证明／未证明）
+
 ---
 
 [← 返回总目录](../README.md#skills-index) ｜ 下一个 → [A-Cao-编码行为准则](A-Cao-编码行为准则-写码改bug审查重构.md)
