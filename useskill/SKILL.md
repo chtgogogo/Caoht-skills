@@ -2,6 +2,7 @@
 name: useskill
 description: Skill 统一调度器（公开版＝可选导航器）。负责本地唯一库检索、市场兜底、调用执行、异常降级与透明性报告。当用户说"调用/使用/找 skill"、任务超出自身基础能力需借助已装 skill、或连续 2 次工具调用失败/某子任务 3 轮无进展时触发；本地无匹配转 find-skills 市场兜底。用户说「全面调用/尽可能用 useskill」时进入穷举模式（State 2-EX 全库扫描）；纯打招呼/单行知识问答短路直连。
 metadata:
+  displayName: useskill — Skill 统一调度规则
   agent_created: true
   version: v2.6
   priority: high
@@ -152,8 +153,8 @@ py <库根>/__tools/usage_update.py --migrate-only --root <库根>     # 只把�
 - **技能清单只能由脚本生成，禁止手抄**（快照禁令：手抄件没有再生成机制，一定会变成假数据）：
 
 ```text
-py <你的技能库>\A-Cao-useskill\scripts\gen_skill_manifest.py --root <你的技能库>
-py <你的技能库>\A-Cao-useskill\scripts\gen_skill_manifest.py --root <你的技能库> --check
+py <你的技能库>\useskill\scripts\gen_skill_manifest.py --root <你的技能库>
+py <你的技能库>\useskill\scripts\gen_skill_manifest.py --root <你的技能库> --check
 ```
 
   第一条（重）生成库根 `__技能清单.md`；内容没变它不重写文件（幂等，看 mtime 就知道）。第二条只读核对：现扫与在场清单正文不一致就退 1，用来回答「这份清单还作不作数」——比对时忽略 `> 生成日期：` 那一行。新增／删除／改名／改 version 之后重跑第一条。
@@ -196,12 +197,12 @@ py <你的技能库>\A-Cao-useskill\scripts\gen_skill_manifest.py --root <你的
 
 | 场景 | 直达 |
 |---|---|
-| 治 AI 写码老毛病 | [A-Cao-编码行为准则-写码改bug审查重构](../A-Cao-编码行为准则-写码改bug审查重构/SKILL.md) |
-| 跨会话记忆 | [A-Cao-记忆纪律-跨会话存整召评分衰减升华](../A-Cao-记忆纪律-跨会话存整召评分衰减升华/SKILL.md) |
-| 把"看开源项目"变成标准流水线 | [Cao-GitHub仓库检索提取-通用提炼有用内容](../Cao-GitHub仓库检索提取-通用提炼有用内容/SKILL.md) |
-| 多 AI 协作不撞车 | [Cao-多Agent团队协作文档治理-防撞车](../Cao-多Agent团队协作文档治理-防撞车/SKILL.md) |
-| AI 家教不假装你学会了 | [Cao-贴身导师-长期陪跑逐点教学](../Cao-贴身导师-长期陪跑逐点教学/SKILL.md) |
-| 高频工程场景五套结构化模板 | [A-Cao-资深工程师五模板-构建审查根因架构计划](../A-Cao-资深工程师五模板-构建审查根因架构计划/SKILL.md) |
-| 同一个坑不踩第二次 | [A-Cao-踩坑日志-经验教训沉淀](../A-Cao-踩坑日志-经验教训沉淀/SKILL.md) |
-| 从模糊想法到可交付的总装流水线 | [Cao-交付流水线-需求到交付分身编排](../Cao-交付流水线-需求到交付分身编排/SKILL.md) |
+| 治 AI 写码老毛病 | [A-Cao-编码行为准则-写码改bug审查重构](../coding-behavior/SKILL.md) |
+| 跨会话记忆 | [A-Cao-记忆纪律-跨会话存整召评分衰减升华](../memory-scoring-lifecycle/SKILL.md) |
+| 把"看开源项目"变成标准流水线 | [Cao-GitHub仓库检索提取-通用提炼有用内容](../github-repo-extract/SKILL.md) |
+| 多 AI 协作不撞车 | [Cao-多Agent团队协作文档治理-防撞车](../multi-agent-team-governance/SKILL.md) |
+| AI 家教不假装你学会了 | [Cao-贴身导师-长期陪跑逐点教学](../personal-mentor/SKILL.md) |
+| 高频工程场景五套结构化模板 | [A-Cao-资深工程师五模板-构建审查根因架构计划](../senior-engineer-playbook/SKILL.md) |
+| 同一个坑不踩第二次 | [A-Cao-踩坑日志-经验教训沉淀](../pitfall-log/SKILL.md) |
+| 从模糊想法到可交付的总装流水线 | [Cao-交付流水线-需求到交付分身编排](../delivery-pipeline/SKILL.md) |
 | 动手前把想法磨成完整设计 | 库内如有「头脑风暴／需求澄清」类技能则用之；本公开包未附带该支，没有就直接按第三节流程先把想法磨成可执行方案 |

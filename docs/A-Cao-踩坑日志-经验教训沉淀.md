@@ -1,7 +1,7 @@
 > [← 返回总目录](../README.md#skills-index)
 
-> **审计对象**：本仓库随包发布的 `A-Cao-踩坑日志-经验教训沉淀/SKILL.md`（下称「SKILL.md」，即这支 skill 的规则正文本体），其 frontmatter（文件顶部用 `---` 包起来的元信息块）`version: 1.6.0`、**366 行**、**38,760 字节**、md5（一种取文件内容指纹的算法，用来比对两份文件是否逐字相同）前 12 位 **`95991fd72911`**；附属件 **7 个**＝`CHANGELOG.md`（版本迭代记录，66 行／20,163 字节）＋`scripts/pitfall_log.py`（随包确定性脚本，1,620 行／72,568 字节）＋`assets/`（随 skill 一起发的模板目录）下五份：`entry-template.md`（案例完整模板）、`entry-lite-template.md`（案例轻量模板）、`candidate-template.md`（升华候选模板）、`root-template.md`（根因模板）、`index-template.md`（索引模板）。以上数字为 2026-10-13 本仓现件实测（权威侧同批文件脱敏前 38,757 字节，差 3 字节＝三处代号的机械替换），同步器逐文件 sha256 对账一致。
-> **版本落差声明**：本页正文各章按 **v1.5.1** 撰写；v1.6.0 的改动集中在**第 16 章**（数字改由脚本现扫、事件唯一 ID 与幂等、升华改「候选 → 验证适用范围 → 提升」、轻量/完整双模板、多代理同写的原子实现），各章与第 16 章冲突处以第 16 章为准。体裁（两层结构＋案例八段）与阈值（同根因 7 条／召回 3 次）两版一致，未回退。仓库内那份公开副本（[../A-Cao-踩坑日志-经验教训沉淀/SKILL.md](../A-Cao-踩坑日志-经验教训沉淀/SKILL.md)）与本页同为 **v1.6.0**，可以当最新版读。
+> **审计对象**：本仓库随包发布的 `pitfall-log/SKILL.md`（下称「SKILL.md」，即这支 skill 的规则正文本体），其 frontmatter（文件顶部用 `---` 包起来的元信息块）`version: 1.6.0`、**366 行**、**38,760 字节**、md5（一种取文件内容指纹的算法，用来比对两份文件是否逐字相同）前 12 位 **`95991fd72911`**；附属件 **7 个**＝`CHANGELOG.md`（版本迭代记录，66 行／20,163 字节）＋`scripts/pitfall_log.py`（随包确定性脚本，1,620 行／72,568 字节）＋`assets/`（随 skill 一起发的模板目录）下五份：`entry-template.md`（案例完整模板）、`entry-lite-template.md`（案例轻量模板）、`candidate-template.md`（升华候选模板）、`root-template.md`（根因模板）、`index-template.md`（索引模板）。以上数字为 2026-10-13 本仓现件实测（权威侧同批文件脱敏前 38,757 字节，差 3 字节＝三处代号的机械替换），同步器逐文件 sha256 对账一致。
+> **版本落差声明**：本页正文各章按 **v1.5.1** 撰写；v1.6.0 的改动集中在**第 16 章**（数字改由脚本现扫、事件唯一 ID 与幂等、升华改「候选 → 验证适用范围 → 提升」、轻量/完整双模板、多代理同写的原子实现），各章与第 16 章冲突处以第 16 章为准。体裁（两层结构＋案例八段）与阈值（同根因 7 条／召回 3 次）两版一致，未回退。仓库内那份公开副本（[../pitfall-log/SKILL.md](../pitfall-log/SKILL.md)）与本页同为 **v1.6.0**，可以当最新版读。
 > **自包含声明**：只读这一页，就能理解并执行整套「踩坑沉淀」规程——每个数值为什么是这个数、每个字段为什么长这样，都写在正文里，不用再去翻别处。
 > **引用纪律**：本页引用一律用「文件名＋章节名／规则名／字段名」，不用 `SKILL.md:123` 这种行号。理由：权威库是活文件，别的窗口正在改它，行号一改就成悬空引用（指一个已经不存在的位置）；章节名与字段名稳定得多。
 > **隐私处理声明**：本仓库是**公开库**。权威库正文与模板里带着的真实条目编号、真实存储目录、真实事故记录者代号，本页**一处都不复制**：编号一律写成形状（`RT-00X`／`RT-<三位编号>`），事故一律写成「一次实测事故：保留技术细节、抹掉可定位信息」的形式，路径一律写成「共享日志根目录」这类抽象名。方法论讲透，指纹抹干净。
@@ -1078,13 +1078,13 @@ roots/RT-00X-....md        escalated: false → true，并记升华日期
 
 **assets**（`assets/`，模板件（照着填就能落地的空表））：
 
-- [entry-template.md](../A-Cao-踩坑日志-经验教训沉淀/assets/entry-template.md)
-- [index-template.md](../A-Cao-踩坑日志-经验教训沉淀/assets/index-template.md)
-- [root-template.md](../A-Cao-踩坑日志-经验教训沉淀/assets/root-template.md)
+- [entry-template.md](../pitfall-log/assets/entry-template.md)
+- [index-template.md](../pitfall-log/assets/index-template.md)
+- [root-template.md](../pitfall-log/assets/root-template.md)
 
 **随包散件**：
 
-- [CHANGELOG.md](../A-Cao-踩坑日志-经验教训沉淀/CHANGELOG.md)
+- [CHANGELOG.md](../pitfall-log/CHANGELOG.md)
 
 ## 附：设计来源索引
 

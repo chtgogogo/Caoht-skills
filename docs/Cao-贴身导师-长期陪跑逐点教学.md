@@ -1,6 +1,6 @@
 > [← 返回总目录](../README.md#skills-index)
 
-> **审计对象**：本机 skill 库里 `Cao-贴身导师-长期陪跑逐点教学/SKILL.md` —— frontmatter `version: 1.2.0`、**207 行／18,453 字节／md5 前 12 位 `2c0bb2781066`**、附属件 **7 个**（`references/` 下 6 份 + 1 份 `CHANGELOG.md`）。
+> **审计对象**：本机 skill 库里 `personal-mentor/SKILL.md` —— frontmatter `version: 1.2.0`、**207 行／18,453 字节／md5 前 12 位 `2c0bb2781066`**、附属件 **7 个**（`references/` 下 6 份 + 1 份 `CHANGELOG.md`）。
 > 这四个数值**照抄主控方基线探测结果**（`baseline_probe.py`，2026-10-09），本页不另测新值，以免两处数字对不上（"勾稽"＝两处的数能对上）。
 > **引用方式**：全文只用「文件名 ＋ 章节名／规则名／字段名」引用，**不写行号**。理由：库里这份正文是活文件，另一个窗口随时可能改动它，行号一改引用就悬空（指到一个不存在的位置）；章节名与规则名稳定得多。
 > **跟踪状态**：本仓库当前收录的这份副本正文，版本比权威库为旧或已被抽象化。实测逐行比对：本仓库副本与权威库**仅 1 处字面差异**（「文档存储」一节里举例的那个默认目录写法，仓库副本已换成 `<你的工具根目录>/mentor-learning/` 这种占位写法），行数同为 207 行。本页一律描述**权威库**的内容。
@@ -129,7 +129,7 @@
 ### 3.1 一支 skill 的文件树
 
 ```
-Cao-贴身导师-长期陪跑逐点教学/
+personal-mentor/
 ├── SKILL.md                      主说明书（207 行／18,453 字节）—— 15 个一级小节
 ├── CHANGELOG.md                  版本迭代记录（v1.2.0 + v1.0 初版 + 自记事故与体检记录）
 └── references/                   6 份外挂文档，共 12,121 字节（数法：逐个字节数相加）
@@ -1204,14 +1204,14 @@ document.getElementById('name') 就是"拿着名牌去叫人"——一次只叫�
 - **公开库声明**：全文零盘符绝对路径、零 agent 人名代号、零记忆库目录与条目编号、零凭据形状、零真实学习项目位置；引用只用「文件名 ＋ 章节名／规则名／字段名」。
 
 正文里提到的外挂文档在本仓库同样可读：
-[SKILL.md](../Cao-贴身导师-长期陪跑逐点教学/SKILL.md) ｜
-[mastery-rubric.md](../Cao-贴身导师-长期陪跑逐点教学/references/mastery-rubric.md) ｜
-[teaching-playbook.md](../Cao-贴身导师-长期陪跑逐点教学/references/teaching-playbook.md) ｜
-[profile-template.md](../Cao-贴身导师-长期陪跑逐点教学/references/profile-template.md) ｜
-[source-strategy.md](../Cao-贴身导师-长期陪跑逐点教学/references/source-strategy.md) ｜
-[learning-principles.md](../Cao-贴身导师-长期陪跑逐点教学/references/learning-principles.md) ｜
-[project-patterns.md](../Cao-贴身导师-长期陪跑逐点教学/references/project-patterns.md) ｜
-[CHANGELOG.md](../Cao-贴身导师-长期陪跑逐点教学/CHANGELOG.md)
+[SKILL.md](../personal-mentor/SKILL.md) ｜
+[mastery-rubric.md](../personal-mentor/references/mastery-rubric.md) ｜
+[teaching-playbook.md](../personal-mentor/references/teaching-playbook.md) ｜
+[profile-template.md](../personal-mentor/references/profile-template.md) ｜
+[source-strategy.md](../personal-mentor/references/source-strategy.md) ｜
+[learning-principles.md](../personal-mentor/references/learning-principles.md) ｜
+[project-patterns.md](../personal-mentor/references/project-patterns.md) ｜
+[CHANGELOG.md](../personal-mentor/CHANGELOG.md)
 
 ## 增补注记（2026-10-14）· 审计对象已由 v1.2.0 升到 v1.3.0：本页哪些坐标与说法过期了
 

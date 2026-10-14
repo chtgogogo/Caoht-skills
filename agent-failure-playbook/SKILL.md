@@ -2,6 +2,7 @@
 name: agent-failure-playbook
 description: Agent 失败模式与对策库（任务专用，宁多触发勿少触发）。任何涉及设计、实现、审查、加固、排错 AI Agent 的任务都触发：设计 Agent/做一个 Agent/写 Agent 工具执行循环、给 Agent 加护栏/加限制器/加保护措施、担心无限循环/原地打转/烧 token/费用失控/越权/提示注入/上下文爆了、Agent 上线前检查、复盘 Agent 事故。命中任一关键词必触发：失败模式、无限循环、死循环、活锁、无进展、熔断器、预算控制、幂等键、状态指纹、权限门、人工确认、上下文压缩、迭代上限、重试风暴、提示注入、输出截断、guardrails、livelock、circuit breaker、idempotency key、state fingerprint、凌晨三点、工具投毒、tool poisoning、rug pull、confused deputy、致命三要素、lethal trifecta、模型漂移、评估回归、灰度发布、影子模式、多租户、审计留痕、供应商锁定、MAST。企业级场景（合规审计、多租户隔离、模型选型与退役、评估体系、灰度上线治理）同样触发。与 coding-behavior（编码纪律）叠加使用不冲突；与 Agent 无关的纯前端页面、纯脚本、纯数据分析任务不触发。
 metadata:
+  displayName: Agent 失败模式与对策库（agent-failure-playbook）
   agent_created: true
   version: v1.2.0
   source: 提炼自 CaoHT「Agent 设计四框架问题意识」方法论（2026-09-23），六目录库结构由 CaoHT 拍板

@@ -1,6 +1,6 @@
 > [← 返回总目录](../README.md#skills-index)
 
-> **版本坐标（本页唯一真源句）**：本页描述 2026-10-09 实测的库内正本 `Cao-交付流水线-需求到交付分身编排/SKILL.md`——frontmatter `version: 1.5.0`、正文「版本」节自述 `v1.5.0`（两处一致），113 行 / 18,310 字节 / md5 前 12 位 `1b4eabb39779`。
+> **版本坐标（本页唯一真源句）**：本页描述 2026-10-09 实测的库内正本 `delivery-pipeline/SKILL.md`——frontmatter `version: 1.5.0`、正文「版本」节自述 `v1.5.0`（两处一致），113 行 / 18,310 字节 / md5 前 12 位 `1b4eabb39779`。
 > **仓库与库的版本关系**：本支是 17 支里仅有的 2 支「仓库收录本体与权威库正本**逐字相同**」之一（两侧均 18,310 字节，差额 0）。所以本页与仓库正文**无版本差**，不需要也不许写「本仓库跟踪的正文较此页为旧」这类未经证实的断言。
 > **附件规模**：顶层附属件只有 `CHANGELOG.md` 与 `references/`，但递归展开共 **51 个文件**——17 支里附件最厚的一支。`SKILL.md` 本身只有 113 行，也就是说**知识体量几乎全在 `references/` 里**，主页只是一张路由表。读本页必须接受一个前提：你看到的不是它的正文，是它的**目录设计**。
 > **引用约定**：库里的活文件会被其他会话同时改动，行号一改就成了悬空引用，因此本页所有引用只写「文件名 + 章节名 / 字段名」，一律不写行号。每条机制论断后带 `[实测]`（能在指名的文件指名的小节里找到原文）或 `[推演]`（本页的推断，同时给一个「什么输入会让它出问题」的具体例子）。
@@ -1124,25 +1124,25 @@ B 档走「★层 + 核心层」。本例用户初始想的是 `Scrapy + Kafka +
 
 **references**（`references/`，参考资料分包（正文之外另写的分册））：
 
-- 本目录 11 份，逐份清单请点目录：[`references/`](../Cao-交付流水线-需求到交付分身编排/references/)
-- 本目录 20 份，逐份清单请点目录：[`references/depends/`](../Cao-交付流水线-需求到交付分身编排/references/depends/)
-- [README.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/README.md)
-- [visual-companion.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/brainstorming/visual-companion.md)
-- [task-done](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/executing-plans/scripts/task-done)
-- [task-start](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/executing-plans/scripts/task-start)
-- [code-reviewer.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/requesting-code-review/code-reviewer.md)
-- [implementer-prompt.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/implementer-prompt.md)
-- [re-review-prompt.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/re-review-prompt.md)
-- [task-reviewer-prompt.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/task-reviewer-prompt.md)
-- [review-package](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/scripts/review-package)
-- [sdd-workspace](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/scripts/sdd-workspace)
-- [task-brief](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/subagent-driven-development/scripts/task-brief)
-- [condition-based-waiting-example.ts](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/condition-based-waiting-example.ts)
-- [condition-based-waiting.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/condition-based-waiting.md)
-- [defense-in-depth.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/defense-in-depth.md)
-- [find-polluter.sh](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/find-polluter.sh)
-- [root-cause-tracing.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/systematic-debugging/root-cause-tracing.md)
-- [writing-good-tests.md](../Cao-交付流水线-需求到交付分身编排/references/depends/superpowers_assets/test-driven-development/writing-good-tests.md)
+- 本目录 11 份，逐份清单请点目录：[`references/`](../delivery-pipeline/references/)
+- 本目录 20 份，逐份清单请点目录：[`references/depends/`](../delivery-pipeline/references/depends/)
+- [README.md](../delivery-pipeline/references/depends/superpowers_assets/README.md)
+- [visual-companion.md](../delivery-pipeline/references/depends/superpowers_assets/brainstorming/visual-companion.md)
+- [task-done](../delivery-pipeline/references/depends/superpowers_assets/executing-plans/scripts/task-done)
+- [task-start](../delivery-pipeline/references/depends/superpowers_assets/executing-plans/scripts/task-start)
+- [code-reviewer.md](../delivery-pipeline/references/depends/superpowers_assets/requesting-code-review/code-reviewer.md)
+- [implementer-prompt.md](../delivery-pipeline/references/depends/superpowers_assets/subagent-driven-development/implementer-prompt.md)
+- [re-review-prompt.md](../delivery-pipeline/references/depends/superpowers_assets/subagent-driven-development/re-review-prompt.md)
+- [task-reviewer-prompt.md](../delivery-pipeline/references/depends/superpowers_assets/subagent-driven-development/task-reviewer-prompt.md)
+- [review-package](../delivery-pipeline/references/depends/superpowers_assets/subagent-driven-development/scripts/review-package)
+- [sdd-workspace](../delivery-pipeline/references/depends/superpowers_assets/subagent-driven-development/scripts/sdd-workspace)
+- [task-brief](../delivery-pipeline/references/depends/superpowers_assets/subagent-driven-development/scripts/task-brief)
+- [condition-based-waiting-example.ts](../delivery-pipeline/references/depends/superpowers_assets/systematic-debugging/condition-based-waiting-example.ts)
+- [condition-based-waiting.md](../delivery-pipeline/references/depends/superpowers_assets/systematic-debugging/condition-based-waiting.md)
+- [defense-in-depth.md](../delivery-pipeline/references/depends/superpowers_assets/systematic-debugging/defense-in-depth.md)
+- [find-polluter.sh](../delivery-pipeline/references/depends/superpowers_assets/systematic-debugging/find-polluter.sh)
+- [root-cause-tracing.md](../delivery-pipeline/references/depends/superpowers_assets/systematic-debugging/root-cause-tracing.md)
+- [writing-good-tests.md](../delivery-pipeline/references/depends/superpowers_assets/test-driven-development/writing-good-tests.md)
 
 ## 附：设计来源索引
 

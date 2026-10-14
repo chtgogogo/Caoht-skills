@@ -2,6 +2,7 @@
 name: memory-scoring-lifecycle
 description: Agent 记忆纪律（通用入口，规则 v3.5）。适用于任何 agent、任何记忆存储位置。当需要给记忆打分/分类/衰减/升华、设计触发词、检索寻址、做体检、或用整套文件化长期记忆规则时触发。规则共享一份，记忆 store 每个 agent 各自建立、互不共享。启发词：【记忆纪律 v3.1】（v3.1 为固定的入口引导卡名，非版本号）。与记忆存取/评分/体检无关的纯执行任务不触发。
 metadata:
+  displayName: 记忆纪律（自包含入口）
   agent_created: true
   version: v3.5-sc1.6
 ---

@@ -2,6 +2,7 @@
 name: anti-hallucination-discipline
 description: "抗幻觉纪律（常驻 · 宁多触发勿少触发）。任何涉及事实陈述、技术判断、问题诊断、方案决策、数据引用、版本号/路径/API 名等易记错内容的任务都触发；给出结论或建议前必守；尤其在你准备说『修好了 / 没问题 / 应该可以 / 我记得是 / 通常是』时强制自查。凡涉及测试与指标，另配测试纪律 skill；凡涉及写码，另配编码行为准则 skill。纯闲聊、纯创作不触发。"
 metadata:
+  displayName: 抗幻觉纪律（结论必须可证伪）
   agent_created: true
   version: v1.3
   source: 记忆规则\行为准则\抗幻觉与批判性验证准则.md（12 条完整版，2026-09-01）

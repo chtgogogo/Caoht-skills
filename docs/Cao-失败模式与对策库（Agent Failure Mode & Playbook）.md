@@ -1095,25 +1095,25 @@ CTX 6 ＋ SEC 7 ＋ CONC 5 ＋ LOOP 6 ＋ COST 4 ＋ GOV 10 ＋ ERR 5 ＝ **43 �
 
 **references**（`references/`，参考资料分包（正文之外另写的分册））：
 
-- 本目录 7 份，逐份清单请点目录：[`references/01-failure-modes/`](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/01-failure-modes/)
-- [对策模式库.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/02-patterns/对策模式库.md)
-- [术语速查表.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/03-terms/术语速查表.md)
-- [事故案例集.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/04-incidents/事故案例集.md)
-- [上线前检查.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/05-checklists/上线前检查.md)
-- [上线验收记录表.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/05-checklists/上线验收记录表.md)
-- [排错时检查.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/05-checklists/排错时检查.md)
-- [设计时检查.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/05-checklists/设计时检查.md)
-- [差距分析.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/06-prompts/差距分析.md)
-- [生成问题清单.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/references/06-prompts/生成问题清单.md)
+- 本目录 7 份，逐份清单请点目录：[`references/01-failure-modes/`](../agent-failure-playbook/references/01-failure-modes/)
+- [对策模式库.md](../agent-failure-playbook/references/02-patterns/对策模式库.md)
+- [术语速查表.md](../agent-failure-playbook/references/03-terms/术语速查表.md)
+- [事故案例集.md](../agent-failure-playbook/references/04-incidents/事故案例集.md)
+- [上线前检查.md](../agent-failure-playbook/references/05-checklists/上线前检查.md)
+- [上线验收记录表.md](../agent-failure-playbook/references/05-checklists/上线验收记录表.md)
+- [排错时检查.md](../agent-failure-playbook/references/05-checklists/排错时检查.md)
+- [设计时检查.md](../agent-failure-playbook/references/05-checklists/设计时检查.md)
+- [差距分析.md](../agent-failure-playbook/references/06-prompts/差距分析.md)
+- [生成问题清单.md](../agent-failure-playbook/references/06-prompts/生成问题清单.md)
 
 **evals**（`evals/`，评测题面与检索件）：
 
-- [evals.json](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/evals/evals.json)
+- [evals.json](../agent-failure-playbook/evals/evals.json)
 
 **随包散件**：
 
-- [CHANGELOG.md](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/CHANGELOG.md)
-- [eval_queries.json](../Cao-失败模式与对策库（Agent%20Failure%20Mode%20&%20Playbook）/eval_queries.json)
+- [CHANGELOG.md](../agent-failure-playbook/CHANGELOG.md)
+- [eval_queries.json](../agent-failure-playbook/eval_queries.json)
 
 ## 附：设计来源索引
 

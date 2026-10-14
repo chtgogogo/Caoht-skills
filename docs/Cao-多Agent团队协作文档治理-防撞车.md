@@ -1,9 +1,9 @@
 > [← 返回总目录](../README.md#skills-index)
 
-> 本页是「多 Agent 团队协作文档治理」的完整详解手册。审计对象＝本机 skill 库（权威版）`Cao-多Agent团队协作文档治理-防撞车/` 下的 `SKILL.md`。
+> 本页是「多 Agent 团队协作文档治理」的完整详解手册。审计对象＝本机 skill 库（权威版）`multi-agent-team-governance/` 下的 `SKILL.md`。
 > **版本坐标（照抄主控方 2026-10-09 复测真值，勿重测）**：审计对象 `SKILL.md` 219 行／17,824 字节／md5 前 12 位 `a9de22ec0fca`。三处版本**分开写**（口径修正 #9：不许挑一个抄了装作一致）：frontmatter 的 `metadata.version` ＝ `v1.3`；正文「版本」节自述＝**未检索到**（正文没有独立版本节，只在「概述」节内嵌了 v1.1／v1.2／v1.3 三段增补注记）；`CHANGELOG.md` 最新条目＝v1.3（整理日期 2026-09-18）。三处不成同一条自述，是本支一条真缺陷，记入 15.6 缺口 8。
 > **附属件坐标（已按复测表更正）**：顶层附属件 **4 类**＝`CHANGELOG.md`、`README.md`、`references`、`scripts`；**递归文件总数 7 个**（含 `SKILL.md` 自身；数法＝递归列全部文件，两条独立通道各数一次均为 7；包内无 `__pycache__`、无 `.pyc`、无 `.bak` 备份，故 7 全为有效文件）。本页早期版本把附属件写成「6 个」——那是把 `references` 与 `scripts` 里的 4 个子文件摊平来数的另一把尺子，与复测表的「顶层 4 类」不是同一口径，现已并列为：`README.md`、`CHANGELOG.md`、`references/契约模板.md`、`references/决策看板模板.md`、`references/信箱说明.md`、`scripts/governance_check.py`（401 行，包内唯一可执行物）。
-> 本仓库收录的同名副本（[仓库内 SKILL.md](../Cao-多Agent团队协作文档治理-防撞车/SKILL.md)）当前跟踪版本＝**v1.4**（2026-10-11 由权威库机械同步）：`SKILL.md` 310 行／29,830 字节／md5 前 12 位 `610e59dc7e09`，递归文件总数 **9 个**（新增 `scripts/edit_lock.py` 481 行与 `references/示例-最小可运行治理包.md`；`scripts/governance_check.py` 现 810 行）。
+> 本仓库收录的同名副本（[仓库内 SKILL.md](../multi-agent-team-governance/SKILL.md)）当前跟踪版本＝**v1.4**（2026-10-11 由权威库机械同步）：`SKILL.md` 310 行／29,830 字节／md5 前 12 位 `610e59dc7e09`，递归文件总数 **9 个**（新增 `scripts/edit_lock.py` 481 行与 `references/示例-最小可运行治理包.md`；`scripts/governance_check.py` 现 810 行）。
 > **页眉坐标随动说明**：上面第 4—5 行的 219 行／17,824 字节／`a9de22ec0fca`／7 个文件，是 **2026-10-09 对 v1.3 快照**的审计坐标，属证据不是指针，故原样保留；本页正文（尤其 §6 决策生命周期章）描述的仍是那一版的行为。v1.4 相对该快照有三处**语义反转或新增**，读本页时须同时知道：① 信箱积压判据从「整文件」改成「逐条消息」（每条消息一个标题 ＋ `消息 ID／接收方／状态` 三元组，并加分母闸：有信件却解析出 0 条即判尺子作废）；② 文字锁之外新增**真实文件锁** `scripts/edit_lock.py`（`O_CREAT|O_EXCL` 原子抢占、租约＋心跳、超时接管给写入代次 +1，旧写者的 heartbeat/guard/release 一律退出码 6 被拒）与**单写队列**（`spool`／`queue --done`）；③ 决策生命周期不再删历史——v1.3 的「抛弃型直接删除、历史区只留一行指针」被撤销，改为 `supersedes`／`revoked` 事件 ＋ 原文进历史区或 `DECISIONS_归档.md`，有效视图由 `--decision-view` 机械生成（活跃区瘦身与压缩阈值不变）。逐条见该支 `CHANGELOG.md` v1.4 节。
 > 引用纪律：全页一律按「文件名＋章节名／规则名／字段名」引用，**不写行号**——权威库的活文件由其他会话持续修订，行号一改就成悬空引用；章节名与规则名稳定得多。
 > **本文件自包含**：任何 agent 只读这一份，就能完整理解并执行整套防撞车治理机制；每个数值都附「为什么是这个数」，方便按实际情况调整而不是死记。
@@ -1036,18 +1036,18 @@ grep -n "^| D-" DECISIONS.md          # 判据4：编号序列没有重复
 
 **references**（`references/`，参考资料分包（正文之外另写的分册））：
 
-- [信箱说明.md](../Cao-多Agent团队协作文档治理-防撞车/references/信箱说明.md)
-- [决策看板模板.md](../Cao-多Agent团队协作文档治理-防撞车/references/决策看板模板.md)
-- [契约模板.md](../Cao-多Agent团队协作文档治理-防撞车/references/契约模板.md)
+- [信箱说明.md](../multi-agent-team-governance/references/信箱说明.md)
+- [决策看板模板.md](../multi-agent-team-governance/references/决策看板模板.md)
+- [契约模板.md](../multi-agent-team-governance/references/契约模板.md)
 
 **scripts**（`scripts/`，可执行脚本）：
 
-- [governance_check.py](../Cao-多Agent团队协作文档治理-防撞车/scripts/governance_check.py)
+- [governance_check.py](../multi-agent-team-governance/scripts/governance_check.py)
 
 **随包散件**：
 
-- [CHANGELOG.md](../Cao-多Agent团队协作文档治理-防撞车/CHANGELOG.md)
-- [README.md](../Cao-多Agent团队协作文档治理-防撞车/README.md)
+- [CHANGELOG.md](../multi-agent-team-governance/CHANGELOG.md)
+- [README.md](../multi-agent-team-governance/README.md)
 
 ## 附：设计来源索引
 
@@ -1062,7 +1062,7 @@ grep -n "^| D-" DECISIONS.md          # 判据4：编号序列没有重复
 
 ---
 
-> **落款**：本页审计对象＝本机 skill 库（权威版）`Cao-多Agent团队协作文档治理-防撞车/SKILL.md`（219 行／17,824 字节／md5 前 12 位 `a9de22ec0fca`；顶层附属件 4 类、递归文件总数 7；frontmatter `metadata.version`＝v1.3、正文「版本」节自述未检索到、CHANGELOG 最新条目 v1.3），审计与撰写日期 2026-10-09。全页引用一律「文件名＋章节名／规则名／字段名」，无行号引用；涉及代号、宿主名、盘符绝对路径与私有记忆条目编号的细节均已按公开库隐私口径抽象化，零出现。
+> **落款**：本页审计对象＝本机 skill 库（权威版）`multi-agent-team-governance/SKILL.md`（219 行／17,824 字节／md5 前 12 位 `a9de22ec0fca`；顶层附属件 4 类、递归文件总数 7；frontmatter `metadata.version`＝v1.3、正文「版本」节自述未检索到、CHANGELOG 最新条目 v1.3），审计与撰写日期 2026-10-09。全页引用一律「文件名＋章节名／规则名／字段名」，无行号引用；涉及代号、宿主名、盘符绝对路径与私有记忆条目编号的细节均已按公开库隐私口径抽象化，零出现。
 > **成稿方式（诚实留档）**：本页由同一天两路取证合并而成，**只增不删**——初版整页（第 0–15 章＋附录骨架）之后，另一路对 `scripts/governance_check.py` 做了两次只读复跑与逐函数对照，补入 9.8（七项检查的恒真／恒红点名与两次复跑实测）、11.5（引用可达性核对与空门清单、包卫生与 description 字节余量）、12.4／12.5（号位抢占与吞行实录、改后逐行反查四条判据）、15.6 缺口 8–28；同时把页眉的附属件计数口径与三处版本自述更正到复测真值。补强部分不改动初版任何既有论断，仅在 9.8.3 更正初版一处关于心跳时间解析的表述。
 >
 > 下一份：[Cao-项目验收官-四层漏斗固定清单加动态启发 · 完整详解手册](Cao-项目验收官-四层漏斗固定清单加动态启发.md)

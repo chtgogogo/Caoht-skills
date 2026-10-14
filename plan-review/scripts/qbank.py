@@ -61,6 +61,9 @@ CAND_LOCAL_REL = "references/候选区.local.md"
 INDEX_REL = "references/_题库索引.md"
 TEMPLATE_REL = "assets/审判报告模板.md"
 SKILL_REL = "SKILL.md"
+# 「所在文件」列的截断锚点＝本支在磁盘上的目录名，运行时现取：权威库那头是中文长名，发布仓那头是
+# plan-review（卡20 改名）。写死任何一端的字面量，另一端就会输出整条绝对路径——而且不报错。
+SKILL_DIR_NAME = os.path.basename(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # 与 __tools/publish_sync.py 的 EXCLUDE_FILES 同形：本机私有候选区就是靠这个模式在发布侧被排除
 PUBLISH_EXCLUDE = ("*.local.md", "*.pyc", "*.bak*")
 # 本机私有候选题在生成物里的替代标签：生成物会被原样抄进公开仓，问题句不外发
@@ -427,7 +430,7 @@ def build_index(store):
             # 公开仓（`*.local.md` 只排除文件本身，排除不了它的内容），标题留在这儿＝外发泄漏
             shown = LOCAL_MASK if c.id in local_ids else c.title
             lines.append("| %s | %s | %s | %s |" % (
-                c.id, shown, c.src.replace("\\", "/").split("Cao-评审计划-审判问题库/")[-1],
+                c.id, shown, c.src.replace("\\", "/").split(SKILL_DIR_NAME + "/")[-1],
                 c.status))
     lines += [
         "",

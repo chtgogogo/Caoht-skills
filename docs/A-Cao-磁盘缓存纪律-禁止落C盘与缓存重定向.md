@@ -407,7 +407,7 @@ Get-PSDrive -PSProvider FileSystem | Select-Object Name,@{n='FreeGB';e={[math]::
 
 ```powershell
 # 常规体检（只体检、不动作）
-py ..\A-Cao-磁盘缓存纪律-禁止落C盘与缓存重定向\scripts\disk_check.py
+py ..\disk-cache-discipline\scripts\disk_check.py
 
 # 附带列出系统盘用户目录的可疑大目录（只报告，不删）
 py <同上路径>\disk_check.py --scan-user
@@ -868,7 +868,7 @@ py <仓库内路径>\disk_check.py --scan-user
 
 **scripts**（`scripts/`，可执行脚本）：
 
-- [disk_check.py](../A-Cao-磁盘缓存纪律-禁止落C盘与缓存重定向/scripts/disk_check.py)
+- [disk_check.py](../disk-cache-discipline/scripts/disk_check.py)
 
 ## 附：设计来源索引
 

@@ -8,9 +8,11 @@
   · SKILL.md 正文引用的 scripts|references|assets 相对路径文件不存在
   · README / docs 详解页 / SKILL.md 内的相对链接目标不存在
   · README 收录表 ↔ 实际 skill 目录双向不一致；README 版本列 ≠ frontmatter version
+  · 发布仓专属：目录名 ≠ `name`（开放标准要求 name == 父目录名）；README「中文名」列 ≠ metadata.displayName；
+    缺 metadata.displayName；docs/*.md 未被收录表任何一行指向（后一条为警告）
   · 传统四项：详解页·回链·锚点漂移、name 冲突、SKILL.md 逐字重复
 🟡 警（不影响退出码）——要人来裁决的漂移与规范上限：
-  · description 超 1024 字符、name 不合标准格式、目录名 ≠ name
+  · description 超 1024 字符、name 不合标准格式（权威库侧目录名 ≠ name 也只报警告，那边按中文目录名约定走）
   · frontmatter 版本 ↔ 本支 CHANGELOG 最新版本不一致，或没有 CHANGELOG
   · 跨 skill 的 `../` 链接失效（访客可能只装其中几支）；`tools/` 引用失效（本库约定那是使用者 store 部署件）
   · 指向本机绝对路径的链接（公开库里应换成占位符）；发布仓混进 __pycache__/*.pyc
@@ -38,7 +40,6 @@ SEQ_ITEM_RE = re.compile(r"^-(?:\s+(.*))?$")
 PATH_RE = re.compile(
     r"(?<![\w./-])((?:scripts|references|assets|tools)/[\w\-./%&\u4e00-\u9fff ]+?\.(?:py|md|json|txt|sh|ps1|yaml|yml|bat))(?![\w./])"
 )
-ROW_RE = re.compile(r"^\|\s*\[[^\]]*\]\((docs/[^)]+)\)\s*\|\s*([^|]*?)\s*\|", re.M)
 FM_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n", re.S)
 # CHANGELOG 版本号标题：允许 `## v1.2.0`、`## 1.2（...）`、`## 1. vX（...）`；纯日期标题（2026-09-28）不收
 VER_HEAD_RE = re.compile(r"^#{1,4}\s*(?:\d+[.)]\s*)?v?(\d+\.\d+(?:\.\d+)?(?:[-+][\w.]+)?)", re.M)
@@ -414,7 +415,11 @@ def check_skill(d, mode):
     if name and (len(name) > NAME_MAX or not NAME_RE.match(name)):
         WARN.append(f"{d.name}：`name`=`{name}` 不合开放标准（1-{NAME_MAX} 字符，小写字母数字加单个连字符）")
     if name and name != d.name:
-        WARN.append(f"{d.name}：`name`=`{name}` 与目录名不一致（标准发布目录口径见 CONTRIBUTING / 卡20）")
+        # 发布仓：开放标准明写 name 必须等于父目录名 ⇒ 改名（卡20）之后这条就是硬错，
+        # 装在权威库侧（中文目录名，按 D-2 保留）只报警告，两条口径不能混。
+        msg = (f"{d.name}：`name`=`{name}` 与目录名不一致（开放标准要求 name == 父目录名；"
+               "中文展示名请写 metadata.displayName，见 CONTRIBUTING 第一节）")
+        (RED if mode["release"] else WARN).append(msg)
     if len(desc) > DESC_MAX:
         WARN.append(f"{d.name}：`description` {len(desc)} 字符 > 上限 {DESC_MAX}")
 
@@ -442,6 +447,66 @@ def check_skill(d, mode):
     return name, hashlib.sha256(text.encode()).hexdigest()[:16]
 
 
+# README 收录表：卡20 起目录名＝frontmatter name（英文），详解页文件名保留中文（D-3 ③），
+# 两者不再同名 ⇒ 「docs 文件名 == 目录名」这条老推论失效，映射关系只能由这张表自己承载。
+# 列的位置一律按表头文字认，不按列序号——将来再加列也不用改正则。
+TABLE_HEAD_RE = re.compile(r"^\|\s*Skill\s*\|")
+TABLE_SEP_RE = re.compile(r"^\|[\s\-:|]+\|$")
+DOC_IN_CELL_RE = re.compile(r"\]\((docs/[^)]+)\)")
+BACKTICK_RE = re.compile(r"^`(.+)`$")
+
+
+def readme_rows(rtext):
+    """解析收录表 → (rows, errs)。每行 {'dir','cn','ver','doc','line'}；表头缺列／行错位＝err。"""
+    lines = rtext.splitlines()
+    head_i = None
+    for i, line in enumerate(lines):
+        if TABLE_HEAD_RE.match(line):
+            head_i = i
+            break
+    if head_i is None:
+        return [], ["[收录表] 找不到 `| Skill | … |` 表头行"]
+    cells = [c.strip() for c in lines[head_i].split("|")[1:-1]]
+
+    def col(*keys):
+        for j, c in enumerate(cells):
+            if any(k in c for k in keys):
+                return j
+        return None
+
+    idx = {"doc": col("Skill"), "dir": col("目录"), "cn": col("中文名"), "ver": col("版本")}
+    miss = [k for k, v in idx.items() if v is None]
+    if miss:
+        return [], [f"[收录表] 表头缺列 {','.join(miss)}（现列：{cells}）"]
+    rows, errs = [], []
+    for i, line in enumerate(lines[head_i + 1:], head_i + 2):
+        # 表格块以「第一行不是 | 开头」收尾（README 后面还有别的表，整篇扫会把它们当成收录行）
+        if not line.startswith("|"):
+            break
+        if TABLE_SEP_RE.match(line):
+            continue
+        cs = [c.strip() for c in line.split("|")[1:-1]]
+        if len(cs) != len(cells):
+            errs.append(f"[收录表] 第 {i} 行 {len(cs)} 列 ≠ 表头 {len(cells)} 列")
+            continue
+        m = DOC_IN_CELL_RE.search(cs[idx["doc"]])
+        if not m:
+            errs.append(f"[收录表] 第 {i} 行 Skill 列没有 docs/ 链接")
+            continue
+        d = cs[idx["dir"]]
+        bt = BACKTICK_RE.match(d)
+        if bt:
+            d = bt.group(1)
+        rows.append({"dir": d, "cn": cs[idx["cn"]], "ver": cs[idx["ver"]],
+                     "doc": urllib.parse.unquote(m.group(1)), "line": i})
+    if not rows:
+        errs.append("[收录表] 表头在但一行数据都没解析出来 ⇒ 分母为空，本次对账作废")
+    dup = {r["dir"] for r in rows if [x["dir"] for x in rows].count(r["dir"]) > 1}
+    for d in sorted(dup):
+        errs.append(f"[收录表] 目录 `{d}` 出现多行")
+    return rows, errs
+
+
 # ---------------------------------------------------------------- 仓库级检查
 def check_repo(root, mode):
     skill_dirs = sorted(d for d in root.iterdir() if d.is_dir() and (d / "SKILL.md").exists())
@@ -454,33 +519,50 @@ def check_repo(root, mode):
     rtext = read(readme)
     if "skills-index" not in rtext:
         RED.append("[缺锚点] README 缺 #skills-index 跳转锚点")
-    table = {}
-    for target, cell in ROW_RE.findall(rtext):
-        table.setdefault(urllib.parse.unquote(target), cell.strip())
     docs_dir = root / "docs"
+    rows, tbl_errs = readme_rows(rtext)
+    RED.extend(tbl_errs)
+    if tbl_errs:
+        return skill_dirs
+    by_dir = {r["dir"]: r for r in rows}
     for d in skill_dirs:
-        doc = docs_dir / f"{d.name}.md"
-        if not doc.exists():
-            RED.append(f"[缺详解页] docs/{d.name}.md")
+        r = by_dir.get(d.name)
+        if r is None:
+            RED.append(f"[未收录] README 收录表缺目录 `{d.name}`")
             continue
-        if "README.md#skills-index" not in read(doc):
-            RED.append(f"[缺回链] docs/{d.name}.md 无返回总目录链接")
-        cell = table.get(f"docs/{d.name}.md")
-        if cell is None:
-            RED.append(f"[未收录] README 收录表缺 {d.name}")
-        else:
-            mm = FM_RE.match(read(d / "SKILL.md"))
-            data, _ = parse_frontmatter(mm.group(1), mode["yaml"]) if mm else ({}, [])
-            ver = fm_field(data or {}, "version")
-            if isinstance(ver, str) and not same_version(cell, ver):
-                RED.append(f"[版本漂移] README `{d.name}` 写 `{cell}` ≠ frontmatter `{ver}`")
-        check_links(f"docs/{d.name}.md", docs_dir, read(doc), None)
-    real_rows = {f"docs/{d.name}.md" for d in skill_dirs}
-    for target in table:
-        if not (root / target).exists():
-            RED.append(f"[docs死链] {target}")
-        if target not in real_rows:
-            RED.append(f"[收录幽灵行] README 列了 `{target}`，但没有同名 skill 目录")
+        doc = root / r["doc"]
+        if not doc.exists():
+            RED.append(f"[缺详解页] {r['doc']}（README 目录 `{d.name}` 指向它）")
+            continue
+        if doc.parent != docs_dir:
+            RED.append(f"[详解页跑偏] {r['doc']} 不在 docs/ 下")
+        dtxt = read(doc)
+        if "README.md#skills-index" not in dtxt:
+            RED.append(f"[缺回链] {r['doc']} 无返回总目录链接")
+        mm = FM_RE.match(read(d / "SKILL.md"))
+        data, _ = parse_frontmatter(mm.group(1), mode["yaml"]) if mm else ({}, [])
+        data = data or {}
+        ver = fm_field(data, "version")
+        if isinstance(ver, str) and not same_version(r["ver"], ver):
+            RED.append(f"[版本漂移] README `{d.name}` 写 `{r['ver']}` ≠ frontmatter `{ver}`")
+        disp = fm_field(data, "displayName")
+        if not isinstance(disp, str) or not disp.strip():
+            RED.append(f"[缺中文名] {d.name}：frontmatter 没有 metadata.displayName"
+                       "（D-3 三处中文之一，README「中文名」列与它等值对账）")
+        elif disp != r["cn"]:
+            RED.append(f"[中文名不一致] {d.name}：README 写 `{r['cn']}` ≠ "
+                       f"metadata.displayName `{disp}`")
+        check_links(r["doc"], docs_dir, dtxt, None)
+    real_dirs = {d.name for d in skill_dirs}
+    referenced = {r["doc"] for r in rows}
+    for r in rows:
+        if r["dir"] not in real_dirs:
+            RED.append(f"[收录幽灵行] README 列了目录 `{r['dir']}`，但没有同名 skill 目录")
+        if not (root / r["doc"]).exists():
+            RED.append(f"[docs死链] {r['doc']}")
+    for p in sorted(docs_dir.glob("*.md")):
+        if f"docs/{p.name}" not in referenced:
+            WARN.append(f"[docs孤儿] {p.name} 没被 README 收录表任何一行指向")
     check_links("README.md", root, rtext, None)
     return skill_dirs
 

@@ -1,7 +1,7 @@
 > [← 返回总目录](../README.md#skills-index)
 
-> **审计对象与版本坐标**（2026-10-13 现采口径）：本机 skill 库「资深工程师五模板」，目录名 `A-Cao-资深工程师五模板-构建审查根因架构计划`，内部标识 `senior-engineer-playbook`，正文 `SKILL.md`（md5＝文件内容算出的一串指纹值，改一个字就变，前 12 位够用来对身份）。🔴 **本页不复述行数／字节数／md5 这类每轮必过期的坐标**；要核对现状就现跑命令（仓库根）：`wc -l -c "A-Cao-资深工程师五模板-构建审查根因架构计划/SKILL.md"`、`md5sum < "同一份路径"`。附属件＝`CHANGELOG.md`＋`references/` 五份细则（build-app／review-code／debug-root-cause／design-architecture／idea-to-plan）。版本自述分三处报：frontmatter（文件顶部那段元信息，版本、名字、触发描述都写在这里）`version: v1.1`／正文「版本」节**未检索到**（这支正文没有这一节）／`CHANGELOG.md` 最新条目为「v1.1 · 2026-10-13」——三处同号，本支不存在版本自述打架。**本页正文（第 0 章起）审计的是 v1.0 的结构**；v1.1 改了哪几处、正文里哪些说法现已过期，统一见文末「增补注记（2026-10-13）」。
-> **本仓库跟踪状态**（只陈述可证的事实，不判新旧）：本仓库收录的本体与库内正本**同一版本号 v1.1**，且两侧内容按"权威库 → 同步器 → 本仓"单向流动对账——同步器把库内文本套用公开化替换表后逐文件算 sha256 与本仓落盘结果比对，报「全部一致」才算同步完成。本机专属的那一层（盘符策略／本机路径／读者画像／个人倾向）放在技能目录里的 `personal.local.md`，该文件被 `*.local.md` 忽略规则排除在发布包之外，**本仓计数为 0**（要复核：在本仓根跑 `ls A-Cao-资深工程师五模板-构建审查根因架构计划/*.local.md`，应当报"没有那个文件或目录"）。此前 2026-10-09 实测到的"同版本号内容已漂"那一处差额，成因与消项经过见文末增补注记第二节。
+> **审计对象与版本坐标**（2026-10-13 现采口径）：本机 skill 库「资深工程师五模板」，目录名 `A-Cao-资深工程师五模板-构建审查根因架构计划`，内部标识 `senior-engineer-playbook`，正文 `SKILL.md`（md5＝文件内容算出的一串指纹值，改一个字就变，前 12 位够用来对身份）。🔴 **本页不复述行数／字节数／md5 这类每轮必过期的坐标**；要核对现状就现跑命令（仓库根）：`wc -l -c "senior-engineer-playbook/SKILL.md"`、`md5sum < "同一份路径"`。附属件＝`CHANGELOG.md`＋`references/` 五份细则（build-app／review-code／debug-root-cause／design-architecture／idea-to-plan）。版本自述分三处报：frontmatter（文件顶部那段元信息，版本、名字、触发描述都写在这里）`version: v1.1`／正文「版本」节**未检索到**（这支正文没有这一节）／`CHANGELOG.md` 最新条目为「v1.1 · 2026-10-13」——三处同号，本支不存在版本自述打架。**本页正文（第 0 章起）审计的是 v1.0 的结构**；v1.1 改了哪几处、正文里哪些说法现已过期，统一见文末「增补注记（2026-10-13）」。
+> **本仓库跟踪状态**（只陈述可证的事实，不判新旧）：本仓库收录的本体与库内正本**同一版本号 v1.1**，且两侧内容按"权威库 → 同步器 → 本仓"单向流动对账——同步器把库内文本套用公开化替换表后逐文件算 sha256 与本仓落盘结果比对，报「全部一致」才算同步完成。本机专属的那一层（盘符策略／本机路径／读者画像／个人倾向）放在技能目录里的 `personal.local.md`，该文件被 `*.local.md` 忽略规则排除在发布包之外，**本仓计数为 0**（要复核：在本仓根跑 `ls senior-engineer-playbook/*.local.md`，应当报"没有那个文件或目录"）。此前 2026-10-09 实测到的"同版本号内容已漂"那一处差额，成因与消项经过见文末增补注记第二节。
 > **溯源口径**（口径＝这批页面共用的统一判定标准）：引用只用「文件名＋章节名／规则名／字段名」，不用行号——活文件会被其它窗口改动，行号一改就成悬空引用。**证据标签**：`[实测]`＝库里原文写得出来这一条，`[推演]`＝本页推断，须附"什么输入会让它出问题"的例子。**自包含**：只读本页就懂五套模板各堵哪个场景、每个数字为什么是那个数；急用看第 14 章。
 
 # 资深工程师五模板 · 完整详解手册
@@ -452,15 +452,15 @@
 
 **references**（`references/`，参考资料分包（正文之外另写的分册））：
 
-- [build-app.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/build-app.md)
-- [debug-root-cause.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/debug-root-cause.md)
-- [design-architecture.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/design-architecture.md)
-- [idea-to-plan.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/idea-to-plan.md)
-- [review-code.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/references/review-code.md)
+- [build-app.md](../senior-engineer-playbook/references/build-app.md)
+- [debug-root-cause.md](../senior-engineer-playbook/references/debug-root-cause.md)
+- [design-architecture.md](../senior-engineer-playbook/references/design-architecture.md)
+- [idea-to-plan.md](../senior-engineer-playbook/references/idea-to-plan.md)
+- [review-code.md](../senior-engineer-playbook/references/review-code.md)
 
 **随包散件**：
 
-- [CHANGELOG.md](../A-Cao-资深工程师五模板-构建审查根因架构计划/CHANGELOG.md)
+- [CHANGELOG.md](../senior-engineer-playbook/CHANGELOG.md)
 
 ## 附：设计来源索引
 
@@ -513,8 +513,8 @@
 
 | 本页原说法 | 现状（v1.1） | 怎么自己核 |
 |---|---|---|
-| 「六条横切纪律盖在所有模板之上」（第 0 章速览第 5 条等，页内 2 处） | 通用纪律现 **7 条**；且第 1 条不再抄别人的纪律名单，只留"去对方正文现查"的指针 | 仓库根跑 `grep -cE '^[0-9]+\. \*\*' A-Cao-资深工程师五模板-构建审查根因架构计划/SKILL.md`（实测 7；该形状只出现在通用纪律那七条的行首，不会串到别处） |
-| 「收工一张 4 项自检单」（速览第 6 条等，2 处） | 交付自检现 **7 项**（多了契约对账、维度对账、A 档零改动对账等） | 仓库根跑 `grep -c '^- \[ \]' A-Cao-资深工程师五模板-构建审查根因架构计划/SKILL.md`（实测 7，命中的 7 行全落在「交付自检」一节内；注意它不在上一式那段的范围内） |
+| 「六条横切纪律盖在所有模板之上」（第 0 章速览第 5 条等，页内 2 处） | 通用纪律现 **7 条**；且第 1 条不再抄别人的纪律名单，只留"去对方正文现查"的指针 | 仓库根跑 `grep -cE '^[0-9]+\. \*\*' senior-engineer-playbook/SKILL.md`（实测 7；该形状只出现在通用纪律那七条的行首，不会串到别处） |
+| 「收工一张 4 项自检单」（速览第 6 条等，2 处） | 交付自检现 **7 项**（多了契约对账、维度对账、A 档零改动对账等） | 仓库根跑 `grep -c '^- \[ \]' senior-engineer-playbook/SKILL.md`（实测 7，命中的 7 行全落在「交付自检」一节内；注意它不在上一式那段的范围内） |
 | 「三个硬数字」一处，其形状 `8／5／6／9／10` 页内 4 处（第 0 章速览第 7 条等） | **件数没变，形状变了**：②的 5 件现拆成 A 档 3 件＋B 档 2 件（B 档只在任务点名要改时才加）；③仍是 5 个输入＋6 件交付，但 5 个输入按"能自己拿到／才开口问"分了组 | ②③④⑤ 各自的交付件数用 `grep -cE '^[0-9]+\. \*\*' references/<模板>.md` 数（实测 ②5／③6／④9／⑤10）；①的八件套是表格：跑 `awk '/^### 第 2 步/,/^### 第 3 步/' references/build-app.md`，数表体行（表头除外）＝8 |
 | 页内引用的「日活过千」（3 处） | 该触发线已作废，改按上表第 5 行的四项依据判；v1.0 原句在本注记里保留作改口记录 | 读 `references/design-architecture.md`「存储选型的四项依据」 |
 | 本页两处把读者深浅档位绑在"用户本阶段处境"上的描述（第 5 章模板②的关键纪律段、第 15 章规范表的一行），加 `aoci_fit.py` 的绝对路径硬调用（页内 4 处） | 阶段画像类措辞已从可发布正文移除、改通用读者口径，个人档位改由不随包发布的 `personal.local.md` 承载；`aoci_fit.py` 的写死路径调用已删，只作为"本机装了才用"的条件句存在 | 读 `SKILL.md` 开头那句 personal.local.md 约定＋「外部件缺位时的降级」一节，再对 `references/review-code.md` 第 1 步；本仓 `*.local.md` 文件计数应为 0 |
