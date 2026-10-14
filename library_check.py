@@ -11,13 +11,14 @@
   · 发布仓专属：目录名 ≠ `name`（开放标准要求 name == 父目录名）；README「中文名」列 ≠ metadata.displayName；
     缺 metadata.displayName；docs/*.md 未被收录表任何一行指向（后一条为警告）
   · 传统四项：详解页·回链·锚点漂移、name 冲突、SKILL.md 逐字重复
+  · 分母闸：体检目录里一支技能都没找到 ⇒ 判据空转，上面所有「无红项」都是假绿（空集恒绿）
 🟡 警（不影响退出码）——要人来裁决的漂移与规范上限：
   · description 超 1024 字符、name 不合标准格式（权威库侧目录名 ≠ name 也只报警告，那边按中文目录名约定走）
   · frontmatter 版本 ↔ 本支 CHANGELOG 最新版本不一致，或没有 CHANGELOG
   · 跨 skill 的 `../` 链接失效（访客可能只装其中几支）；`tools/` 引用失效（本库约定那是使用者 store 部署件）
   · 指向本机绝对路径的链接（公开库里应换成占位符）；发布仓混进 __pycache__/*.pyc
 
-用法：py library_check.py [仓库根目录]      （默认当前目录）
+用法：py library_check.py [仓库根目录]      （不传参＝体检本脚本所在的那个仓，不是当前工作目录）
 退出码：0=无红项  1=有红项
 """
 import hashlib
@@ -588,7 +589,9 @@ def setup_stdout():
 def main():
     setup_stdout()
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    root = Path(args[0] if args else ".").resolve()
+    # 不传参时锚在「本脚本所在目录」而不是 cwd：旧写法在别的目录里跑会量到 0 支技能，
+    # 然后照样打「✅ 无红项」并退 0——空集恒绿，2026-10-14 实测复现过。
+    root = Path(args[0] if args else Path(__file__).resolve().parent).resolve()
     try:
         import yaml
         use_yaml, yaml_ver = True, getattr(yaml, "__version__", "?")
@@ -627,6 +630,14 @@ def main():
             RED.append(f"[疑似重复] {', '.join(dirs)} 的 SKILL.md 逐字相同")
 
     print(f"skill 数：{len(skill_dirs)}")
+    if not skill_dirs:
+        # 空集恒绿：一支都没找到时，上面每一条「在扫的技能上没发现问题」都是零分母结论，
+        # 「✅ 无红项」这句话此时不构成任何证据，必须判红并非 0 退出。
+        RED.append(
+            f"[分母闸] 体检目录里一支技能都没找到（{root}）——"
+            "所有判据都在空集上跑，「无红项」不成立。要么跑错了目录，"
+            "要么该目录的技能文件夹里没有 SKILL.md。"
+        )
     if WARN:
         print(f"\n🟡 警告 {len(WARN)} 条（不影响退出码）：")
         for w in WARN:
