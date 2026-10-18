@@ -605,3 +605,25 @@
 - `py library_check.py` → **退出码 0**（红项 0；🟡 1 条为既有警告 `tools/patrol_check.py` 正文引用缺件，与本版无关）。
 - 过程中踩到并当场改掉的一条：A/B 行为断言第一版写成 `.get("id")`，而 `FM_FIELDS` 里没有 `id` ⇒ 该断言**恒假**，两侧同红，看着像代码坏了其实是尺子坏了。已改用确实被抽取的 `title`，并加一条「未定义键必须取不到」的反例哨兵。**教训：A/B 两侧同红不等于无回归，先问这条断言本来能不能绿。**
 - 逐条读数留在内部任务包的 `evidence/收口批-20261014/` 目录（合成夹具与 A/B 原始输出，**不随本仓发布**）：`_feff_redgreen-run.txt`／`_feff-ab-out.txt`／`_feff-fix-apply-out.txt`／`_library-check-after-feff.txt`。
+
+## 2026-10-17 · useskill v2.6 → v2.7.0 追平 ＋ 新增第 18 支《装skill前安检》（state3 装库闸门统一到 NVIDIA/SkillSpector）
+
+**优化了哪些地方**
+
+- useskill 本体从 v2.6 追平到 **v2.7.0**（同步器先干跑再 `--apply`，发布侧 `SKILL.md` +74 −84 行，权威库 208 → 196 行）：frontmatter 版本、正文去本机化（个人坐标退 `*.local.md`），新增 `references/` 随包四件（cao-index 互跳索引／maintenance 维护手册含收口四检／eval-route-cases 路由评测集／design-decisions 事故与取舍档案）；调用统计四列口径（选中／读取／执行／成功）与穷举模式细则落到正文。SHA256 逐件一致，`*.local.md` 落地 0，泄漏闸未拦。
+- **市场兜底唯一口径＝GitHub 检索**：SKILL.md 正文、frontmatter `description` 与 README 收录行同文（点名直连 → 本地检索 → GitHub 检索兜底），替代 `find-skills`/SkillHub 查找等三叫法混用。
+- **State 3 装库链挂安检闸**：入库前统一先过 skill-inspector（NVIDIA/SkillSpector 官方审查件）：扫描＋语义审查双线并合，APPROVE 才入库、CAUTION 交用户点头、REJECT 拒装并出示证据；SkillHub 平台安装审计的审计入口同批改链到它。
+- README 收录表 useskill 行版本格 `v2.6` → `2.7.0`（硬红项），状态机箭头句与安检门句同步；`docs/A-Cao-useskill.md` 页首加时效横幅（页正文仍是 v2.5 审计快照，按快照不改史，过期口径三条逐项点名）。
+
+**增加了什么功能**
+
+- **第 18 支 skill-inspector 随库发布**：NVIDIA/SkillSpector（20,370★ 截至 2026-10-17、Apache-2.0）官方审查件，上游 release v2.13.0，`SKILL.md` 来源文件 blob `a968a585f32…`。本地适配登记两处（`metadata.version`／`metadata.displayName`＋体检器版本标题节），其余逐字节保上游；该支自带审用手册，本地装机零新增依赖（无 `skillspector` CLI 时自动声明并转手动审）。README 收录表新增一行、结构注释 17→18、`docs/` 新增详解页（含返回/前进脚链，评审计划页脚补启「下一个」→ 新页）。
+- 台账登记装前两把尺读数：危险模式扫 2 行、凭据/注入形状扫 4 行均为判据词（非可执行）、零宽字符 0、结论 APPROVE 直接入库。
+
+**解决了什么问题**
+
+- 「一个审计环节三个名字」（`skills-security-check`／`security-scan`／`skillhub-install-audit`）收敛到唯一调用键 skill-inspector；「市场兜底三叫法」收敛到「GitHub 检索」。
+- 体检器对 CHANGELOG 的版本号标题要求（形如 `## v2.13.0`）由台账头节直接升格满足（`## v2.13.0 · 装入来源（2026-10-17；版本号登记自上游 release v2.13.0）`），未编造历史——上游无 CHANGELOG，本库仍只做来源／适配／安检读数记录。
+- 权威库侧收口四检（映射表登记→清单 `--check` 退 0→体检器绿→宿主卡/副本/发布仓三处同步）成为改造流程的常设步骤。
+- **验证读数**：`py library_check.py` → **退出码 0**（skill 数 **18**、红项 0；🟡 1 条为既有警告 `tools/patrol_check.py` 正文引用缺件，与本版无关）；权威库清单 `gen_skill_manifest.py --check` 退 0（175 支）；lint 权威库里 useskill／SkillHub安装审计／SkillSpector 三支 0 FAIL／0 警告。
+- 🔴 **push 状态**：`git commit` 与 push 未执行（未获授权），本轮全部改动只落本地工作树，属与发版批次的独立一轮。
