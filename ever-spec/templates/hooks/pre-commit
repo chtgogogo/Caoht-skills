@@ -1,0 +1,74 @@
+#!/bin/sh
+# EverSpec 强制触发点样例（pre-commit）：提交前跑规格尺，红即拦。
+# 三态纪律（详见 templates/hooks/README.md）：
+#   ① 跑过且绿 → 放行；
+#   ② 豁免跳过 → 暂存变更包的在期 waiver 在案才放行，决策行落 pre-commit.log；
+#   ③ 静默跳过 → git commit --no-verify 绕过本钩子，无任何留痕＝违规态，由 waiver 审计事后点名。
+# 安装：本文件复制进项目 .githooks/pre-commit，再执行 git config core.hooksPath .githooks。
+# 依赖：POSIX sh＋git＋Python 3 标准库；无第三方依赖。Linux/macOS 设 PY=python3。
+
+set -u
+
+PY="${PY:-py}"
+EVSPEC_ROOT="${EVSPEC_ROOT:-}"
+if [ -z "$EVSPEC_ROOT" ] || [ ! -f "$EVSPEC_ROOT/scripts/spec_check.py" ]; then
+  echo "[ever-spec] 找不到 spec_check.py：设 EVSPEC_ROOT=<EverSpec 根目录>（含 scripts/ 的那层）后重试。" >&2
+  exit 1
+fi
+
+ROOT="$(git rev-parse --show-toplevel)" || exit 1
+LOG="$ROOT/evidence/pre-commit.log"
+mkdir -p "$ROOT/evidence"
+
+OUT="$("$PY" "$EVSPEC_ROOT/scripts/spec_check.py" check --root "$ROOT" --json 2>&1)"
+CODE=$?
+printf '%s\n' "$OUT" >> "$LOG"
+
+if [ "$CODE" -eq 0 ]; then
+  echo "[ever-spec] 规格尺全绿，放行（本次读数已追加 evidence/pre-commit.log）。"
+  exit 0
+fi
+if [ "$CODE" -eq 2 ]; then
+  echo "[ever-spec] 规格尺退 2＝没查成（根目录不对），不是绿灯：拦下，修好再提交。" >&2
+  exit 1
+fi
+
+# ── 红：查暂存的变更包有没有在期 waiver（归档区不算）──
+TODAY="$(date +%Y-%m-%d)"
+SLUGS="$(git diff --cached --name-only | grep '^changes/' | grep -v '^changes/archive/' | cut -d/ -f2 | sort -u)"
+MISSING=""
+COVERED=""
+for s in $SLUGS; do
+  W="$ROOT/changes/$s/waiver.md"
+  UNTIL=""
+  if [ -f "$W" ]; then
+    UNTIL="$(grep -m1 '有效至：' "$W" | grep -o '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]' | head -1)"
+  fi
+  OK=""
+  if [ -n "$UNTIL" ]; then
+    FIRST="$(printf '%s\n%s\n' "$TODAY" "$UNTIL" | sort | head -1)"
+    [ "$FIRST" = "$TODAY" ] && OK=1
+  fi
+  if [ -n "$OK" ]; then
+    COVERED="$COVERED $s@$UNTIL"
+  else
+    MISSING="$MISSING $s"
+  fi
+done
+
+if [ -z "$MISSING" ] && [ -n "$COVERED" ]; then
+  echo "WAIVER-OK｜$(date '+%Y-%m-%dT%H:%M:%S')｜slugs=$COVERED" >> "$LOG"
+  echo "[ever-spec] 规格尺红，但暂存变更包的在期 waiver 在案：豁免放行（$COVERED）。"
+  echo "[ever-spec] 记得按 waiver 上的销账条件补绿——过期未销＝未豁免。"
+  exit 0
+fi
+
+echo "[ever-spec] 规格尺有红，提交被拦（读数见 evidence/pre-commit.log）。" >&2
+if [ -n "$MISSING" ]; then
+  echo "[ever-spec] 以下变更包缺在期 waiver：$MISSING" >&2
+  echo "[ever-spec] 豁免跳过必须留痕：复制 templates/hooks/waiver-template.md 为 changes/<slug>/waiver.md，七字段填全。" >&2
+elif [ -z "$SLUGS" ]; then
+  echo "[ever-spec] 暂存内容不涉及任何进行中变更包：带红提交须先开变更包再留 waiver。" >&2
+fi
+echo "[ever-spec] 治本是把红修绿；--no-verify 静默跳过＝违规态，waiver 审计会点名。" >&2
+exit 1

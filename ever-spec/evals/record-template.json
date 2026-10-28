@@ -1,0 +1,13 @@
+{
+  "id": "<场景 id，如 E1>",
+  "state": "<A|B|C>",
+  "code_version": "<skill 版本＋SKILL.md/references 的 sha256 前 12 位（三态钉版，防基线带技能）>",
+  "command": "<回放窗形态＋任务投递方式；脚本信道写判据脚本命令>",
+  "environment": "<宿主/执行器形态；A 态须注明『无宿主注入』或『带注入=差分下界』>",
+  "exit_code": "<回放窗终态或判据脚本退出码；不适用写 N/A>",
+  "timestamp": "<ISO 时间>",
+  "dataset_version": "<场景集版本=evals.json 的 sha256 前 12 位>",
+  "artifact": "<原始输出/树 diff/报告的落盘路径>",
+  "verdict": "<PASS|FAIL|N/A>",
+  "notes": "<n=1 如实标注；判定列留人的证据贴在这里>"
+}
