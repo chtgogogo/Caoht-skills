@@ -1,0 +1,17 @@
+=== 管线 v1.27.0 指针批零变化证明 · 2026-10-27 · 凛/某宿主 ===
+基线（work-293 v1.26.0 交付读数）= 138/47/19/40/14 + depends 全绿 + lint 0F0W
+--- pipeline_state selftest ---
+断言 138 条：PASS=138 FAIL=0
+exit=0
+--- spec_check selftest ---
+断言 47 条：PASS=47 FAIL=0
+--- trace_matrix selftest ---
+断言 19 条：PASS=19 FAIL=0
+--- depends_snapshot selftest ---
+断言 40 条：PASS=40 FAIL=0
+--- check_dead_paths selftest ---
+断言 14 条：PASS=14 FAIL=0
+--- depends check（真库）---
+[链接检查通过] 52 个 .md 内所有相对链接与库内路径都可达｜外指声明命中 30 条（上游件，本库刻意未收）
+[check 全绿] 快照哈希一致｜链接全可达
+exit=0

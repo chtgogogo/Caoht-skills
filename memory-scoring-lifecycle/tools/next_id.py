@@ -53,7 +53,7 @@ try:  # 单尺子：index 里的号用 memory_recall 的解析器认，不再自
     import memory_recall as R
 except Exception as _e:
     print("[next_id] state=tool_error｜无法导入同目录的 memory_recall.py（索引解析器唯一来源）：%r\n"
-          "  两个脚本必须同目录一起部署。降级流程：按 SKILL.md §5 手工「列目录取最大号 +1」并复核，"
+          "  两个脚本必须同目录一起部署。降级流程：按 SKILL.md §9.2 手工「列目录取最大号 +1」并复核，"
           "不要拿本工具的零输出判「查过了没问题」。" % (_e,), file=sys.stderr)
     sys.exit(3)
 

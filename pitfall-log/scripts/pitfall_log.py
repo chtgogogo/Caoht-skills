@@ -2,13 +2,14 @@
 # -*- coding: utf-8 -*-
 """pitfall_log — 踩坑日志的确定性维护工具（零依赖，Python 3.8+，跨平台）。
 
-它只负责把「手维护会变错的东西」变成「从事件记录生成的东西」，三件事：
+它只负责把「手维护会变错的东西」变成「从事件记录生成的东西」，四件事：
 
   ① 事件唯一 ID 与幂等登记——同一条坑重复提交，计数只加一次
   ② 两个指标自动维护——「同类案例数」与「实际帮助次数」分开算、都由本脚本生成，不手填
   ③ 升华闸门——候选 → 验证适用范围 → 提升；缺反例／边界／复核日期一律不放行
+  ④ 防腐闭环——读侧 check、退役/并档（没有删除通道的库必腐）、命中抽审、随包自证 selftest
 
-用法（`--root` 必填，不给默认当前目录：在错的地方跑会量到 0 条却打「无漂移」＝假绿灯）：
+用法（`--root` 必填，不给默认当前目录：在错的地方跑会量到 0 条却打「无漂移」＝假绿灯；selftest 除外）：
 
   py pitfall_log.py --root <log-root> init
   py pitfall_log.py --root <log-root> add --title <标题> --root-cause RT-0NN
@@ -19,12 +20,18 @@
                     [--date YYYY-MM-DD] [--solved <解决了什么>]
   py pitfall_log.py --root <log-root> hit --root-cause RT-0NN --scenario <…>   # 只走根因层的命中
   py pitfall_log.py --root <log-root> counts [--json] [--prose] [--apply]
-  py pitfall_log.py --root <log-root> check  [--json]
+  py pitfall_log.py --root <log-root> check  [--json] [--deep]   # --deep＝跨工件对账（模板↔脚本常量）
   py pitfall_log.py --root <log-root> promote --scan [--threshold 7] [--hits-threshold 3]
   py pitfall_log.py --root <log-root> promote --gate C-id [--apply]
+  py pitfall_log.py --root <log-root> retire --case <案例ID> --reason <理由>   # 退役＝软删进 archive/
+  py pitfall_log.py --root <log-root> retire --rt RT-0NN --reason <理由>       # 空根因族退役（下挂案例先清零）
+  py pitfall_log.py --root <log-root> merge-roots --into RT-0AA --from RT-0BB [--yes]   # 重复根因族并档
+  py pitfall_log.py --root <log-root> audit [--sample K]                       # 命中抽审（只读，防虚报）
+  py pitfall_log.py selftest                                                   # 随包自证（无需 --root）
 
 退出码：0 成功／无漂移 ｜ 1 有漂移或闸门没过 ｜ 2 用法与目录错误
         3 候选不存在 ｜ 4 幂等冲突（同一事件 ID 撞上不同内容）｜ 5 抢锁失败
+        ｜ selftest 有 FAIL 也是 1
 
 口径出处（不是本脚本自创）：
   · 事件去重键＝CloudEvents 的 source+id 语义（重复投递可同 id）；同键改内容＝报错＝Stripe
@@ -49,7 +56,9 @@ import os
 import re
 import shutil
 import socket
+import subprocess
 import sys
+import tempfile
 import time
 from datetime import date, datetime
 
@@ -69,6 +78,9 @@ SELF_ERROR_SECTION = "我自己引入的错"
 CAND_FIELDS = ("适用范围", "反例", "边界", "复核日期")
 # 提升件禁止出现的「无边界」措辞——局部经验不许写成对所有任务生效
 UNIVERSAL_WORDS = ("所有任务", "任何项目", "任何情况", "全部场景", "所有场景", "无条件", "永远", "一律适用")
+# 索引有界（SKILL.md 原则的数值化）：案例数超过这个数就该退役冷条目，别把索引养成第二个全文。
+# 唯一权威在脚本；正文与模板的职责是「指向工具」，不许另抄一份数字（抄了必漂）。
+INDEX_BOUND_CASES = 50
 
 RT_RE = re.compile(r"RT-(\d{3})")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
@@ -428,6 +440,7 @@ def parse_root(path):
             title = re.sub(r"^#+\s*", "", raw.strip())
             break
     return {"path": path, "file": fname, "id": rid, "title": title,
+            "has_yaml": bool(lines and lines[0].strip() == "---"),
             "cases_fm": _int_of(fields.get("cases")), "hits_fm": _int_of(fields.get("hits")),
             "hit_rows": hit_rows(lines),
             "escalated": str(fields.get("escalated", "")).lower() in ("true", "yes", "1")}
@@ -1153,7 +1166,7 @@ def cmd_counts(a):
     return 0
 
 
-def check_drift(root):
+def check_drift(root, deep=False):
     idx_path = require_store(root)
     d = derive(root)
     idx_lines, _ = read_lines(idx_path)
@@ -1263,11 +1276,48 @@ def check_drift(root):
         if rid not in have_rts:
             add("R10 分组指向缺失根因", "索引有 %s 案例分组（任意标题级别），roots/ 里却没有 %s 本体文件（凭空立族／文件被搬走）"
                 % (rid, rid))
+
+    # ---- 防腐闭环（读侧／退役通道／版本史／提升后复核都从这里提示） ----
+    if d["case_total"] > INDEX_BOUND_CASES:
+        add("R11 案例数超界", "pitfalls/ 现 %d 条 ＞ %d ⇒ 索引有界原则：冷条目该退役了（retire --case … --reason …），别把索引养成第二个全文"
+            % (d["case_total"], INDEX_BOUND_CASES), "警")
+    for r in d["roots"]:
+        if not r["has_yaml"]:
+            add("R12 根因文件缺 YAML 头", "%s ⇒ cases/hits 派生数字刷不进去（rewrite 只报不改）" % r["id"], "警")
+    in_repo, tracked = _git_state(root)
+    if not in_repo:
+        add("R13 无版本史", "log-root 不在任何 git 仓内 ⇒ 回滚只剩单代 .bak、泄改无审计；建议 git init（或把库挪进已跟踪的仓）", "警")
+    elif not tracked:
+        add("R13 版本史未覆盖索引", "在 git 仓内但 %s 未被跟踪 ⇒ 内容变更无从回溯（git add 提交一次即有史）" % INDEX_NAME, "警")
+    cand_dirp = os.path.join(root, CAND_DIR)
+    if os.path.isdir(cand_dirp):
+        for name in sorted(os.listdir(cand_dirp)):
+            if not name.lower().endswith(".md"):
+                continue
+            p = os.path.join(cand_dirp, name)
+            cl, _ = read_lines(p)
+            if not any("已提升" in x for x in cl[:12]):
+                continue
+            vals = cand_field_values(cl)
+            joined = " ".join(vals.get("复核日期", []))
+            m2 = re.search(r"\d{4}-\d{2}-\d{2}", joined)
+            if not m2:
+                add("R14 已提升候选缺复核日期", "%s 的提升记录必须带「下次复核日期」⇒ 否则这条铁律没有回归期，迟早变教条" % name)
+                continue
+            try:
+                due = datetime.strptime(m2.group(0), "%Y-%m-%d").date()
+            except ValueError:
+                add("R14 复核日期不合法", "%s 的 %s 解析不了" % (name, m2.group(0)))
+                continue
+            if due < date.today():
+                add("R14 已提升规则复核过期", "%s 复核日期 %s 已过 ⇒ 适用范围可能已失效：重验（补反例／改边界）后更新候选里的复核日期，或降级回候选" % (name, m2.group(0)))
+    if deep:
+        items.extend(_template_consistency(root))
     return items, d
 
 
 def cmd_check(a):
-    items, d = check_drift(a.root)
+    items, d = check_drift(a.root, deep=bool(getattr(a, "deep", False)))
     reds = [x for x in items if x["level"] == "红"]
     warns = [x for x in items if x["level"] != "红"]
     if a.json:
@@ -1406,11 +1456,22 @@ def cmd_promote(a):
                 lines[i] = "- 状态：已提升（%s）" % date.today().isoformat()
         for i, raw in enumerate(lines):
             if re.match(r"^\s*##\s*提升记录", raw):
-                lines[i + 1:i + 1] = ["", "- 提升时间：%s（闸门通过，工具写入）" % date.today().isoformat(),
-                                      "- 提升去向：铁律区由各 agent 自己的 store CORE 承接——本工具不代写别人的 store"]
+                rec_lines = ["", "- 提升时间：%s（闸门通过，工具写入）" % date.today().isoformat(),
+                             "- 提升去向：铁律区由各 agent 自己的 store CORE 承接——本工具不代写别人的 store"]
+                # 提升后的铁律必须有回归期：把候选里的复核日期带进提升记录，check R14 会按时点回访
+                dv = " ".join(cand_field_values(lines).get("复核日期", []))
+                dm = re.search(r"\d{4}-\d{2}-\d{2}", dv)
+                if dm:
+                    rec_lines.append("- 下次复核：%s（到期没复核，check R14 会翻红）" % dm.group(0))
+                lines[i + 1:i + 1] = rec_lines
                 break
         atomic_write(path, lines, eol)
         srcs = _candidate_sources(path)
+        # 按根因攒条数升上来的候选，来源行只列案例 ID ⇒ 根因族本体容易被漏掉背书。
+        # 候选编号自带 RT 号（确定性形状），把它补进来源再走后面的 escalated/⭐ 逻辑。
+        rt_m = RT_RE.search(a.candidate)
+        if rt_m and rt_m.group(0) not in srcs:
+            srcs = srcs + [rt_m.group(0)]
         touched = []
         for rid in [s for s in srcs if RT_RE.fullmatch(s)]:
             for p in root_files(a.root):
@@ -1556,10 +1617,498 @@ def gate(path):
     return True, notes
 
 
+# ================================================================ git 状态与跨工件对账（防腐）
+def _git_state(path):
+    """（在 git 仓内?, 索引被跟踪?）。无版本史的库回滚只剩单代 .bak、泄改无审计——这正是「库腐烂没人看得见」的形态。"""
+    try:
+        proc = subprocess.run(["git", "rev-parse", "--is-inside-work-tree"], cwd=path,
+                              stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=10)
+        if proc.returncode != 0 or proc.stdout.strip() != b"true":
+            return False, False
+        proc2 = subprocess.run(["git", "ls-files", "--", INDEX_NAME], cwd=path,
+                               stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=10)
+        return True, bool(proc2.stdout.strip())
+    except Exception:
+        return False, False
+
+
+def _template_consistency(root):
+    """跨工件对账（check --deep）：库内模板与脚本常量必须同源。
+
+    「全处同步铁律」此前只靠人记＋md5 对账；改了 FULL_SECTIONS 没改模板（或反之）当场在这里翻红
+    ——正是自家反复咬过的那种「恒真判据／改一半」的新面。
+    """
+    out = []
+    for p, need in ((os.path.join(root, "pitfalls", "_template.md"), FULL_SECTIONS),
+                    (os.path.join(root, "pitfalls", "_template-lite.md"), LITE_SECTIONS)):
+        rel = os.path.relpath(p, root).replace(os.sep, "/")
+        if not os.path.isfile(p):
+            out.append({"rule": "R15 模板不在场", "level": "警",
+                        "msg": "%s 缺 ⇒ init 补齐后新条目才有形状可比" % rel})
+            continue
+        tl, _ = read_lines(p)
+        missing = [s for s in need if not has_section(heading_texts(tl), s)]
+        if missing:
+            out.append({"rule": "R15 模板常量漂移", "level": "红",
+                        "msg": "%s 缺段 %s ⇒ 模板与脚本常量不同源（改了一半，条目将按另一套形状检查）"
+                               % (rel, "、".join(missing))})
+    assets = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, "assets"))
+    for src, need in (("entry-template.md", FULL_SECTIONS), ("entry-lite-template.md", LITE_SECTIONS),
+                      ("candidate-template.md", CAND_FIELDS)):
+        p = os.path.join(assets, src)
+        if not os.path.isfile(p):
+            continue  # 精简包可能不带 assets；库内模板已对过账，不重复罚
+        tl, _ = read_lines(p)
+        missing = [s for s in need if not has_section(heading_texts(tl), s)]
+        if missing:
+            out.append({"rule": "R15 assets 模板常量漂移", "level": "红",
+                        "msg": "随包 assets/%s 缺 %s（与脚本常量不同源）" % (src, "、".join(missing))})
+    return out
+
+
+# ================================================================ 退役（软删通道——没有删除通道的库只进不出，必腐）
+def _move_to_archive(src, subdir):
+    """移到同父 archive/ 子目录；重名不覆盖，加序号后缀。archive/ 下的文件不进现扫（_md_files 不递归）。"""
+    dst_dir = os.path.join(os.path.dirname(src), subdir)
+    os.makedirs(dst_dir, exist_ok=True)
+    stem, ext = os.path.splitext(os.path.basename(src))
+    dst = os.path.join(dst_dir, stem + ext)
+    n = 1
+    while os.path.exists(dst):
+        n += 1
+        dst = os.path.join(dst_dir, "%s-%02d%s" % (stem, n, ext))
+    shutil.move(src, dst)
+    return dst
+
+
+def drop_case_rows(lines, cid):
+    """把索引里指向该案例的所有行摘掉；分组因此空了连分组块一起拆（空分组是退役留下的壳）。"""
+    drop = set()
+    for i, raw in enumerate(lines):
+        if not CASE_ROW_RE.match(raw):
+            continue
+        lm = CASE_LINK_RE.search(raw)
+        if lm and os.path.splitext(os.path.basename(lm.group(1)))[0] == cid:
+            drop.add(i)
+    if not drop:
+        return list(lines), "索引里本就没有 %s 的行" % cid
+    out = [raw for i, raw in enumerate(lines) if i not in drop]
+    return _prune_empty_groups(out), "索引 %d 行已摘除" % len(drop)
+
+
+def drop_root_row(lines, rid):
+    out, hit = [], False
+    for raw in lines:
+        m = ROOT_ROW_RE.match(raw)
+        if m and m.group(1) == rid and not hit:
+            hit = True
+            continue
+        out.append(raw)
+    return out, ("根因表 %s 行已删" % rid if hit else "根因表本就没有 %s 的行" % rid)
+
+
+def _prune_empty_groups(lines):
+    out = list(lines)
+    for _rid, (s, e) in sorted(index_groups(out).items(), key=lambda kv: -kv[1][0]):
+        if not any(CASE_ROW_RE.match(x) for x in out[s:e]):
+            del out[s:e]
+    return out
+
+
+def _append_retire_note(lines, day, what, dst_rel, reason):
+    """退役留审计线：索引尾部追加一笔（列表行形状，不撞任何表格解析器；退役必须带理由——
+    无理由的删除等于把别人的证据链抹掉）。"""
+    out = list(lines)
+    if not any(x.strip() == "## 退役记录" for x in out):
+        out += ["", "## 退役记录", ""]
+    out.append("- %s 退役 %s → %s ｜ 理由：%s" % (day, what, dst_rel, reason))
+    return out
+
+
+def cmd_retire(a):
+    idx_path = require_store(a.root)
+    if bool(a.case) == bool(a.rt):
+        die("retire 需要 --case <案例ID> 或 --rt RT-0NN（二选一），外加 --reason <退役理由>")
+    lock, why = acquire_lock(a.root)
+    if not lock:
+        die("抢锁失败：%s" % why, 5)
+    say("[lock] %s" % why)
+    try:
+        if a.case:
+            name = a.case[:-3] if a.case.endswith(".md") else a.case
+            name = os.path.splitext(os.path.basename(name))[0]
+            src = os.path.join(a.root, "pitfalls", name + ".md")
+            if not os.path.isfile(src):
+                die("案例文件不存在：%s（已在 archive/ 的条目别再退一次）" % src, 2)
+            idx_lines, eol = read_lines(idx_path)
+            idx_lines, note1 = drop_case_rows(idx_lines, name)
+            dst = _move_to_archive(src, "archive")
+            what, dst_rel = name, os.path.relpath(dst, a.root).replace(os.sep, "/")
+            say("[retire] 案例本体已移入 %s" % dst_rel)
+        else:
+            rid = a.rt.upper().strip()
+            if not RT_RE.fullmatch(rid):
+                die("--rt 必须是 RT-0NN，收到：%r" % a.rt, 2)
+            src = next((p for p in root_files(a.root) if os.path.basename(p).startswith(rid)), None)
+            if not src:
+                die("根因文件不存在：%s" % rid, 2)
+            d0 = derive(a.root)
+            mounted = list(d0["cases_by_root"].get(rid, []))
+            also_users = [c["id"] for c in d0["cases"] if rid in c["also_roots"]]
+            if d0["mounts_by_root"].get(rid, 0) > 0:
+                die("根因 %s 仍挂着案例 ⇒ 不能退役（别人引用的号，本体一搬全断链）。"
+                    "先把下挂案例 retire 或 merge-roots 到别的族（主挂：%s%s）"
+                    % (rid, "、".join(mounted) or "无",
+                       "；副挂：" + "、".join(also_users) if also_users else ""), 2)
+            idx_lines, eol = read_lines(idx_path)
+            idx_lines, note1 = drop_root_row(idx_lines, rid)
+            dst = _move_to_archive(src, "archive")
+            what, dst_rel = rid, os.path.relpath(dst, a.root).replace(os.sep, "/")
+            say("[retire] 根因本体已移入 %s" % dst_rel)
+        idx_lines = _prune_empty_groups(idx_lines)
+        idx_lines = _append_retire_note(idx_lines, date.today().isoformat(), what, dst_rel, a.reason)
+        atomic_write(idx_path, idx_lines, eol)
+        back, _ = read_lines(idx_path)
+        if not any(("退役 %s " % what) in x or ("退役 %s｜" % what) in x or ("退役 %s |" % what) in x for x in back):
+            if os.path.exists(idx_path + ".bak"):
+                shutil.copy2(idx_path + ".bak", idx_path)
+            die("退役记录写后读回验收失败 ⇒ 索引已从 .bak 回滚（注明理由的那一行没落上）", 1)
+        touch_lock(lock)
+        refresh_counts(a.root, idx_path, write=True)
+        say("[retire] %s；数字已按现扫刷新，条目本体连同历史命中记录都在 archive/ 里（退役可逆：把文件搬回＋counts --apply）"
+            % note1)
+    finally:
+        release_lock(lock)
+    return 0
+
+
+# ================================================================ merge-roots（重复根因族并档）
+def _repoint_case(path, frm, into):
+    """把一条案例的挂载从 frm 改到 into：YAML 的 root/root_cause/also_root 与行内引用块两种形态都认。
+    改后若 root 与 also_root 撞成同一个号，副挂行删掉（双挂同一个号没有意义）。"""
+    lines, eol = read_lines(path)
+    has_yaml = bool(lines and lines[0].strip() == "---")
+    yaml_end = 0
+    if has_yaml:
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "---":
+                yaml_end = i
+                break
+    headings = 0
+    notes = []
+    root_now = None
+    for i, raw in enumerate(lines):
+        in_fm = has_yaml and i < yaml_end
+        is_inline = (not has_yaml) and raw.lstrip().startswith(">")
+        if not in_fm and not is_inline:
+            if not has_yaml and re.match(r"^\s*#{1,6}\s", raw):
+                headings += 1
+                if headings >= 2:
+                    break
+            continue
+        key_m = re.match(r"^(\s*(also_root|root_cause|root)\s*:\s*)(.*?)(\s*(#.*)?)$", raw)
+        if key_m:
+            key, val = key_m.group(2), key_m.group(3).strip()
+            new_val = re.sub(r"RT-%s\b" % re.escape(frm[3:]), "RT-%s" % into[3:], val)
+            if key == "also_root" and _rt_list(new_val) == _rt_list(into) and root_now == _rt_list(into):
+                lines[i] = None  # 副挂挤掉了——root 已是 into，双挂同号无意义
+                continue
+            if key in ("root", "root_cause"):
+                root_now = _rt_list(new_val)
+            if new_val != val:
+                lines[i] = key_m.group(1) + new_val + key_m.group(4)
+                notes.append("%s: %s→%s" % (key, val, new_val))
+            continue
+        if is_inline and ("RT-%s" % frm[3:]) in raw:
+            swapped = re.sub(r"((?:also_root|root_cause|root)\s*[:：]\s*[^|｜\n]*?)RT-%s\b" % re.escape(frm[3:]),
+                             lambda m: m.group(1) + "RT-%s" % into[3:], raw)
+            if swapped != raw:
+                lines[i] = swapped
+                notes.append("行内挂载已改")
+    kept = [x for x in lines if x is not None]
+    dropped = len(lines) - len(kept)
+    if notes or dropped:
+        atomic_write(path, kept, eol)
+    return ("、".join(notes) + ("；副挂同号已删" if dropped else "")) if (notes or dropped) else "挂载本就不在 %s" % frm
+
+
+def _merge_index_groups(lines, frm, into, into_title):
+    groups = index_groups(lines)
+    g1, g2 = groups.get(frm), groups.get(into)
+    if not g1:
+        return list(lines), "索引原无 %s 分组（无需搬行）" % frm
+    s1, e1 = g1
+    if g2:
+        s2, e2 = g2
+        rows1 = [x for x in lines[s1:e1] if CASE_ROW_RE.match(x)]
+        rows2 = [x for x in lines[s2:e2] if CASE_ROW_RE.match(x)]
+        both = rows1 + rows2
+        both.sort(key=lambda x: x.strip().split("|")[1].strip(), reverse=True)
+        head2 = [x for x in lines[s2:e2] if not CASE_ROW_RE.match(x)]
+        if s1 < s2:
+            out = lines[:s1] + lines[e1:s2] + head2 + both + lines[e2:]
+        else:
+            out = lines[:s2] + head2 + both + lines[e2:s1] + lines[e1:]
+        return out, "%s 组 %d 行并入 %s 组（组内按日期新→旧）" % (frm, len(rows1), into)
+    out = list(lines)
+    out[s1] = re.sub(r"^(#{2,4})(\s*)RT-\d{3}[^\n]*$",
+                     lambda m: "%s%s%s %s" % (m.group(1), m.group(2), into, into_title), lines[s1])
+    return out, "索引无 %s 分组 ⇒ 原组改名为 %s（行就地保留）" % (into, into)
+
+
+def cmd_merge(a):
+    require_store(a.root)
+    into, frm = (a.into or "").upper().strip(), (a.frm or "").upper().strip()
+    for x in (into, frm):
+        if not RT_RE.fullmatch(x):
+            die("merge-roots 需要两个三位数根因号：--into RT-0AA --from RT-0BB，收到 %r" % x)
+    if into == frm:
+        die("--into 与 --from 是同一个号（%s）" % into)
+    p_into = next((p for p in root_files(a.root) if os.path.basename(p).startswith(into)), None)
+    p_frm = next((p for p in root_files(a.root) if os.path.basename(p).startswith(frm)), None)
+    if not p_into:
+        die("保留根因 %s 的本体文件不存在（roots/%s-*.md）" % (into, into))
+    if not p_frm:
+        die("撤并根因 %s 的本体文件不存在（roots/%s-*.md）" % (frm, frm))
+    d0 = derive(a.root)
+    affected = sorted(set(d0["cases_by_root"].get(frm, []))
+                      | {c["id"] for c in d0["cases"] if frm in c["also_roots"]})
+    plan = ["改挂载 %d 条案例：%s" % (len(affected), "、".join(affected) or "无（直接并档空族）"),
+            "索引：%s 表行删除、案例分组并入/改名" % frm,
+            "本体：%s 档案进 roots/archive/（旧正文需人工往 %s 搬，工具不代搬）" % (frm, into)]
+    if not a.yes:
+        say("== merge-roots 干跑（加 --yes 才动盘）==")
+        for x in plan:
+            say("  " + x)
+        return 0
+    lock, why = acquire_lock(a.root)
+    if not lock:
+        die("抢锁失败：%s" % why, 5)
+    say("[lock] %s" % why)
+    try:
+        for cid in affected:
+            p = os.path.join(a.root, "pitfalls", cid + ".md")
+            note = _repoint_case(p, frm, into)
+            back = parse_case(p)
+            if cid in d0["cases_by_root"].get(frm, []) and frm in back["roots"] + back["also_roots"]:
+                die("案例 %s 改挂后仍指向 %s（写后读回验收失败：%s）" % (cid, frm, note), 1)
+            say("[merge] 案例 %s：%s" % (cid, note))
+        idx_path = os.path.join(a.root, INDEX_NAME)
+        idx_lines, ieol = read_lines(idx_path)
+        idx_lines, note_g = _merge_index_groups(idx_lines, frm, into, root_title_of(a.root, into))
+        idx_lines, note_t = drop_root_row(idx_lines, frm)
+        atomic_write(idx_path, idx_lines, ieol)
+        dst = _move_to_archive(p_frm, "archive")
+        touch_lock(lock)
+        target = p_into
+        t_lines, teol = read_lines(target)
+        t_lines += ["", "> 合并记录：%s %s 并入本族；旧本体在 roots/archive/%s——其「一句话根因／识别信号／通用对策」"
+                       "与本族是两个视角，需人工挑着搬，工具不代搬。" % (date.today().isoformat(), frm, os.path.basename(dst))]
+        atomic_write(target, t_lines, teol)
+        refresh_counts(a.root, idx_path, write=True)
+        say("[merge] %s；%s；旧本体已移入 %s；数字已按现扫刷新" % (note_g, note_t, dst))
+    finally:
+        release_lock(lock)
+    return 0
+
+
+# ================================================================ audit（命中抽审——只读）
+def cmd_audit(a):
+    require_store(a.root)
+    d = derive(a.root)
+    rows = []
+    for c in d["cases"]:
+        for r in c["hit_rows"]:
+            rows.append((r["date"], "案例 " + c["id"], r["scenario"], r["solved"], r["fp"]))
+    for r0 in d["roots"]:
+        for r in r0["hit_rows"]:
+            rows.append((r["date"], "根因 " + r0["id"], r["scenario"], r["solved"], r["fp"]))
+    rows.sort(key=lambda x: x[0], reverse=True)
+    k = max(1, a.sample)
+    say("== 命中抽审（列最近 %d 条，共 %d 记录｜库内合计命中 %d 次）=="
+        % (min(k, len(rows)), len(rows), d["hit_total"]))
+    for x in rows[:k]:
+        say("  %s ｜ %s ｜ 场景：%s ｜ 解决：%s ｜ 指纹 %s" % x)
+    if not rows:
+        say("  库内还没有任何命中记录。")
+    say("[audit] 回访判据（只提醒，不代判）：问题解决之前记录确实被看见且产生助力才算命中；"
+        "报虚了就改/删那一行（命中记录是唯一分母），改完跑 counts --apply。定期抽审是 GAO 对 NASA 教训系统的同款处方——没有使用监控的库会静默边缘化。")
+    return 0
+
+
+# ================================================================ selftest（随包自证——合成库先红后绿）
+def _probe_teeth(run, tmp, cid, before):
+    """进程内变异探针：把场景归一化钉成常量 ⇒ 同日、不同场景的两次正常命中会被误判成同一次而吞掉。
+    观察到「+1 而不是 +2」＝行为确被改坏、且改变了我们已断言过的健康行为（A05/A06）⇒ 断言有牙。"""
+    orig = norm_text
+    globals()["norm_text"] = lambda s: "const"
+    try:
+        run(["--root", tmp, "hit", "--case", cid, "--date", "2031-06-01", "--scenario", "探针独立场景甲"])
+        run(["--root", tmp, "hit", "--case", cid, "--date", "2031-06-01", "--scenario", "探针独立场景乙"])
+        after = derive(tmp)["hits_by_case"].get(cid, 0)
+        return (after - before) == 1
+    finally:
+        globals()["norm_text"] = orig
+
+
+def cmd_selftest(a):
+    started = datetime.now()
+    tmp = tempfile.mkdtemp(prefix="pitfall-selftest-")
+    results = []
+
+    def rec(name, ok, note=""):
+        results.append(bool(ok))
+        say("[%s] %s%s" % ("PASS" if ok else "FAIL", name, (" ｜ " + note) if note else ""))
+
+    def run(argv):
+        ns = build_parser().parse_args(argv)
+        if ns.cmd != "selftest":
+            ns.root = os.path.abspath(ns.root)
+        try:
+            return ns.func(ns) or 0
+        except SystemExit as e:
+            return e.code if isinstance(e.code, int) else 1
+
+    def R(*argv):
+        return run(["--root", tmp] + list(argv))
+
+    def d_of():
+        return derive(tmp)
+
+    say("== pitfall selftest ｜ 合成库 %s ==" % tmp)
+
+    # ---- 骨架与登记 ----
+    rec("A01 init 建骨架", R("init") == 0 and os.path.isfile(os.path.join(tmp, INDEX_NAME))
+        and all(os.path.isdir(os.path.join(tmp, x)) for x in ("roots", "pitfalls", CAND_DIR))
+        and os.path.isfile(os.path.join(tmp, "pitfalls", "_template.md")))
+    sev, day0 = "红", "2030-01-01"
+    rec("A02 add 登记＋事件标记",
+        R("add", "--title", "编码家族回归：子进程吃到 GBK", "--root-cause", "RT-001",
+          "--make-root", "中文跨进程边界编码错配", "--severity", sev, "--summary", "脚本输出乱码",
+          "--date", day0, "--author", "selftest", "--tags", "编码,测试") == 0
+        and d_of()["case_total"] == 1 and bool(d_of()["cases"][0]["mark"]))
+    rec("A03 同事件重复提交幂等", R("add", "--title", "编码家族回归：子进程吃到 GBK", "--root-cause", "RT-001",
+                                    "--severity", sev, "--date", "2030-01-02") == 0 and d_of()["case_total"] == 1)
+    rec("A04 同ID换内容拒绝(退出码4)", R("add", "--title", "换内容试探", "--root-cause", "RT-001", "--severity", sev,
+                                        "--slug", slugify("编码家族回归：子进程吃到 GBK"), "--date", day0) == 4)
+
+    # ---- 命中 ----
+    cid = d_of()["case_ids"][0]
+    R("hit", "--case", cid, "--date", "2030-01-03", "--scenario", "检索RT-001先试", "--solved", "直接套用对策")
+    R("hit", "--case", cid, "--date", "2030-01-03", "--scenario", "检索RT-001先试")
+    rec("A05 同一次命中去重", len(parse_case(case_files(tmp)[0])["hit_rows"]) == 1)
+    R("hit", "--case", cid, "--date", "2030-01-04", "--scenario", "换个场景再命中")
+    rec("A06 不同次命中累加", len(parse_case(case_files(tmp)[0])["hit_rows"]) == 2)
+    rec("A07 两层互斥拒绝(退出码2)", R("hit", "--case", cid, "--root-cause", "RT-001", "--scenario", "x") == 2)
+    R("hit", "--root-cause", "RT-001", "--date", "2030-01-05", "--scenario", "只读根因层就解决")
+    rec("A08 根因层独立计数", len(parse_root(root_files(tmp)[0])["hit_rows"]) == 1)
+
+    # ---- counts 修复循环 ----
+    idx = os.path.join(tmp, INDEX_NAME)
+    lines0, e0 = read_lines(idx)
+    dirty = list(lines0)
+    for i, raw in enumerate(dirty):
+        if CASE_ROW_RE.match(raw):
+            dirty[i] = CASE_TAIL_RE.sub(lambda m: m.group(1) + "9" + m.group(3), raw)
+            break
+    atomic_write(idx, dirty, e0, backup=False)
+    rec("A09 counts 干跑检测且不改盘", R("counts") == 0 and "🔥9" in "\n".join(read_lines(idx)[0]))
+    rec("A10 counts --apply 修复", R("counts", "--apply") == 0
+        and "🔥9" not in "\n".join(read_lines(idx)[0]))
+    rec("A11 check 全绿", R("check") == 0)
+
+    # ---- 升华闸门 ----
+    for k in range(2, 8):
+        R("add", "--title", "同根因第%d条%d" % (k, k), "--root-cause", "RT-001", "--severity", "黄",
+          "--kind", "lite", "--date", "2030-02-%02d" % (k + 1), "--summary", "后果%d" % (k - 1))
+    rec("A12 攒到阈值7条", len(d_of()["cases_by_root"].get("RT-001", [])) >= 7)
+    rec("A13 promote --scan 生成候选", R("promote", "--scan") == 0 and
+        len([n for n in sorted(os.listdir(os.path.join(tmp, CAND_DIR))) if n.endswith(".md")]) >= 1)
+    cands = sorted(n for n in os.listdir(os.path.join(tmp, CAND_DIR)) if n.endswith(".md"))
+    candp = os.path.join(tmp, CAND_DIR, cands[0])
+    cl, ce = read_lines(candp)
+    ok0, notes0 = gate(candp)
+    rec("A14 四要素未填闸门不放行", not ok0 and any("缺「" in x for x in notes0))
+
+    def _fill(sec, text):
+        for j, x in enumerate(cl):
+            if re.match(r"^\s*##\s*%s" % sec, x):
+                cl.insert(j + 1, text)
+                return
+    _fill("适用范围", "仅 Windows 控制台管线传中文时适用（selftest 合成范围）")
+    _fill("反例", "Linux 下 LANG=utf-8 时该症状不出现（合成反例）")
+    _fill("边界", "只覆盖控制台子进程编码，其它跨进程通道不在内")
+    _fill("复核日期", "2031-12-31")
+    atomic_write(candp, cl, ce)
+    rec("A15 填齐四要素干跑过闸", R("promote", "--gate", cands[0][:-3]) == 0)
+    rec("A16 --apply 提升落盘", R("promote", "--gate", cands[0][:-3], "--apply") == 0
+        and parse_root(root_files(tmp)[0])["escalated"] and "⭐" in "\n".join(read_lines(idx)[0]))
+    rec("A17 提升记录带下次复核日期", "2031-12-31" in "\n".join(read_lines(candp)[0]))
+    cl2, _ = read_lines(candp)
+    cl2b = list(cl2)
+    for i, x in enumerate(cl2b):
+        if x.strip().startswith("## 复核日期"):
+            cl2b.insert(i + 1, "2020-01-01（自我降级测试）")
+            break
+    atomic_write(candp, cl2b, "\n", backup=False)
+    items, _d = check_drift(tmp)
+    rec("A18 过期复核翻红 R14", any(x["rule"].startswith("R14") for x in items if x["level"] == "红"))
+    cl3 = [x for x in cl2b if "自我降级测试" not in x]
+    atomic_write(candp, cl3, "\n", backup=False)
+
+    # ---- 防腐闭环 ----
+    items, _d = check_drift(tmp)
+    rec("A19 无 git 仓给警 R13", any(x["rule"].startswith("R13") for x in items))
+    total0 = d_of()["case_total"]
+    victim = d_of()["case_ids"][1]
+    rec("A20 退役进 archive", R("retire", "--case", victim, "--reason", "与既有条目重复（selftest）") == 0
+        and d_of()["case_total"] == total0 - 1
+        and os.path.isfile(os.path.join(tmp, "pitfalls", "archive", victim + ".md")))
+    idx_txt = "\n".join(read_lines(idx)[0])
+    rec("A21 退役理由留审计线", "退役记录" in idx_txt and victim in idx_txt)
+    rec("A22 退役后 check 绿", R("check") == 0)
+    rec("A23 有挂载的根因不许退役", R("retire", "--rt", "RT-001", "--reason", "x") == 2)
+    R("add", "--title", "另一族独立坑", "--root-cause", "RT-002", "--make-root", "依赖隐式上下文导致路径错",
+      "--severity", "黄", "--date", "2030-03-01", "--summary", "走错目录")
+    R("add", "--title", "另一族第二坑", "--root-cause", "RT-002", "--severity", "黄",
+      "--date", "2030-03-02", "--summary", "再走错")
+    rec("A24 merge-roots 干跑不动盘", R("merge-roots", "--into", "RT-001", "--from", "RT-002") == 0
+        and any(os.path.basename(p).startswith("RT-002") for p in root_files(tmp)))
+    code = R("merge-roots", "--into", "RT-001", "--from", "RT-002", "--yes")
+    d3 = d_of()
+    rec("A25 --yes 并档收尾", code == 0
+        and not any(os.path.basename(p).startswith("RT-002") for p in root_files(tmp))
+        and not any("RT-002" in c["roots"] + c["also_roots"] for c in d3["cases"])
+        and os.path.isfile(os.path.join(tmp, "roots", "archive",
+                                        [n for n in os.listdir(os.path.join(tmp, "roots", "archive")) if n.startswith("RT-002")][0]))
+        and not any(ROOT_ROW_RE.match(x) and "RT-002" in x for x in read_lines(idx)[0]))
+    rec("A26 merge 后 check 绿", R("check") == 0)
+    rec("A27 check --deep 模板同源", R("check", "--deep") == 0)
+    tpl = os.path.join(tmp, "pitfalls", "_template.md")
+    tl, te = read_lines(tpl)
+    atomic_write(tpl, [x for x in tl if not (x.strip().startswith("#") and "现场代码" in x)], te)
+    rec("A28 模板与常量不同源翻红 R15", R("check", "--deep") == 1)
+    rec("A29 audit 只读列命中", R("audit", "--sample", "3") == 0)
+    before_hits = d_of()["hits_by_case"].get(cid, 0)
+    rec("A30 判据有牙（指纹探针）", _probe_teeth(run, tmp, cid, before_hits))
+
+    bad = results.count(False)
+    used = (datetime.now() - started).total_seconds()
+    say("== selftest 汇总：%d/%d PASS ｜ 用时 %.1fs ｜ 合成库：%s =="
+        % (len(results) - bad, len(results), used, tmp))
+    if bad:
+        say("[selftest] FAIL %d 条 ⇒ 退出码 1；合成库保留在 %s 供排障（排完自行删）" % (bad, tmp))
+        return 1
+    shutil.rmtree(tmp, ignore_errors=True)
+    say("[selftest] 全绿，合成库已清理")
+    return 0
+
+
 # ================================================================ CLI
 def build_parser(argv=None):
     p = argparse.ArgumentParser(prog="pitfall_log.py", description="踩坑日志确定性维护工具（计数从事件记录生成）")
-    p.add_argument("--root", required=True, help="log-root 目录（必填，不给默认当前目录＝防空集假绿）")
+    p.add_argument("--root", default="",
+                   help="log-root 目录（除 selftest 外必填；不给默认当前目录＝防空集假绿）")
     sub = p.add_subparsers(dest="cmd")
     sub.required = True
 
@@ -1596,8 +2145,9 @@ def build_parser(argv=None):
     sp.add_argument("--apply", action="store_true")
     sp.set_defaults(func=cmd_counts)
 
-    sp = sub.add_parser("check", help="索引 ↔ 事件记录 ↔ 根因文件 一致性自检")
+    sp = sub.add_parser("check", help="索引 ↔ 事件记录 ↔ 根因文件 一致性自检（读侧入口动作）")
     sp.add_argument("--json", action="store_true")
+    sp.add_argument("--deep", action="store_true", help="跨工件对账：库内/随包模板与脚本常量同源（改一半当场报红 R15）")
     sp.set_defaults(func=cmd_check)
 
     sp = sub.add_parser("promote", help="候选 → 验证适用范围 → 提升")
@@ -1607,11 +2157,43 @@ def build_parser(argv=None):
     sp.add_argument("--threshold", type=int, default=7)
     sp.add_argument("--hits-threshold", dest="hits_threshold", type=int, default=3)
     sp.set_defaults(func=cmd_promote)
+
+    sp = sub.add_parser("retire", help="退役＝软删进 archive/（理由必填；退役可逆，案例行从索引摘除、数字现扫刷新）")
+    sp.add_argument("--case", default="", help="要退役的案例 ID（YYYY-MM-DD-slug）")
+    sp.add_argument("--rt", default="", help="要退役的空根因号 RT-0NN（下挂案例与副挂必须先清零）")
+    sp.add_argument("--reason", required=True, help="退役理由（无理由的删除等于抹掉别人的证据链）")
+    sp.set_defaults(func=cmd_retire)
+
+    sp = sub.add_parser("merge-roots", help="撤并重复根因族：改挂载→搬清单行→归档旧本体（旧正文需人工搬）")
+    sp.add_argument("--into", required=True, help="保留的根因号 RT-0AA")
+    sp.add_argument("--from", dest="frm", required=True, help="撤并的根因号 RT-0BB")
+    sp.add_argument("--yes", action="store_true", help="不加只预演")
+    sp.set_defaults(func=cmd_merge)
+
+    sp = sub.add_parser("audit", help="命中抽审：列最近 K 条命中记录供人工回访（只读，防虚报）")
+    sp.add_argument("--sample", type=int, default=5)
+    sp.set_defaults(func=cmd_audit)
+
+    sp = sub.add_parser("selftest", help="随包自证：合成库跑全套断言＋指纹探针（无需 --root；FAIL 退出码 1）")
+    sp.set_defaults(func=cmd_selftest)
+
     return p
 
 
 def main(argv):
+    # Windows 中文管道（GBK）下 emoji 输出会 UnicodeEncodeError（3.8–3.14 全中招，3.15 靠 PEP 686 才幸免）
+    # ⇒ 入口统一 UTF-8+replace：字符不丢、程序不崩，落到文件里的自证读数永远可解析
+    for _s in (sys.stdout, sys.stderr):
+        if hasattr(_s, "reconfigure"):
+            try:
+                _s.reconfigure(encoding="utf-8", errors="replace")
+            except (ValueError, OSError):
+                pass
     args = build_parser().parse_args(argv)
+    if args.cmd == "selftest":
+        return args.func(args) or 0
+    if not args.root:
+        die("--root 必填（不给默认当前目录：在错的地方跑会量到 0 条却打「无漂移」＝假绿灯）")
     args.root = os.path.abspath(args.root)
     return args.func(args) or 0
 

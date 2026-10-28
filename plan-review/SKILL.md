@@ -84,7 +84,7 @@ metadata:
 | 计划里那条**验收标准本身**好不好（是不是恒真／恒红／没区分度） | acceptance-criterion-audit（判据鉴别力审查，审一条判据，不审整份计划） |
 | 已经建成的项目要交付验收（东西做出来了没） | project-acceptance（项目验收官，审交付物，不看计划文本） |
 | 写好的代码要审 | coding-behavior / senior-engineer-playbook 模板② |
-| 要盘问的是"计划作者本人"（访谈式） | grill-me / grill-with-docs |
+| 要盘问的是"计划作者本人"（访谈式） | grill-me（深度追问审查；开场自动判走 A 纯对话盘问／B 文档锚定盘问） |
 | 要给 skill 打分优化 | skill-quality-auditor |
 
 三者关系一句话：**本 skill 审"计划能不能动工"→ 判据审"计划里那条验收能不能用"→ 验收官审"做完的东西能不能交付"**。同一份材料先后过三道门不重复；反过来，用验收官去审未动工的计划＝拿尺子量错了对象。

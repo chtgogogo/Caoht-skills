@@ -1,0 +1,39 @@
+# security_scan.py 变异探针（先红后绿）——2026-10-27
+
+## 臂1：变异（注释掉 L1#1 的 sk- 密钥正则）
+```
+[PASS] X01 L1#1 密钥样例必抓
+[PASS] X02 L1#2 弱默认样例必抓
+[PASS] X03 L1#7 注入 fail 样例必抓
+[PASS] X03b L1#7 eval 嫌疑可报(warn)
+[PASS] X04 L1#8 直插样例必抓
+[PASS] X05 L1#12 重度残留必抓
+[PASS] X06 L1#15 绝对路径样例必抓
+[PASS] X07 L1#1 合法样例零误报
+[PASS] X07 L1#2 合法样例零误报
+[PASS] X07 L1#7 合法样例零误报
+[PASS] X07 L1#8 合法样例零误报
+[PASS] X07 L1#15 合法样例零误报
+[PASS] X08 干净树零阻断
+[PASS] X09 排除目录生效（node_modules 不扫）
+[PASS] X10 脏树六规则全点亮
+[PASS] X11 退出码 1 传导
+[PASS] X12 历史区单列不阻断（CHANGELOG 命中进 history、不在阻断集）
+[PASS] X13 报告含历史判定追加区锚
+[PASS] X14 两期追加＝时间序列可见
+[PASS] X15 三栏齐＋隔天冷却 ⇒ 过
+[PASS] X16 占位签核人＋异议空白 ⇒ 红
+[PASS] X17 签核日期早于最后评测 ⇒ 红（SO4）
+[PASS] X18 同日签：普通过／冷却红（SO5）
+[PASS] X99 断言条数 ≥ 分母闸 20
+断言 24 条：PASS=24 FAIL=0
+```
+变异后退出码=0（预期 2＝有断言挂）
+
+## 臂2：还原复绿
+```
+[PASS] X18 同日签：普通过／冷却红（SO5）
+[PASS] X99 断言条数 ≥ 分母闸 20
+断言 24 条：PASS=24 FAIL=0
+```
+还原后退出码=0（预期 0）；变异点=scripts/security_scan.py RULE_SECRETS_PATTERNS[0]，受影响断言=X01/X10（sk- 样例必抓）；结论=断言真依赖判据存在，删判据必红

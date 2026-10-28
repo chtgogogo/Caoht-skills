@@ -1,0 +1,29 @@
+﻿=== v1.21.0 文档规范两区改造 · 自证读数（2026-10-18）===
+
+# 1) pipeline_state.py selftest（改骨架+结构锚后必须全绿）
+
+[PASS] B24 九件骨架自带结构锚（init 生成的骨架文本含全部锚串）
+[PASS] B24b 六件填实（结构完整）⇒ check 无锚警
+[PASS] B25 填实后删结构锚 ⇒ check 仍退 0（警不是红，老项目不炸）
+[PASS] B25b 结构恢复 ⇒ 锚警消失
+断言 131 条：PASS=131 FAIL=0
+
+
+
+# 2) init 骨架（轻量档）：骨架须自带 AUTO 块与两区说明
+tmp=C:\Users\<你的用户名>\AppData\Local\Temp\dsh-docstd-230423
+  L5: > **两区结构（v1.20.0）**：上面 `AUTO-BEGIN`／`AUTO-END` 之间是**生成区**，由
+  L11: <!-- AUTO-BEGIN 由 scripts/render_agents.py 生成 · 禁手改（手改会被下次生成覆盖） · 整块覆盖，不做增量 patch -->
+  L19: <!-- AUTO-END -->
+
+# 3) render_agents 覆盖后：生成区与人写区同时在位（人写区不被吞）
+  L5: > **两区结构（v1.20.0）**：上面 `AUTO-BEGIN`／`AUTO-END` 之间是**生成区**，由
+  L11: <!-- AUTO-BEGIN 由 scripts/render_agents.py 生成 · 禁手改（手改会被下次生成覆盖） · 整块覆盖，不做增量 patch -->
+  L15: > ⚠️ 没有 `trace/matrix.json`：先跑 `py <交付流水线 skill 根>/scripts/trace_matrix.py gen --root <项目根> --ap
+  L19: <!-- AUTO-END -->
+  L21: ## 项目一句话
+  L37: ## 文档登记表（什么时候读什么）
+
+# 4) lint_skill
+========================================
+体检结果: 0 项 FAIL, 0 项警告 → ✅ 通过

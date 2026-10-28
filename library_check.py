@@ -427,6 +427,11 @@ def check_skill(d, mode):
     for ref in sorted(set(PATH_RE.findall(body))):
         if is_placeholder(ref) or (d / ref).exists():
             continue
+        if ref.endswith(".local.md"):
+            # `*.local.md` 是「本机可选件」：公开仓按设计全局排除（见 CONTRIBUTING 第一节），
+            # 正文里的条件性引用（「本机若有习惯，写在 personal.local.md」）在仓侧恒不存在——
+            # 恒真的红项没有鉴别力，豁免；真断链（其他文件名）照常红。
+            continue
         msg = f"{d.name}/SKILL.md：正文引用的 `{ref}` 不存在"
         (WARN if ref.startswith("tools/") else RED).append(msg)
 

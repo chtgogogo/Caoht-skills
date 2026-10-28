@@ -1,0 +1,318 @@
+  · 未生成 任务板.md（本档不建）
+[检查通过] 权威 rev=1｜派生物与 state.json 逐字一致｜done 项四字段齐
+[检查不通过] 1 条：
+  ✗ 台账.md 与权威记录漂移（1 行不同）⇒ 真源只有 state.json：跑 render --apply 重渲染；若 md 里有 state 缺的事实，先跑 sync --from-md 逐字段并账
+[检查通过] 权威 rev=1｜派生物与 state.json 逐字一致｜done 项四字段齐
+[逐字段并账] 来自 C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\旧台账.md｜吸收 4 项｜冲突 1 项（冲突一律不自动取舍，写进台账「待人工裁决」）
+  + c1 done←md（state 里原本没有这条）
+  + c5 blocked←md（state 里原本没有这条）
+  + c7 todo←md（state 里原本没有这条）
+  + c9 doing←md（state 里原本没有这条）
+  ≠ mode：state=轻量 ／ md=标准 ⇒ 保留 state（改档要显式跑 mode --set）
+  · 未生成 任务板.md（本档不建）
+[已写] rev=2
+[检查通过] 权威 rev=2｜派生物与 state.json 逐字一致｜done 项四字段齐
+[逐字段并账] 来自 C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\旧台账.md｜吸收 0 项｜冲突 2 项（冲突一律不自动取舍，写进台账「待人工裁决」）
+  ≠ c1.title：state=「评测集搭建」／ md=「旧标题」⇒ 保留 state
+  ≠ c1.metric：state=「Hit@5 91.0%」／ md=「基线 Hit@5 70.6%」⇒ 保留 state
+  · 未生成 任务板.md（本档不建）
+[已写] rev=4
+[版本冲突] 你读到 rev=1，当前 rev=4 ⇒ 拒绝写入。（旧版在这一步按时间戳整份覆盖，把另一侧的字段改动抹掉了）
+          请重读 state.json 把改动重放在新 rev 上；确要强行覆盖也仍然禁止——改用单写队列。
+  · 未生成 任务板.md（本档不建）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\state.json｜rev=5
+[拒绝标 done] 阶段 ③ 四字段缺：input_version、artifacts、done_criteria、recovery_point
+            卡内口径：输入版本／产物位置／完成条件／恢复点 齐了才算「这步做完了」
+[拒绝标 done] 阶段 ③ 登记的产物在盘上不存在：docs/pipeline/PRD.md
+  · 未生成 任务板.md（本档不建）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\state.json｜rev=6
+[拒绝标 done] 卡 c9 没有实测数字 metric ⇒ 留在原状态（台账约束 1：状态只有实测值）
+  · 未生成 任务板.md（本档不建）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\state.json｜rev=7
+[未答过] 落盘目录 ⇒ 可以问；拿到答复后用 answer 记进权威记录
+  · 未生成 任务板.md（本档不建）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\state.json｜rev=8
+[已答过] 落盘目录 ＝「docs/pipeline/」（来源：用户已说明，2026-10-17 04:26:34）⇒ **这一项不要再问用户**
+  · 未生成 任务板.md（本档不建）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\state.json｜rev=9
+[已做过] push-github（类型 git，2026-10-17 04:26:34，证据 e.txt）⇒ 续传时**跳过**，别重复 push／提交／发消息
+[没做过] 发版说明 ⇒ 可以执行；生效后立刻 action --done 登记
+[接管成功] 代次 1 → 2，新持有者=新窗（旧写者再写会撞 rev/代次校验）
+[锁沿用] 本窗已持有（代次不变=1）⇒ 续心跳，不算重取
+[已交锁] 窗A（代次 1 用尽，下一窗从代次 2 继续）
+[无锁] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\锁项目\docs\pipeline\.locks\state.lock.json 上没有锁 ⇒ 什么都不用做
+[接管成功] 代次 1 → 2，新持有者=接班窗（旧写者再写会撞 rev/代次校验）
+[拒绝登记] 依赖快照不收不存在的件：references/不存在.md
+[依赖链接检查] 断链 1 处：
+  ✗ docs/pipeline/depends/b.md → c.md
+  ⇒ 修链或改写成文字说明，别留指不通的链接
+[依赖快照] 已登记 1 件（含 sha256）
+[路径映射] 上游/a.md → docs/pipeline/depends/a.md
+[依赖链接检查] 通过（1 个文件的相对链接全部指得通）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\docs\pipeline\state.json｜rev=11
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+  · 未生成 任务板.md（本档不建）
+[检查通过] 权威 rev=2｜派生物与 state.json 逐字一致｜done 项四字段齐
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[文档层] 已搭骨架 6 件（含 <!-- pipeline-scaffold --> 标记，① 填实后删标记）：AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md
+[计划骨架] 已搭 3 份大计划产物骨架（含 <!-- pipeline-scaffold --> 标记，对应阶段填实后删标记；12 维检查单=references/大计划产物模板.md）：docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+[已建] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=1｜派生物：台账.md、AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md、docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[文档层] 显式不建（--docs-tier none，建账时用户已明确表态）
+[计划骨架] 已搭 3 份大计划产物骨架（含 <!-- pipeline-scaffold --> 标记，对应阶段填实后删标记；12 维检查单=references/大计划产物模板.md）：docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+[已建] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\无文档夹具\docs\pipeline\state.json｜rev=1｜派生物：台账.md、docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+[拒绝标 done] 阶段 ① 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            缺：AGENTS.md
+            缺：CONTEXT.md
+            缺：docs/权威源表.md
+            缺：docs/human/小白手册.md
+            缺：docs/human/故障对照表.md
+            缺：docs/pipeline/上下文体检.md
+            缺：docs/pipeline/设计纪要.md
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+[拒绝标 done] 阶段 ① 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：AGENTS.md
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：CONTEXT.md
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/权威源表.md
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/human/小白手册.md
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/human/故障对照表.md
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/pipeline/上下文体检.md
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/pipeline/设计纪要.md
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=2
+[警] docs/pipeline/设计纪要.md 缺结构锚：盘问决策（结构应与 init 骨架一致；老项目或刻意自定义请人工确认后忽略——这是警不是红，check 照常通过）
+[检查通过] 权威 rev=2｜派生物与 state.json 逐字一致｜done 项四字段齐
+[拒绝开工] 阶段 ⑥ 的前置未完成：⑦、④、⑤
+            标准档顺序 ①②③④⑤⑦⑥：卡没切、验收基线没就绪就不许施工
+            （na/skipped 算显式豁免；跳步先 stage --id X --state skipped 留痕）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=3
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=4
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=5
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=6
+[拒绝标 done] 阶段 ③ 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            缺：specs/*/spec.md（无匹配文件）
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=7
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[文档层] 已搭骨架 6 件（含 <!-- pipeline-scaffold --> 标记，① 填实后删标记）：AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md
+[计划骨架] 已搭 3 份大计划产物骨架（含 <!-- pipeline-scaffold --> 标记，对应阶段填实后删标记；12 维检查单=references/大计划产物模板.md）：docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+[已建] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\退出夹具\docs\pipeline\state.json｜rev=1｜派生物：台账.md、AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md、docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+[拒绝标 done] 阶段 ① 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            缺：docs/human/小白手册.md
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\退出夹具\docs\pipeline\state.json｜rev=2
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\退出夹具\docs\pipeline\state.json｜rev=3
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=8
+  · 未生成 任务板.md（本档不建）
+[文档层] 已搭骨架 6 件（含 <!-- pipeline-scaffold --> 标记，① 填实后删标记）：AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md
+[计划骨架] 轻量档不搭三份大计划产物骨架（①一句话版/③可省，宁少不空）
+[已建] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\轻量文档夹具\docs\pipeline\state.json｜rev=1｜派生物：台账.md、AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md
+  · 未生成 任务板.md（本档不建）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\轻量文档夹具\docs\pipeline\state.json｜rev=2
+[拒绝标 done] 阶段 ② 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            缺：docs/pipeline/技术选型记录.md
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\选型夹具\docs\pipeline\state.json｜rev=2
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=10
+[拒绝标 done] 阶段 ⑤ 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            缺：backend/MODULE.md（卡头标了模块却没有模块卡）
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\文档层夹具\docs\pipeline\state.json｜rev=11
+[检查不通过] 1 条：
+  ✗ ① 已标 done 但文档层缺件：CONTEXT.md（done 之后文件还在盘上才算数；要退出跑 docs --opt-out --why）
+  ⚠ docs/pipeline/设计纪要.md 缺结构锚：盘问决策（结构应与 init 骨架一致，模板=references/大计划产物模板.md 与骨架本体；老项目或刻意自定义请人工确认后忽略）
+  ⚠ docs/pipeline/PRD.md 缺结构锚：用户视角走查清单（结构应与 init 骨架一致，模板=references/大计划产物模板.md 与骨架本体；老项目或刻意自定义请人工确认后忽略）
+[警] CONTEXT.md 缺结构锚：| 术语 |（结构应与 init 骨架一致；老项目或刻意自定义请人工确认后忽略——这是警不是红，check 照常通过）
+[警] docs/pipeline/设计纪要.md 缺结构锚：盘问决策（结构应与 init 骨架一致；老项目或刻意自定义请人工确认后忽略——这是警不是红，check 照常通过）
+[警] docs/pipeline/PRD.md 缺结构锚：用户视角走查清单（结构应与 init 骨架一致；老项目或刻意自定义请人工确认后忽略——这是警不是红，check 照常通过）
+[检查通过] 权威 rev=11｜派生物与 state.json 逐字一致｜done 项四字段齐
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[文档层] 已搭骨架 6 件（含 <!-- pipeline-scaffold --> 标记，① 填实后删标记）：AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md
+[计划骨架] 已搭 3 份大计划产物骨架（含 <!-- pipeline-scaffold --> 标记，对应阶段填实后删标记；12 维检查单=references/大计划产物模板.md）：docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+[已建] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\计划骨架夹具\docs\pipeline\state.json｜rev=1｜派生物：台账.md、AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md、docs/pipeline/设计纪要.md、docs/pipeline/技术选型记录.md、docs/pipeline/PRD.md
+  · 未生成 任务板.md（本档不建）
+[文档层] 已搭骨架 6 件（含 <!-- pipeline-scaffold --> 标记，① 填实后删标记）：AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md
+[计划骨架] 轻量档不搭三份大计划产物骨架（①一句话版/③可省，宁少不空）
+[已建] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\轻量骨架夹具\docs\pipeline\state.json｜rev=1｜派生物：台账.md、AGENTS.md、CONTEXT.md、docs/权威源表.md、docs/human/小白手册.md、docs/human/故障对照表.md、docs/pipeline/上下文体检.md
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[文档层] 无一件可搭（盘上已全部存在——棕地项目不覆盖已有件）
+[计划骨架] 无一份可搭（盘上已全部存在——棕地项目不覆盖已有件）
+[已建] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\计划骨架夹具\docs\pipeline\state.json｜rev=1｜派生物：台账.md
+[拒绝标 done] 阶段 ① 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/pipeline/设计纪要.md
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\计划骨架夹具\docs\pipeline\state.json｜rev=2
+[拒绝标 done] 阶段 ② 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/pipeline/技术选型记录.md
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\计划骨架夹具\docs\pipeline\state.json｜rev=3
+[拒绝标 done] 阶段 ③ 产物清单硬闸未过（v1.14.0 默认落地、显式退出）
+            缺：specs/*/spec.md（无匹配文件）
+            仍是骨架未填实（含 <!-- pipeline-scaffold -->）：docs/pipeline/PRD.md
+            显式退出：docs --opt-out <路径> --why <用户原话>（记进权威记录，不静默跳过）
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\计划骨架夹具\docs\pipeline\state.json｜rev=4
+[警] AGENTS.md 缺结构锚：文档登记表（结构应与 init 骨架一致；老项目或刻意自定义请人工确认后忽略——这是警不是红，check 照常通过）
+[检查通过] 权威 rev=4｜派生物与 state.json 逐字一致｜done 项四字段齐
+[拒绝开工] 阶段 ② 的前置未完成：①
+            标准档顺序 ①②③④⑤⑦⑥：卡没切、验收基线没就绪就不许施工
+            （na/skipped 算显式豁免；跳步先 stage --id X --state skipped 留痕）
+[拒绝开工] 阶段 ② 的前置未完成：①
+            标准档顺序 ①②③④⑤⑦⑥：卡没切、验收基线没就绪就不许施工
+            （na/skipped 算显式豁免；跳步先 stage --id X --state skipped 留痕）
+[跳步授权·留痕] 阶段 ② 前置未满，凭 --skip-auth 放行：用户当面点名单步直调②
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\依赖夹具\docs\pipeline\state.json｜rev=2
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\依赖夹具\docs\pipeline\state.json｜rev=3
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\依赖夹具\docs\pipeline\state.json｜rev=4
+  · 未生成 任务板.md（无卡可列 ⇒ 不建空看板）
+[已写] C:\Users\<你的用户名>\AppData\Local\Temp\pipeline-state-li4izvsc\链式夹具\docs\pipeline\state.json｜rev=2
+[拒绝开工] 阶段 ③ 的前置未完成：②
+            标准档顺序 ①②③④⑤⑦⑥：卡没切、验收基线没就绪就不许施工
+            （na/skipped 算显式豁免；跳步先 stage --id X --state skipped 留痕）
+[PASS] A01 权威记录可读且 rev=1
+[PASS] A02 轻量档产物清单不含任务板
+[PASS] A03 轻量档 render 只产台账
+[PASS] A04 台账带 AUTO-BEGIN 标记
+[PASS] A05 渲染后 check 通过
+[PASS] A06 台账含阶段四字段表头
+[PASS] A07 台账含「已问过」与「外部动作」两节
+[PASS] A08 台账渲染是权威记录的不动点（两次逐字相同）
+[PASS] A09 手改派生物后 check 翻红
+[PASS] A10 render 对无 AUTO 标记的手写件拒写（退 8）
+[PASS] A10b 拒写时手写件内容一个字节未变
+[PASS] A11 重渲染后复绿
+[PASS] A12 旧 md 解析出 4 张卡
+[PASS] A13 旧 md 解析出模式与做完数字
+[PASS] A14 sync 吸收 state 里没有的卡
+[PASS] A15 sync 吸收做完项的实测数字
+[PASS] A16 sync 把阻塞卡登记进 state
+[PASS] A17 sync 后 check 复绿
+[PASS] A18 旧 md 的较旧值没有覆盖 state 的较新值（旧版整覆盖会在这里丢数据）
+[PASS] A19 冲突被登记为待人工裁决而不是静默吞掉
+[PASS] A20 裁决清单点名冲突字段
+[PASS] A21 用过期 rev 写入被拒（退 6）
+[PASS] A22 被拒后权威记录 rev 未变
+[PASS] A23 用当前 rev 写入成功
+[PASS] A24 四字段不齐拒绝标阶段 done（退 4）
+[PASS] A25 被拒后阶段仍是原状态
+[PASS] A26 产物不存在时仍拒绝标 done（退 4）
+[PASS] A27 四字段齐且产物在场 ⇒ 标 done 成功
+[PASS] A28 台账里该阶段带恢复点
+[PASS] A29 无实测数字拒绝标卡 done（退 4）
+[PASS] A30 带实测数字的卡标 done 成功
+[PASS] A31 台账做完区出现该卡与模块
+[PASS] A32 未登记事项 --check 退 1（可以问）
+[PASS] A33 answer 落进权威记录
+[PASS] A34 已答事项 --check 退 0 且打印「不要再问」
+[PASS] A35 已生效动作 --check 退 0（续传跳过）
+[PASS] A36 未做过动作 --check 退 1
+[PASS] A37 小改动自动判轻量
+[PASS] A38 新功能自动判标准
+[PASS] A39 从零+多人自动判企业
+[PASS] A40 无任何信号 ⇒ 落最低档（宁少步骤也不产空文档堆）
+[PASS] A40b 无信号那一行必须自报「默认值不是判定」（防把没评估当评估过）
+[PASS] A40c 有信号时绝不出现「未收到任何信号」这行（防早退分支吞掉真实计分）
+[PASS] A41 轻／标同分打平 ⇒ 返回 None，只在这种置信度不足时问用户（不硬猜）
+[PASS] A41b 信号不打架时照分定档 ⇒ 标准
+[PASS] A42 轻量档不点亮 L2/L3/model_eval/multi_agent
+[PASS] A43 企业档点亮 L3
+[PASS] A44 安全 L1 常开：有无代码／改不改档都不给它关掉（铁律 10）
+[PASS] A44b 关掉 L1 的唯一路径不存在（无信号能把 L1 打进默认不跑侧）
+[PASS] A45 无对外物 ⇒ 口径门禁记在默认不跑一侧
+[PASS] A46 续传指向 ③ 而不是回头重跑 ①②
+[PASS] A47 续传声明已 done 的步骤不许重跑
+[PASS] A48 续带给恢复点
+[PASS] A49 续传列出不许重做的外部动作
+[PASS] A50 续传列出已问过事项
+[PASS] A51 缺权威记录 ⇒ 退 3
+[PASS] A52 权威记录坏 ⇒ 退 4（不静默当空状态）
+[PASS] A53 schema 比脚本新 ⇒ 退 4（不猜格式）
+[PASS] A54 rev 非整数 ⇒ 退 4
+[PASS] A55 未知阶段名 ⇒ 退 2
+[PASS] A56 未知卡状态 ⇒ 退 2
+[PASS] A57 未知门禁值 ⇒ 退 2
+[PASS] A58 目录里无残留临时件
+[PASS] A59 锁被有效持有时退 5
+[PASS] A60 释放后可再取（代次 1）
+[PASS] A61 陈旧锁未点名 takeover ⇒ 退 7
+[PASS] A62 显式接管后代次 +1
+[PASS] A74 首次取锁代次=1
+[PASS] A75 同窗再取＝续心跳而不是撞自己（代次仍 1）
+[PASS] A76 他人取活锁仍退 5（同窗复用没把互斥打开）
+[PASS] A77 他人交锁退 5（unlock 不替别人交）
+[PASS] A78 本人交锁成功且锁消失
+[PASS] A79 无锁时 unlock 幂等退 0
+[PASS] A80 崩溃窗的短租约锁按记录判陈旧 ⇒ 退 7（来者租约 3600s 不得覆盖判据）
+[PASS] A80b 点名接管后代次 +1 且锁易主
+[PASS] A81 不认识的信号键被点名「不参与计分」（防止把写了信号当成已评估）
+[PASS] A82 全是认识的键时不乱点名（A81 不是恒真打印）
+[PASS] A63 依赖快照拒绝登记不存在的件（退 4）
+[PASS] A64 依赖链接检查抓得出断链（退 1）
+[PASS] A65 快照登记成功且带 64 位哈希
+[PASS] A66 路径映射写进权威记录
+[PASS] A67 链接检查通过并记进 state
+[PASS] A68 断链如实进台账（不只躺在 json 里等人查）
+[PASS] A68b 本机绝对路径在台账里标成「发布前必删」
+[PASS] A68c 红跟着权威记录走：清掉后台账里不再残留（不是写死的字符串）
+[PASS] A69 标准档无卡 ⇒ 不建空任务板
+[PASS] A70 有卡后标准档才生成任务板
+[PASS] A71 任务板是派生物（含 AUTO 标记）
+[PASS] A72 轻量档永远不建任务板（改档后该文件不再被 render 生成）
+[PASS] A73 标准档全量对账通过
+[PASS] B01 init 默认搭 L0 骨架六件（默认落地＝阻力最小的路）
+[PASS] B02 --docs-tier none 一件不搭（显式退出从建账开始，且不静默）
+[PASS] B03 文档层一件都没有 ⇒ ① 拒绝标 done（退 4）
+[PASS] B04 六件在盘但仍是骨架（含 scaffold 标记）⇒ ① 仍拒（退 4）
+[PASS] B05 六件填实＋设计纪要在场 ⇒ ① done 放行
+[PASS] B05b ① done 后 check 复绿（文档层持续在盘才算数）
+[PASS] B06 ④⑤⑦ 未完成 ⇒ ⑥ 拒绝开工（退 4）
+[PASS] B07 ④⑤⑦ done 后 ⑥ 放行
+[PASS] B08 标准档 ③ 缺 specs/*/spec.md ⇒ 拒（退 4）
+[PASS] B09 PRD＋specs 在场 ⇒ ③ done 放行
+[PASS] B10a 缺件且无退出记录 ⇒ ① 拒（退 4）
+[PASS] B10b 同一缺件＋显式退出（用户理由进权威记录）⇒ ① 放行
+[PASS] B11 docs --show 逐件状态＋退出理由可见（不静默跳过）
+[PASS] B11b --opt-out 不带 --why ⇒ 退 2（退出必须留证据）
+[PASS] B12 有对外物答复却置 outward_claims=na ⇒ 当场点名（软闸不静默）
+[PASS] B13 轻量档 ① 不强制设计纪要（索引：一句话版）但文档层六件照样要
+[PASS] B14 选型记录只有 docs/adr/ 版 ⇒ ② 拒（退 4，位置漂移堵死）
+[PASS] B14b docs/pipeline/技术选型记录.md 在场 ⇒ ② 放行
+[PASS] B15 卡头标了 backend 却没有 backend/MODULE.md ⇒ ⑤ 重标 done 被拒（退 4）
+[PASS] B15b 模块卡补齐 ⇒ ⑤ 放行
+[PASS] B16 ① done 后删掉 CONTEXT.md ⇒ check 判红（退 1）
+[PASS] B16b 补回来后复绿
+[PASS] B17 旧 state.json（无 docs 段）读入不炸且默认 L0
+[PASS] B18 parser 声明的子命令与 dispatch 表一一对应（selftest 由 main 直处理算唯一例外）
+[PASS] B19 标准档 init 搭三份大计划产物骨架（设计纪要/选型/PRD，含 scaffold 标记）
+[PASS] B19b 轻量档 init 不搭三份（①一句话版/③可省——宁少不空）
+[PASS] B20 棕地已有件不覆盖（--force 重 init 后填实版原样保留）
+[PASS] B21 设计纪要仍是骨架（含标记，且它不属于文档层六件）⇒ ① 拒（退 4）——骨架检测覆盖清单内全部产物
+[PASS] B21b 设计纪要填实 ⇒ ① 放行
+[PASS] B22 选型记录仍是骨架（init 搭的、没动过）⇒ ② 拒（退 4）
+[PASS] B22b 选型记录填实 ⇒ ② 放行
+[PASS] B23 PRD 仍是骨架 ⇒ ③ 拒（退 4）
+[PASS] B23b PRD 填实＋specs 在场 ⇒ ③ 放行
+[PASS] B24 九件骨架自带结构锚（init 生成的骨架文本含全部锚串）
+[PASS] B24b 六件填实（结构完整）⇒ check 无锚警
+[PASS] B25 填实后删结构锚 ⇒ check 仍退 0（警不是红，老项目不炸）
+[PASS] B25b 结构恢复 ⇒ 锚警消失
+[PASS] B26 ① todo ⇒ ② 拒绝开工（退 4，DAG 依赖铺满）
+[PASS] B26b ② 带跳步授权 ⇒ 放行且账上留痕（单步直调 A 方案）
+[PASS] B26c ① 显式 skipped ⇒ ② 无授权也放行（豁免通道，跳步必须留痕才合法）
+[PASS] B26d ① done 但 ② 未完成 ⇒ ③ 拒（链式依赖逐级生效）
+断言 131 条：PASS=131 FAIL=0

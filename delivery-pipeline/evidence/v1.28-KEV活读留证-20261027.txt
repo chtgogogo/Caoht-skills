@@ -1,0 +1,11 @@
+KEV feed 活读留证（2026-10-27，#⑧-2 验收判据：比对命令可跑通一次）
+feed URL: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+feed 版本: 2026-10-26T22:24:24.6101Z ｜在册条目数: 1758
+  比对 CVE-2021-44228: 在列（KEV）
+  比对 CVE-2099-0001: 不在列
+
+细则将写入的比对命令形态（零依赖，装了 python 即可）：
+py -c "import json,urllib.request;d=json.load(urllib.request.urlopen('<feed URL>'));print({v['cveID'] for v in d['vulnerabilities']} & {'CVE-XXXX-XXXX'})"
+
+SLA 数字来源重核（计划 §十二）：BOD 22-01 已被 BOD 26-04（2026-06-10）废止；业界无统一时限表；
+7/30/90 天=本库约定非合规依据；推翻条件=CISA 后续发布可执行时限表。
