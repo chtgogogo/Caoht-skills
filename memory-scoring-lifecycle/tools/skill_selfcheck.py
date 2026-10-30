@@ -35,6 +35,10 @@ def parse_version(text):
     return m.group(1).strip().strip('"').strip("'") if m else ""
 
 
+# 「沿革」指针：SKILL.md 头部指向包外单源的修订记录（如 ../修订记录/<资产名>.md）
+POINTER_RE = re.compile(r"沿革[^\n]*?(\.\./[^\s。；，）】]+?\.md)")
+
+
 def check_skill(skill_dir, results):
     skill = skill_dir / "SKILL.md"
     changelog = skill_dir / "CHANGELOG.md"
@@ -46,12 +50,26 @@ def check_skill(skill_dir, results):
     if not ver:
         add(results, "红", "VER", "frontmatter 缺 version 字段")
     else:
-        probes = [("SKILL 头部", text[:4000]), ("CHANGELOG 顶部", (read(changelog) or "")[:2000])]
+        probes = [("SKILL 头部", text[:4000])]
+        no_narrative = ""
+        if changelog.is_file():
+            probes.append(("CHANGELOG 顶部", (read(changelog) or "")[:2000]))
+        else:
+            # CHANGELOG 已收编进库根修订记录（包外单源）：改读头部指针所指文件；指针断链降黄不静默跳过（防假绿）
+            pm = POINTER_RE.search(text[:4000])
+            narrative = read((skill_dir / pm.group(1)).resolve()) if pm else None
+            if narrative is None:
+                no_narrative = "头部无「沿革 ../修订记录/」指针" if not pm else f"指针所指文件读不到：{pm.group(1)}"
+            else:
+                probes.append(("修订记录 顶部", narrative[:2000]))
         missing = [label for label, probe in probes if ver not in probe]
         if missing:
             add(results, "红", "VER", f"版本 {ver} 未出现在 {'/'.join(missing)}——升版漏改")
+        elif no_narrative:
+            add(results, "黄", "VER", f"版本 {ver} 在 frontmatter/头部互证；版本叙事件未找到（{no_narrative}），无法三方互证")
         else:
-            add(results, "绿", "VER", f"版本 {ver} 在 frontmatter/头部/CHANGELOG 三方互证")
+            parties = "/".join(["frontmatter"] + [label for label, _ in probes[1:]])
+            add(results, "绿", "VER", f"版本 {ver} 在 {parties} 三方互证")
 
     size = skill.stat().st_size  # 按磁盘字节算，避免 read_text 把 CRLF 归一成 LF 少算
     if size > 35840:
